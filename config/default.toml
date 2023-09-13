@@ -1,0 +1,8 @@
+description = "default configuration file that provides a good starting point"
+
+[server]
+port = 3000         # the port used by the service
+
+[db]
+host = "localhost"  # the database hosting address
+port = 12345        # the database port

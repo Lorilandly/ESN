@@ -41,6 +41,10 @@ We elected to use EJS for out templating engine.
 
 We decided to use it because most of our team members are familiar with it and its syntax is easy to understand.
 
+### Resources
+
+- [Database Design and Schema](https://app.diagrams.net/#G17hR_xSGP90rC-pllEnbJ8A7NLXeNjATB)
+
 ### References
 
 - [AWS Article Discussing Pros and Cons of PostgresSQL and MySQL](https://aws.amazon.com/compare/the-difference-between-mysql-vs-postgresql/#:~:text=PostgreSQL%20is%20an%20object%2Drelational%20database%20management%20system.&text=MySQL%20has%20limited%20support%20of,stored%20procedures%20in%20multiple%20languages.)
@@ -48,3 +52,4 @@ We decided to use it because most of our team members are familiar with it and i
 - EJS [Docs](https://ejs.co/#docs)
 - Socket.IO [Docs](https://socket.io/docs/v4/)
 - Passport.js [Docs](https://www.passportjs.org/docs/)
+

@@ -19,20 +19,9 @@
                     <label class="form-label" for="password">Password</label>
                     <input class="form-input" type="password" id="password" name="password">
                 </div>
-                <button class="form-button" onclick="login()">Login</button>
+                <button class="form-button" onclick="join()">Join</button>
             </form>
         </div>
-        <script>
-            function login(){
-                var username = document.getElementById("username").value;
-                var password = document.getElementById("password").value;
-                // username and password validation here
-                // if is valid, submit form
-                // else show error message or alert
-                // also handle null values
-                document.getElementById("main-form").action = "/login";
-                document.getElementById("main-form").submit();
-            }
-        </script>
+        <script src="/javascripts/index.js"></script>
     </body>
 </html>

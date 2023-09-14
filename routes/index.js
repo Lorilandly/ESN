@@ -6,10 +6,10 @@ router.get('/', function(req, res, next) {
   res.render('index');
 });
 
-/* GET join page. */
+/* POST join page. */
 router.post('/join', function(req, res, next) {
   const { username, password } = req.body;
-  const message = `Login Successful: username=${username}, password=${password}`;
+  const message = `Join Successful: username=${username}, password=${password}`;
   res.send(message);
 });
 

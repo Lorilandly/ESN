@@ -1,27 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="/stylesheets/index.css" rel="stylesheet" type="text/css">
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h1>ESN</h1>
-            </div>
-            <form id="main-form" class="main-form">
-                <div class="form-group">
-                    <label class="form-label" for="username">Username</label>
-                    <input class="form-input" type="text" id="username" name="username">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <input class="form-input" type="password" id="password" name="password">
-                </div>
-                <button class="form-button" onclick="join()">Join</button>
-            </form>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/stylesheets/index.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ESN</h1>
         </div>
-        <script src="/javascripts/index.js"></script>
-    </body>
+        <form id="main-form" class="main-form" method="post" action="/join">
+            <div class="form-group" id="username-form">
+                <label class="form-label" for="username">Username</label>
+                <input class="form-input" type="text" id="username" name="username">
+            </div>
+            <div class="form-group" id="password-form">
+                <label class="form-label" for="password">Password</label>
+                <input class="form-input" type="password" id="password" name="password">
+            </div>
+            <div class="alert-msg" id="alert-msg">
+                <% if (locals.errormsg) { %>
+                    <%= errormsg %>
+                        <% } %>
+            </div>
+            <button class="form-button">Join</button>
+        </form>
+    </div>
+    <script src="/javascripts/index.js"></script>
+</body>
+
 </html>

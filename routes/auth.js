@@ -1,18 +1,3 @@
-function validateUsername(username) {
-    let invalidUsernames = new Set(reservedUsernames);
-    if (username.length < 3 || invalidUsernames.has(username)) {
-        return false;
-    }
-    return true;
-}
-
-function validatePassword(password) {
-    if (password.length < 4) {
-        return false;
-    }
-    return true;
-}
-
 const reservedUsernames = ['about', 'ac', 'access', 'account', 'accounts', 'activate', 'ad',
     'add', 'address', 'adm', 'admin', 'administration', 'administrator', 'adult', 'advertising',
     'ae', 'af', 'affiliate', 'affiliates', 'ag', 'ai', 'ajax', 'al', 'am', 'an', 'analytics',
@@ -77,5 +62,13 @@ const reservedUsernames = ['about', 'ac', 'access', 'account', 'accounts', 'acti
     'www7', 'wwws', 'wwww', 'xfn', 'xiang', 'xml', 'xmpp', 'xmppSuggest', 'xpg', 'xxx', 'yaml', 'ye',
     'yml', 'yoruba', 'you', 'yourdomain', 'yourname', 'yoursite', 'yourusername', 'yt', 'yu', 'za',
     'zm', 'zw'];
+
+function validateUsername(username) {
+    return !(username.length < 3 || reservedUsernames.includes(username));
+}
+
+function validatePassword(password) {
+    return !(password.length < 4);
+}
 
 module.exports = { validateUsername, validatePassword };

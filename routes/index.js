@@ -12,16 +12,27 @@ router.post('/join', function (req, res, next) {
   const { username, password } = req.body;
   if (!auth.validateUsername(username)) {
     res.render('index', {
-      errormsg: "Please provide a different username"
+      errormsg: "Please provide a different username",
     })
   } else if (!auth.validatePassword(password)) {
     res.render('index', {
-      errormsg: "Please provide a different password"
+      errormsg: "Please provide a different password",
     })
   } else {
-    const message = `Join Successful: username=${username}, password=${password}`;
-    res.send(message);
+    res.render('index', {
+      errormsg: "",
+      username: username,
+      password: password
+    })
   }
 });
+
+/* POST home page. */
+router.post('/home', function (req, res, next) {
+  const { username, password } = req.body;
+  const message = `Join Successful: username=${username}, password=${password}`;
+  res.send(message);
+});
+
 
 module.exports = router;

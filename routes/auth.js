@@ -1,4 +1,4 @@
-const reservedUsernames = ['about', 'ac', 'access', 'account', 'accounts', 'activate', 'ad',
+const reservedUsernames = new Set(['about', 'ac', 'access', 'account', 'accounts', 'activate', 'ad',
     'add', 'address', 'adm', 'admin', 'administration', 'administrator', 'adult', 'advertising',
     'ae', 'af', 'affiliate', 'affiliates', 'ag', 'ai', 'ajax', 'al', 'am', 'an', 'analytics',
     'android', 'anon', 'anonymous', 'ao', 'api', 'app', 'apple', 'apps', 'aq', 'ar', 'arabic',
@@ -61,10 +61,10 @@ const reservedUsernames = ['about', 'ac', 'access', 'account', 'accounts', 'acti
     'win', 'workshop', 'ws', 'wu', 'ww', 'wws', 'www', 'www1', 'www2', 'www3', 'www4', 'www5', 'www6',
     'www7', 'wwws', 'wwww', 'xfn', 'xiang', 'xml', 'xmpp', 'xmppSuggest', 'xpg', 'xxx', 'yaml', 'ye',
     'yml', 'yoruba', 'you', 'yourdomain', 'yourname', 'yoursite', 'yourusername', 'yt', 'yu', 'za',
-    'zm', 'zw'];
+    'zm', 'zw']);
 
 function validateUsername(username) {
-    return !(username.length < 3 || reservedUsernames.includes(username));
+    return !(username.length < 3 || reservedUsernames.has(username));
 }
 
 function validatePassword(password) {

@@ -1,3 +1,4 @@
+// USING RAW SQL
 const Pool = require('pg').Pool;
 
 function createDBPool(host, port, name) {
@@ -12,4 +13,24 @@ function createDBPool(host, port, name) {
     return pool;
 }
 
-module.exports = createDBPool;
+// USING ORM
+const { Sequelize } = require('sequelize');
+
+async function createSequelize(name, host, port) {
+    const sequelizeInstance = new Sequelize(name, process.env.POSTGRES_DB_USER, process.env.POSTGRES_DB_PASSWORD, {
+        host: host,
+        port: port,
+        dialect: 'postgres'
+    });
+    
+    try {
+        await sequelizeInstance.authenticate();
+        console.log('Connection has been established successfully.');
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
+    }
+    return sequelizeInstance;
+}
+
+
+module.exports = { createDBPool, createSequelize };

@@ -1,4 +1,4 @@
-// USING RAW SQL
+// USING SQL
 // const Pool = require('pg').Pool;
 
 // function createDBPool(host, port, name) {
@@ -12,6 +12,8 @@
 
 //     return pool;
 // }
+
+//module.exports = { createDBPool }
 
 // USING ORM
 const { Sequelize } = require('sequelize');

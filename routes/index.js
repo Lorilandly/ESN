@@ -30,6 +30,7 @@ router.post('/join', async function (req, res, next) {
 });
 
 /* POST home page. */
+// USING SQL
 // router.post('/home', function (req, res, next) {
 //   const { username, password } = req.body;
 //   const message = `Join Successful: username=${username}, password=${password}`;
@@ -39,6 +40,7 @@ router.post('/join', async function (req, res, next) {
 // });
 
 /* POST home page. Using Sequelize */
+// USING ORM
 router.post('/home', userController.create);
 
 module.exports = router;

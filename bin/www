@@ -9,7 +9,7 @@ const debug = require('debug')('18652-fse-f23-group-project-sb-2:server');
 const http = require('http');
 const config = require('config');
 const Sequelize = require('sequelize');
-// const createDBPool = require('../db').createDBPool;
+
 
 /**
  * Get port from environment and store in Express.
@@ -24,10 +24,11 @@ app.set('port', serverPort);
 let dbHost = config.get('db.host');
 let dbPort = normalizePort(config.get('db.port'));
 let dbName = config.get('db.name');
-// let dbPool = createDBPool(dbHost, dbPort, dbName);
 let dbClient = config.get('db.client');
 
 // USING SQL
+// const createDBPool = require('../db').createDBPool;
+// let dbPool = createDBPool(dbHost, dbPort, dbName);
 // const setDB = require('../models/user').setDB;
 // const initializeUsersTable = require('../models/user').initializeUsersTable;
 // const User = require('../models/user').User;

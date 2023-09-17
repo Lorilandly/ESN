@@ -1,8 +1,8 @@
 {
   "development": {
-    "username": "judy",
+    "username": "",
     "password": null,
-    "database": "devTest",
+    "database": "sb2-project",
     "host": "127.0.0.1",
     "port": 5432,
     "dialect": "postgres"
@@ -22,3 +22,6 @@
     "dialect": "postgres"
   }
 }
+
+
+

@@ -8,7 +8,8 @@ const app = require('../app');
 const debug = require('debug')('18652-fse-f23-group-project-sb-2:server');
 const http = require('http');
 const config = require('config');
-const createDBPool = require('../db').createDBPool;
+const Sequelize = require('sequelize');
+// const createDBPool = require('../db').createDBPool;
 
 /**
  * Get port from environment and store in Express.
@@ -23,35 +24,22 @@ app.set('port', serverPort);
 let dbHost = config.get('db.host');
 let dbPort = normalizePort(config.get('db.port'));
 let dbName = config.get('db.name');
-let dbPool = createDBPool(dbHost, dbPort, dbName);
+// let dbPool = createDBPool(dbHost, dbPort, dbName);
+let dbClient = config.get('db.client');
 
 // USING SQL
-const setDB = require('../models/user').setDB;
-const initializeUsersTable = require('../models/user').initializeUsersTable;
-const User = require('../models/user').User;
+// const setDB = require('../models/user').setDB;
+// const initializeUsersTable = require('../models/user').initializeUsersTable;
+// const User = require('../models/user').User;
 
-setDB(dbPool);
-initializeUsersTable();
+// setDB(dbPool);
+// initializeUsersTable();
 
 
 // USING ORM
-// const createSequelize = require('../db').createSequelize;
-// const createUserModel = require('../models/user');
-// const sequelizeInstance = createSequelize(dbName, dbHost, dbPort);
-// const User = createUserModel(sequelizeInstance);
-// r.sync();
-
-// const dummyQuery = `
-// CREATE TABLE IF NOT EXISTS users (
-//     id INTEGER PRIMARY KEY,
-//     name TEXT,
-//     password_hash TEXT,
-//     current_status TEXT,
-//     privilege TEXT
-// );
-// `
-// dbPool.query(dummyQuery);
-
+const ConnectPostgres = require('../db').connectToPostgres;
+const postgresClient = ConnectPostgres(dbName, dbHost, dbPort);
+dbClient = postgresClient;
 
 
 /**

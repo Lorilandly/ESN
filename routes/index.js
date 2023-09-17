@@ -2,6 +2,7 @@ let express = require('express');
 let router = express.Router();
 let auth = require('./auth');
 let User = require('../models/user').User;
+const userController = require('../controller').user;
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -9,7 +10,7 @@ router.get('/', function (req, res, next) {
 });
 
 /* POST join page. */
-router.post('/join', function (req, res, next) {
+router.post('/join', async function (req, res, next) {
   const { username, password } = req.body;
   if (!auth.validateUsername(username)) {
     res.render('index', {
@@ -29,13 +30,15 @@ router.post('/join', function (req, res, next) {
 });
 
 /* POST home page. */
-router.post('/home', function (req, res, next) {
-  const { username, password } = req.body;
-  const message = `Join Successful: username=${username}, password=${password}`;
-  const thisUser = new User(username, password, "SUPERDUPERADMIN", "DEAD");
-  thisUser.insert();
-  res.send(message);
-});
+// router.post('/home', function (req, res, next) {
+//   const { username, password } = req.body;
+//   const message = `Join Successful: username=${username}, password=${password}`;
+//   const thisUser = new User(username, password, "SUPERDUPERADMIN", "DEAD");
+//   thisUser.insert();
+//   res.send(message);
+// });
 
+/* POST home page. Using Sequelize */
+router.post('/home', userController.create);
 
 module.exports = router;

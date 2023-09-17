@@ -12,7 +12,7 @@ h1 {
   text-align: center;
 }
 
-.container{
+.container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,7 +20,7 @@ h1 {
   width: 100%;
 }
 
-.container .header{
+.container .header {
   margin-top: 30px;
   display: flex;
   flex-direction: row;
@@ -29,7 +29,7 @@ h1 {
   height: 100px;
 }
 
-.container .main-form{
+.container .main-form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -37,7 +37,7 @@ h1 {
   width: 300px;
 }
 
-.container .main-form .form-group{
+.container .main-form .form-group {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -46,7 +46,7 @@ h1 {
   width: 300px;
 }
 
-.container .main-form .form-group .form-label{
+.container .main-form .form-group .form-label {
   width: 100%;
   text-align: left;
   font-weight: bold;
@@ -54,7 +54,7 @@ h1 {
   margin: 10px;
 }
 
-.container .main-form .form-group .form-input{
+.container .main-form .form-group .form-input {
   width: 100%;
   height: 30px;
   border-radius: 5px;
@@ -63,11 +63,11 @@ h1 {
   font-size: 16px;
 }
 
-.container .main-form .form-group .form-input:focus{
+.container .main-form .form-group .form-input:focus {
   outline: none;
 }
 
-.container .main-form .form-button{
+.container .main-form .form-button {
   width: 100%;
   height: 50px;
   border-radius: 5px;
@@ -78,4 +78,9 @@ h1 {
   background-color: rgb(0, 0, 0);
   font-weight: bold;
   margin: 30px;
+}
+
+.container .main-form .alert-msg {
+  color: red;
+  height: 15px;
 }

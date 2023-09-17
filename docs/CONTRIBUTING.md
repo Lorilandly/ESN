@@ -11,10 +11,6 @@ This file contains all setup steps required for local development of this codeba
         - [Installation](#installation-1)
         - [Connect to Server](#connect-to-server)
         - [Connect to Database](#connect-to-database)
-- [Sequelize](#sequelize)
-    - [Introduction](#introduction)
-    - [Setup](#setup)
-
 
 ## PostgreSQL 
 
@@ -97,35 +93,3 @@ In the dropdown menu `Databases` from current server, right click `Databases` an
 ![Connection settings for pgAdmin Connection](images/pgAdmin_add_database.png)
 
 Input the database name in the pop-up window.
-
-
-## Sequelize 
-
-### Introduction
-
-Sequelize is a Node.js object-relational mapping (ORM) tool that supports various SQL database management systems. It allows us to work with the database using JavaScript objects and models, without having to write raw SQL queries.
-
-### Setup
-
-Before using Sequelize, make sure the server and PostgreSQL database is set up as mentioned.
-
-In `config/config.json`:
-
-```bash
-  "development": {
-    "username": "", //name of Superuser, 
-    "password": null,
-    "database": "sb2-project", //name of database
-    "host": "127.0.0.1",
-    "port": 5432,
-    "dialect": "postgres"
-  }
-```
-
-To create the tables in Postgres database, migrate the tables to database with command in terminal:
-
-```bash
-node_modules/.bin/sequelize db:migrate
-```
-
-To test current implementation using Sequelize, try registering a user with valid username and password. This user record should appear in the PostgreSQL database.

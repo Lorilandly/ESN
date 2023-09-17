@@ -8,7 +8,6 @@ const app = require('../app');
 const debug = require('debug')('18652-fse-f23-group-project-sb-2:server');
 const http = require('http');
 const config = require('config');
-const Sequelize = require('sequelize');
 
 
 /**
@@ -24,24 +23,14 @@ app.set('port', serverPort);
 let dbHost = config.get('db.host');
 let dbPort = normalizePort(config.get('db.port'));
 let dbName = config.get('db.name');
-let dbClient = config.get('db.client');
 
-// USING SQL
-// const createDBPool = require('../db').createDBPool;
-// let dbPool = createDBPool(dbHost, dbPort, dbName);
-// const setDB = require('../models/user').setDB;
-// const initializeUsersTable = require('../models/user').initializeUsersTable;
-// const User = require('../models/user').User;
+const createDBPool = require('../db').createDBPool;
+let dbPool = createDBPool(dbHost, dbPort, dbName);
+const setDB = require('../models/user').setDB;
+const initializeUsersTable = require('../models/user').initializeUsersTable;
 
-// setDB(dbPool);
-// initializeUsersTable();
-
-
-// USING ORM
-const ConnectPostgres = require('../db').connectToPostgres;
-const postgresClient = ConnectPostgres(dbName, dbHost, dbPort);
-dbClient = postgresClient;
-
+setDB(dbPool);
+initializeUsersTable();
 
 /**
  * Create HTTP server.

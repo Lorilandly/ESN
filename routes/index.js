@@ -2,7 +2,6 @@ let express = require('express');
 let router = express.Router();
 let auth = require('./auth');
 let User = require('../models/user').User;
-const userController = require('../controller').user;
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -14,15 +13,15 @@ router.post('/join', async function (req, res, next) {
   const { username, password } = req.body;
   if (!auth.validateUsername(username)) {
     res.render('index', {
-      errormsg: "Please provide a different username",
+      errormsg: 'Please provide a different username',
     })
   } else if (!auth.validatePassword(password)) {
     res.render('index', {
-      errormsg: "Please provide a different password",
+      errormsg: 'Please provide a different password',
     })
   } else {
     res.render('index', {
-      errormsg: "",
+      errormsg: '',
       username: username,
       password: password
     })
@@ -30,17 +29,12 @@ router.post('/join', async function (req, res, next) {
 });
 
 /* POST home page. */
-// USING SQL
-// router.post('/home', function (req, res, next) {
-//   const { username, password } = req.body;
-//   const message = `Join Successful: username=${username}, password=${password}`;
-//   const thisUser = new User(username, password, "SUPERDUPERADMIN", "DEAD");
-//   thisUser.insert();
-//   res.send(message);
-// });
-
-/* POST home page. Using Sequelize */
-// USING ORM
-router.post('/home', userController.create);
+router.post('/home', function (req, res, next) {
+  const { username, password } = req.body;
+  const message = `Join Successful: username=${username}, password=${password}`;
+  const thisUser = new User(username, password, "SUPERDUPERADMIN", "DEAD");
+  thisUser.insert();
+  res.send(message);
+});
 
 module.exports = router;

@@ -3,12 +3,11 @@
 /**
  * Module dependencies.
  */
-
 const app = require('../app');
 const debug = require('debug')('18652-fse-f23-group-project-sb-2:server');
 const http = require('http');
 const config = require('config');
-
+const { createDBPool, initModels } = require('../db');
 
 /**
  * Get port from environment and store in Express.
@@ -20,17 +19,15 @@ app.set('port', serverPort);
 /**
  * Get database configs and connect to database.
  */
-let dbHost = config.get('db.host');
-let dbPort = normalizePort(config.get('db.port'));
-let dbName = config.get('db.name');
+const dbHost = config.get('db.host');
+const dbPort = normalizePort(config.get('db.port'));
+const dbName = config.get('db.name');
+const dbPool = createDBPool(dbHost, dbPort, dbName);
 
-const createDBPool = require('../db').createDBPool;
-let dbPool = createDBPool(dbHost, dbPort, dbName);
-const setDB = require('../models/user').setDB;
-const initializeUsersTable = require('../models/user').initializeUsersTable;
-
-setDB(dbPool);
-initializeUsersTable();
+/**
+ * Use database connection to initialize our data models.
+ */
+initModels(dbPool);
 
 /**
  * Create HTTP server.

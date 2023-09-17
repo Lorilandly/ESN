@@ -16,11 +16,8 @@ INSERT INTO users (name, password_hash, current_status, privilege)
     RETURNING id;
 `
 
-function setDB(dbPool) {
+function initUserModel(dbPool) {
     dbPoolInstance = dbPool;
-}
-
-function initializeUsersTable() {
     dbPoolInstance.query(createUsersTable);
 }
 
@@ -41,4 +38,4 @@ class User {
     }
 }
 
-module.exports = { setDB, initializeUsersTable, User };
+module.exports = { initUserModel, User };

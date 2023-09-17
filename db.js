@@ -1,5 +1,7 @@
 const Pool = require('pg').Pool;
+const initUserModel = require('./models/user').initUserModel;
 
+/* Connect to Postgres db and initalize a connection pool */
 function createDBPool(host, port, name) {
     pool = new Pool({
         host: host,
@@ -12,4 +14,9 @@ function createDBPool(host, port, name) {
     return pool;
 }
 
-module.exports = { createDBPool }
+/* Initialize all data models */
+function initModels(db) {
+    initUserModel(db);
+}
+
+module.exports = { createDBPool, initModels }

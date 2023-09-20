@@ -4,7 +4,7 @@ let userController = require('../controllers/user');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.send('respond with a home page');
+    res.send('This is a home page. You will be redirected if you are not logged in');
 });
 
 /* POST home page. */

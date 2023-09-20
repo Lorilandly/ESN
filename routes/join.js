@@ -3,7 +3,7 @@ let router = express.Router();
 let auth = require('./auth');
 let userController = require("../controllers/user");
 
-/* GET home page. */
+/* GET join page. */
 router.get('/', function (req, res, next) {
     res.render('join');
 });

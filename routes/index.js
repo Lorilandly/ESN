@@ -9,6 +9,8 @@ router.get('/', function(req, res, next) {
 
 /* POST home page. */
 // TODO: rename to /users to be RESTful
-router.post('/', userController.create);
+router.post('/', userController.create, (req, res) => {
+    res.render('welcome');
+});
 
 module.exports = router;

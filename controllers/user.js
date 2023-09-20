@@ -5,7 +5,7 @@ function create(req, res, next) {
     const message = `Join Successful: username=${username}, password=${password}`;
     const newUser = new User(username, password, "SUPERDUPERADMIN", "DEAD");
     newUser.insert();
-    res.send(message);
+    next();
 }
 
 module.exports = { create };

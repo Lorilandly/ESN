@@ -33,13 +33,11 @@ function initUserModel(dbPool) {
 	dbPoolInstance.query(createUsersTable);
 }
 
-class User {
-	constructor(name, passwordHash, privilege, currentStatus) {
-		this.name = name;
-		this.passwordHash = passwordHash;
-		this.privilege = privilege;
-		this.currentStatus = currentStatus;
-	}
+/*
+ * User Model - provides interface for inserting and reading users from the database.
+ */
+class UserModel {
+	constructor() {}
 
 	async create(name, passwordHash, privilege, currentStatus) {
 		const queryResponse = await dbPoolInstance.query(insertUser, [
@@ -65,5 +63,7 @@ class User {
 		return queryResponse.rows[0];
 	}
 }
+
+const User = new UserModel();
 
 module.exports = { initUserModel, User };

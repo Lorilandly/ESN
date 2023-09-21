@@ -37,21 +37,37 @@ function initUserModel(dbPool) {
 }
 
 /*
+* Returns hashedPassword and salt
+*/
+function hash(rawPassword) {
+	let salt = crypto.randomBytes(16);
+	return {passwordHash: crypto.pbkdf2Sync(rawPassword, salt, 310000, 32, 'sha256'), salt: salt}
+}
+
+function compare(rawPassword, hashedPassword, salt) {
+	const newHashedPasswd =  crypto.pbkdf2Sync(rawPassword, salt, 310000, 32, 'sha256');
+	console.log("compare");
+	console.log(newHashedPasswd);
+	console.log(hashedPassword);
+	// console.log();
+	return Buffer.compare(newHashedPasswd, hashedPassword) === 0;
+}
+
+/*
  * User Model - provides interface for inserting and reading users from the database.
  */
 class UserModel {
 	constructor() {}
 
 	async create(name, password, privilege, currentStatus) {
-		var salt = crypto.randomBytes(16);
+		let {passwordHash, salt} = hash(password)
 		const queryResponse = await dbPoolInstance.query(insertUser, [
 			name,
-    	  	crypto.pbkdf2Sync(password, salt, 310000, 32, 'sha256'),
+			passwordHash,
     	  	salt,
 			privilege,
 			currentStatus,
 		]);
-		// this.id = queryResponse.id;
 		return queryResponse;
 	}
 
@@ -64,8 +80,20 @@ class UserModel {
 		const queryResponse = await dbPoolInstance.query(selectUserByName, [
 			name,
 		]);
-		// this.id = queryResponse.id;
 		return queryResponse.rows[0];
+	}
+	
+	async checkPasswordForUser(username, password) {
+		const queryResponse = await dbPoolInstance.query(selectUserByName, [
+			username,
+		]);
+		const row = queryResponse.rows[0];
+		if (!row) {
+			return false;
+		}
+		const hashedPassword = row.password_hash;
+		const salt = row.salt;
+		return compare(password, hashedPassword, salt);
 	}
 }
 

@@ -7,8 +7,12 @@ function create(req, res, next) {
     next();
 }
 
+async function checkPasswordForUser(username, password) {
+    return await User.checkPasswordForUser(username, password);
+}
+
 async function findByName(name) {
 	return await User.findByName(name.toLowerCase());
 }
 
-module.exports = { create, findByName };
+module.exports = { create, findByName, checkPasswordForUser };

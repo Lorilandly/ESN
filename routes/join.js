@@ -25,13 +25,24 @@ router.post('/', async function (req, res, next) {
 	}
 	// TODO: This will be modified while fleshing out login/logout flows
 	user = await userController.findByName(username);
-	if (user && user.password_hash != password) {
-		console.log(`password: ${user.password_hash}`);
-		res.render("join", {
-			errormsg: "Please re-enter username and password",
-		});
-		return;
+	if (user) {
+		if (!await userController.checkPasswordForUser(username, password)) {
+			console.log(`password: ${user.password_hash}`);
+			res.render("join", {
+				errormsg: "Please re-enter username and password",
+			});
+			return;
+		} else {
+			res.redirect("welcome");
+		}
 	}
+	// if (await userController.checkPasswordForUser(username, password)) {
+	// 	console.log(`password: ${user.password_hash}`);
+	// 	res.render("join", {
+	// 		errormsg: "Please re-enter username and password",
+	// 	});
+	// 	return;
+	// }
 
 	res.render("join", {
 		errormsg: "",

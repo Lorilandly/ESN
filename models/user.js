@@ -1,18 +1,21 @@
+const crypto = require('crypto');
+
 dbPoolInstance = null;
 
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     name TEXT,
-    password_hash TEXT,
+    password_hash BYTEA,
+	salt BYTEA,
     current_status TEXT,
     privilege TEXT
 );
 `;
 
 const insertUser = `
-INSERT INTO users (name, password_hash, current_status, privilege)
-VALUES ($1, $2, $3, $4)
+INSERT INTO users (name, password_hash, salt, current_status, privilege)
+VALUES ($1, $2, $3, $4, $5)
 RETURNING id;
 `;
 
@@ -34,19 +37,37 @@ function initUserModel(dbPool) {
 }
 
 /*
+* Returns hashedPassword and salt
+*/
+function hash(rawPassword) {
+	let salt = crypto.randomBytes(16);
+	return {passwordHash: crypto.pbkdf2Sync(rawPassword, salt, 310000, 32, 'sha256'), salt: salt}
+}
+
+function compare(rawPassword, hashedPassword, salt) {
+	const newHashedPasswd =  crypto.pbkdf2Sync(rawPassword, salt, 310000, 32, 'sha256');
+	console.log("compare");
+	console.log(newHashedPasswd);
+	console.log(hashedPassword);
+	// console.log();
+	return Buffer.compare(newHashedPasswd, hashedPassword) === 0;
+}
+
+/*
  * User Model - provides interface for inserting and reading users from the database.
  */
 class UserModel {
 	constructor() {}
 
-	async create(name, passwordHash, privilege, currentStatus) {
+	async create(name, password, privilege, currentStatus) {
+		let {passwordHash, salt} = hash(password)
 		const queryResponse = await dbPoolInstance.query(insertUser, [
 			name,
 			passwordHash,
+    	  	salt,
 			privilege,
 			currentStatus,
 		]);
-		// this.id = queryResponse.id;
 		return queryResponse;
 	}
 
@@ -59,8 +80,20 @@ class UserModel {
 		const queryResponse = await dbPoolInstance.query(selectUserByName, [
 			name,
 		]);
-		// this.id = queryResponse.id;
 		return queryResponse.rows[0];
+	}
+	
+	async checkPasswordForUser(username, password) {
+		const queryResponse = await dbPoolInstance.query(selectUserByName, [
+			username,
+		]);
+		const row = queryResponse.rows[0];
+		if (!row) {
+			return false;
+		}
+		const hashedPassword = row.password_hash;
+		const salt = row.salt;
+		return compare(password, hashedPassword, salt);
 	}
 }
 

@@ -41,7 +41,7 @@ function initUserModel(dbPool) {
 */
 function hash(rawPassword) {
 	let salt = crypto.randomBytes(16);
-	return {passwordHash: crypto.pbkdf2Sync(rawPassword, salt, 310000, 32, 'sha256'), salt: salt}
+	return { passwordHash: crypto.pbkdf2Sync(rawPassword, salt, 310000, 32, 'sha256'), salt }
 }
 
 function compare(rawPassword, hashedPassword, salt) {
@@ -56,7 +56,7 @@ class UserModel {
 	constructor() {}
 
 	async create(name, password, privilege, currentStatus) {
-		let {passwordHash, salt} = hash(password)
+		let { passwordHash, salt } = hash(password)
 		const queryResponse = await dbPoolInstance.query(insertUser, [
 			name,
 			passwordHash,

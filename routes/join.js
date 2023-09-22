@@ -1,32 +1,32 @@
-let express = require('express');
+import express from 'express';
+import { validateUsername, validatePassword } from './auth.js';
+import {findByName, checkPasswordForUser} from "../controllers/user.js";
 let router = express.Router();
-let auth = require('./auth');
-let userController = require("../controllers/user");
 
 /* GET join page. */
-router.get('/', function (req, res, next) {
+router.get('/', (req, res) => {
     res.render('join');
 });
 
 /* POST join page. */
-router.post('/', async function (req, res, next) {
+router.post('/', async (req, res) => {
 	const { username, password } = req.body;
-	if (!auth.validateUsername(username)) {
+	if (!validateUsername(username)) {
 		res.render("join", {
 			errormsg: "Please provide a different username",
 		});
 		return;
 	}
-	if (!auth.validatePassword(password)) {
+	if (!validatePassword(password)) {
 		res.render("join", {
 			errormsg: "Please provide a different password",
 		});
 		return;
 	}
 	// TODO: This will be modified while fleshing out login/logout flows
-	user = await userController.findByName(username);
+	const user = await findByName(username);
 	if (user) {
-		if (!await userController.checkPasswordForUser(username, password)) {
+		if (!await checkPasswordForUser(username, password)) {
 			console.log(`password: ${user.password_hash}`);
 			res.render("join", {
 				errormsg: "Please re-enter username and password",
@@ -51,4 +51,4 @@ router.post('/', async function (req, res, next) {
 	});
 });
 
-module.exports = router;
+export default router;

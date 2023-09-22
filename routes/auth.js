@@ -71,4 +71,4 @@ function validatePassword(password) {
     return !(password.length < 4);
 }
 
-module.exports = { validateUsername, validatePassword };
+export { validateUsername, validatePassword };

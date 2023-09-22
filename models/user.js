@@ -1,6 +1,6 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
-dbPoolInstance = null;
+let dbPoolInstance = null;
 
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (
@@ -46,10 +46,6 @@ function hash(rawPassword) {
 
 function compare(rawPassword, hashedPassword, salt) {
 	const newHashedPasswd =  crypto.pbkdf2Sync(rawPassword, salt, 310000, 32, 'sha256');
-	console.log("compare");
-	console.log(newHashedPasswd);
-	console.log(hashedPassword);
-	// console.log();
 	return Buffer.compare(newHashedPasswd, hashedPassword) === 0;
 }
 
@@ -99,4 +95,4 @@ class UserModel {
 
 const User = new UserModel();
 
-module.exports = { initUserModel, User };
+export { initUserModel, User };

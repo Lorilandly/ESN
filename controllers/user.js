@@ -1,4 +1,4 @@
-let User = require("../models/user").User;
+import { User } from '../models/user.js';
 
 function create(req, res, next) {
     const { username, password } = req.body;
@@ -15,4 +15,4 @@ async function findByName(name) {
 	return await User.findByName(name.toLowerCase());
 }
 
-module.exports = { create, findByName, checkPasswordForUser };
+export { create, findByName, checkPasswordForUser };

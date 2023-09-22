@@ -1,10 +1,10 @@
-let express = require('express');
+import express from 'express';
 let router = express.Router();
-let userController = require('../controllers/user');
+import { create } from '../controllers/user.js';
 
 /* POST new user */
-router.post('/', userController.create, function(req, res, next) {
+router.post('/', create, (req, res) => {
     res.redirect("welcome");
 });
 
-module.exports = router;
+export default router;

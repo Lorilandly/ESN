@@ -8,14 +8,20 @@ boundary DBInterface as db
 actor RemoteDB as rdb
 
 c -> w : // 1.1 Click Join Button
+activate c
+activate w
 w -> a : // 1.2 HTTP GET /join
+activate a
 a --> w : // 2.1 Serve Join Page HTML 
 w --> c : // 2.2 Render Username and Password Form
 c -> w : // 3.1 Submit Form with Username and Password
 w -> a : // 3.2 HTTP POST /join
 a -> u : // 3.3 findUserByName()
+activate u
 u -> db : // 3.4 SQL Query For User
+activate db
 db -> rdb : // 3.5 Remote Query
+activate rdb
 rdb --> db : // 3.6 Query Response
 db --> u : // 3.7 Query Response
 u --> a : // 3.8 User Data
@@ -25,7 +31,7 @@ a -> a : // 4. Authenticate User Data
 
 else A1: User Does Not Exist
 
-a -> a !! : // 4. Authenticate User Data
+a ->x a : // 4. Authenticate User Data
 
 note over a
 Authentication fails,
@@ -40,13 +46,19 @@ a -> u : // 5.1 findAllUsers()
 u -> db : // 5.2 SQL Query for All Users
 db -> rdb : // 5.3 Remote Query
 rdb --> db : // 5.4 Query Response
+deactivate rdb
 db --> u : // 5.5 Query Response
+deactivate db
 u --> a : // 5.6 All UserDatas
+deactivate u
 a --> w : // 5.7 Serve ESN Directory HTML
 w --> c : // 5.8 Render ESN Directory
 c -> w : // 6.1 Click Logout
 w -> a : // 6.2 HTTP GET /logout
 a --> w : // 7.1 Serve Home Page
+deactivate a
 w --> c : // 7.2 Render Home Page
+deactivate w
+deactivate c
 
 @enduml

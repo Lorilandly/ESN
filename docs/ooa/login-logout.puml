@@ -1,0 +1,52 @@
+@startuml
+
+actor Citizen as c
+boundary WebPageInterface as w
+control AuthController as a
+participant UserModel as u
+boundary DBInterface as db
+actor RemoteDB as rdb
+
+c -> w : // 1.1 Click Join Button
+w -> a : // 1.2 HTTP GET /join
+a --> w : // 2.1 Serve Join Page HTML 
+w --> c : // 2.2 Render Username and Password Form
+c -> w : // 3.1 Submit Form with Username and Password
+w -> a : // 3.2 HTTP POST /join
+a -> u : // 3.3 findUserByName()
+u -> db : // 3.4 SQL Query For User
+db -> rdb : // 3.5 Remote Query
+rdb --> db : // 3.6 Query Response
+db --> u : // 3.7 Query Response
+u --> a : // 3.8 User Data
+
+alt User Exists
+a -> a : // 4. Authenticate User Data
+
+else A1: User Does Not Exist
+
+a -> a !! : // 4. Authenticate User Data
+
+note over a
+Authentication fails,
+Begin Join Community Flow.
+After the user acknowledges
+the welcome message, continue...
+end note
+
+end
+
+a -> u : // 5.1 findAllUsers()
+u -> db : // 5.2 SQL Query for All Users
+db -> rdb : // 5.3 Remote Query
+rdb --> db : // 5.4 Query Response
+db --> u : // 5.5 Query Response
+u --> a : // 5.6 All UserDatas
+a --> w : // 5.7 Serve ESN Directory HTML
+w --> c : // 5.8 Render ESN Directory
+c -> w : // 6.1 Click Logout
+w -> a : // 6.2 HTTP GET /logout
+a --> w : // 7.1 Serve Home Page
+w --> c : // 7.2 Render Home Page
+
+@enduml

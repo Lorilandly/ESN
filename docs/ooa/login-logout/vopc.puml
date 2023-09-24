@@ -1,0 +1,8 @@
+@startuml
+
+class AuthController <<Controller>>
+class UserModel <<Entity>>
+
+AuthController "1" -- "1" UserModel 
+
+@enduml

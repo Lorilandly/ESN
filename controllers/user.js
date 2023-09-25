@@ -13,27 +13,27 @@ async function checkPasswordForUser(username, password) {
 }
 
 async function findByName(name) {
-	return await User.findByName(name.toLowerCase());
+    return await User.findByName(name.toLowerCase());
 }
 
 async function checkValidUsernamePassword(req, res, next) {
     const { username, password } = req.body;
     let msg;
-	if (!validateUsername(username)) {
+    if (!validateUsername(username)) {
         msg = "bad username";
-	}
-	if (!validatePassword(password)) {
+    }
+    if (!validatePassword(password)) {
         msg = "bad password";
-	}
-	// TODO: This will be modified while fleshing out login/logout flows
-	const user = await findByName(username);
-	if (user) {
-		if (!await checkPasswordForUser(username, password)) {
+    }
+    // TODO: This will be modified while fleshing out login/logout flows
+    const user = await findByName(username);
+    if (user) {
+        if (!await checkPasswordForUser(username, password)) {
             msg = "username taken";
-		} else {
+        } else {
             msg = "login";
-		}
-	}
+        }
+    }
     res.locals.data = { username, password, msg };
     next();
 }

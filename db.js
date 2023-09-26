@@ -1,5 +1,5 @@
 import pg from 'pg';
-import { initUserModel } from './models/user.js';
+import UserModel from './models/user.js';
 
 /* Connect to Postgres db and initalize a connection pool */
 function createDBPool(host, port, name) {
@@ -16,7 +16,7 @@ function createDBPool(host, port, name) {
 
 /* Initialize all data models */
 function initModels(db) {
-    initUserModel(db);
+    UserModel.initModel(db);
 }
 
 export { createDBPool, initModels };

@@ -1,5 +1,5 @@
 import express from 'express';
-import { checkValidUsernamePassword } from "../controllers/user.js";
+import { validateUsernamePassword } from "../controllers/auth.js";
 let router = express.Router();
 
 /* GET join page. */
@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 });
 
 /* POST join page. */
-router.post('/', await checkValidUsernamePassword, (req, res) => {
+router.post('/', await validateUsernamePassword, (req, res) => {
     const { username, password, msg } = res.locals.data;
     let errormsg;
     switch (msg) {

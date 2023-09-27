@@ -41,6 +41,10 @@ We elected to use EJS for out templating engine.
 
 We decided to use it because most of our team members are familiar with it and its syntax is easy to understand.
 
+### REST API Specification
+
+[REST API Google Sheet](https://docs.google.com/spreadsheets/d/1T7iUzWzS5vqBZiTEkATTPoX8Ts2FUyHnQ3qYcuLPNeA/edit#gid=0)
+
 ### Resources
 
 - [Database Design and Schema](https://app.diagrams.net/#G17hR_xSGP90rC-pllEnbJ8A7NLXeNjATB)
@@ -52,4 +56,3 @@ We decided to use it because most of our team members are familiar with it and i
 - EJS [Docs](https://ejs.co/#docs)
 - Socket.IO [Docs](https://socket.io/docs/v4/)
 - Passport.js [Docs](https://www.passportjs.org/docs/)
-

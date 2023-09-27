@@ -1,54 +1,31 @@
-let express = require('express');
+import express from 'express';
+import { validateUsernamePassword } from "../controllers/auth.js";
 let router = express.Router();
-let auth = require('./auth');
-let userController = require("../controllers/user");
 
 /* GET join page. */
-router.get('/', function (req, res, next) {
+router.get('/', (req, res) => {
     res.render('join');
 });
 
 /* POST join page. */
-router.post('/', async function (req, res, next) {
-	const { username, password } = req.body;
-	if (!auth.validateUsername(username)) {
-		res.render("join", {
-			errormsg: "Please provide a different username",
-		});
-		return;
-	}
-	if (!auth.validatePassword(password)) {
-		res.render("join", {
-			errormsg: "Please provide a different password",
-		});
-		return;
-	}
-	// TODO: This will be modified while fleshing out login/logout flows
-	user = await userController.findByName(username);
-	if (user) {
-		if (!await userController.checkPasswordForUser(username, password)) {
-			console.log(`password: ${user.password_hash}`);
-			res.render("join", {
-				errormsg: "Please re-enter username and password",
-			});
-			return;
-		} else {
-			res.redirect("welcome");
-		}
-	}
-	// if (await userController.checkPasswordForUser(username, password)) {
-	// 	console.log(`password: ${user.password_hash}`);
-	// 	res.render("join", {
-	// 		errormsg: "Please re-enter username and password",
-	// 	});
-	// 	return;
-	// }
-
-	res.render("join", {
-		errormsg: "",
-		username: username,
-		password: password,
-	});
+router.post('/', await validateUsernamePassword, (req, res) => {
+    const { username, password, msg } = res.locals.data;
+    let errormsg;
+    switch (msg) {
+        case "bad username":
+            errormsg = "Please provide a different username"
+            break;
+        case "bad password":
+            errormsg = "Please provide a different password"
+            break;
+        case "username taken":
+            errormsg = "The username is taken"
+            break;
+        case "login":
+            res.redirect("/");
+            break;
+    }
+    res.render("join", { errormsg, username, password })
 });
 
-module.exports = router;
+export default router;

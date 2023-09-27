@@ -3,11 +3,11 @@
 /**
  * Module dependencies.
  */
-const app = require('../app');
-const debug = require('debug')('18652-fse-f23-group-project-sb-2:server');
-const http = require('http');
-const config = require('config');
-const { createDBPool, initModels } = require('../db');
+import app from '../app.js';
+import debug from 'debug';
+import http from 'http';
+import config from 'config';
+import { createDBPool, initModels } from '../db.js';
 
 /**
  * Get port from environment and store in Express.
@@ -100,5 +100,5 @@ function onListening() {
     let bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
-    debug('Listening on ' + bind);
+    debug('18652-fse-f23-group-project-sb-2:server')('Listening on ' + bind);
 }

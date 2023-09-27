@@ -1,11 +1,10 @@
-let express = require('express');
+import express from 'express';
 let router = express.Router();
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', (req, res) => {
     // Redirect to "/login" if not logged in
     res.render('welcome');
 });
 
-module.exports = router;
-
+export default router;

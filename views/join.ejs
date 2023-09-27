@@ -32,7 +32,7 @@
             </div>
             <button class="form-button">Join</button>
         </form>
-        <% if (locals.username) { %>
+        <% if (!locals.errormsg && locals.username) { %>
             <script>
                 $(document).ready(function() {
                     $('#exampleModal').modal('show');

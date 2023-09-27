@@ -1,102 +1,84 @@
-const crypto = require('crypto');
-
-dbPoolInstance = null;
-
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    name TEXT,
+    username TEXT UNIQUE,
     password_hash BYTEA,
-	salt BYTEA,
+    salt BYTEA,
     current_status TEXT,
     privilege TEXT
 );
 `;
 
 const insertUser = `
-INSERT INTO users (name, password_hash, salt, current_status, privilege)
+INSERT INTO users (username, password_hash, salt, current_status, privilege)
 VALUES ($1, $2, $3, $4, $5)
 RETURNING id;
 `;
 
 const selectUserByName = `
 SELECT * FROM users
-WHERE name = $1;
+WHERE username = $1;
 `;
 
 const checkUserExists = `
 SELECT EXISTS(
     SELECT 1 FROM users
-    WHERE name = $1
+    WHERE username = $1
 );
 `;
 
-function initUserModel(dbPool) {
-	dbPoolInstance = dbPool;
-	dbPoolInstance.query(createUsersTable);
-}
-
-/*
-* Returns hashedPassword and salt
-*/
-function hash(rawPassword) {
-	let salt = crypto.randomBytes(16);
-	return {passwordHash: crypto.pbkdf2Sync(rawPassword, salt, 310000, 32, 'sha256'), salt: salt}
-}
-
-function compare(rawPassword, hashedPassword, salt) {
-	const newHashedPasswd =  crypto.pbkdf2Sync(rawPassword, salt, 310000, 32, 'sha256');
-	console.log("compare");
-	console.log(newHashedPasswd);
-	console.log(hashedPassword);
-	// console.log();
-	return Buffer.compare(newHashedPasswd, hashedPassword) === 0;
-}
-
 /*
  * User Model - provides interface for inserting and reading users from the database.
+ * TODO: have a Model interface
  */
 class UserModel {
-	constructor() {}
+    constructor(username, passwordHash, salt, status, privilege) {
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.salt = salt;
+        this.currentStatus = status;
+        this.privilege = privilege;
+    }
 
-	async create(name, password, privilege, currentStatus) {
-		let {passwordHash, salt} = hash(password)
-		const queryResponse = await dbPoolInstance.query(insertUser, [
-			name,
-			passwordHash,
-    	  	salt,
-			privilege,
-			currentStatus,
-		]);
-		return queryResponse;
-	}
+    static dbPoolInstance = null;
 
-	async nameExists(name) {
-		const res = await db.query(checkUserExists, [name]);
-		return res.rows[0].exists;
-	}
+    static initModel(dbPool) {
+        this.dbPoolInstance = dbPool;
+        this.dbPoolInstance.query(createUsersTable);
+    }
 
-	async findByName(name) {
-		const queryResponse = await dbPoolInstance.query(selectUserByName, [
-			name,
-		]);
-		return queryResponse.rows[0];
-	}
-	
-	async checkPasswordForUser(username, password) {
-		const queryResponse = await dbPoolInstance.query(selectUserByName, [
-			username,
-		]);
-		const row = queryResponse.rows[0];
-		if (!row) {
-			return false;
-		}
-		const hashedPassword = row.password_hash;
-		const salt = row.salt;
-		return compare(password, hashedPassword, salt);
-	}
+    async persist() {
+        await UserModel.dbPoolInstance.query(insertUser, [
+            this.username,
+            this.passwordHash,
+            this.salt,
+            this.status,
+            this.privilege,
+        ])
+    }
+
+    async nameExists(name) {
+        const res = await UserModel.dbPoolInstance.query(checkUserExists, [name]);
+        return res.rows[0].exists;
+    }
+
+    static async findByName(name) {
+        const queryResponse = await this.dbPoolInstance.query(selectUserByName, [
+            name,
+        ]);
+        if (queryResponse.rowCount == 0) {
+            return null;
+        } else {
+            let row = queryResponse.rows[0];
+            return new UserModel(
+                row.username, 
+                row.password_hash, 
+                row.salt, 
+                row.current_status, 
+                row.privilege
+            );
+        }
+    }
 }
 
-const User = new UserModel();
-
-module.exports = { initUserModel, User };
+export default UserModel;

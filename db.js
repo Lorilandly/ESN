@@ -1,9 +1,9 @@
-const Pool = require('pg').Pool;
-const initUserModel = require('./models/user').initUserModel;
+import pg from 'pg';
+import UserModel from './models/user.js';
 
 /* Connect to Postgres db and initalize a connection pool */
 function createDBPool(host, port, name) {
-    pool = new Pool({
+    let pool = new pg.Pool({
         host: host,
         port: port,
         database: name,
@@ -16,7 +16,7 @@ function createDBPool(host, port, name) {
 
 /* Initialize all data models */
 function initModels(db) {
-    initUserModel(db);
+    UserModel.initModel(db);
 }
 
-module.exports = { createDBPool, initModels }
+export { createDBPool, initModels };

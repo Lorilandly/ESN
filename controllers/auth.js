@@ -1,3 +1,6 @@
+import crypto from 'crypto';
+import UserModel from '../models/user.js';
+
 const reservedUsernames = new Set(['about', 'ac', 'access', 'account', 'accounts', 'activate', 'ad',
     'add', 'address', 'adm', 'admin', 'administration', 'administrator', 'adult', 'advertising',
     'ae', 'af', 'affiliate', 'affiliates', 'ag', 'ai', 'ajax', 'al', 'am', 'an', 'analytics',
@@ -63,12 +66,55 @@ const reservedUsernames = new Set(['about', 'ac', 'access', 'account', 'accounts
     'yml', 'yoruba', 'you', 'yourdomain', 'yourname', 'yoursite', 'yourusername', 'yt', 'yu', 'za',
     'zm', 'zw']);
 
-function validateUsername(username) {
+function validUsername(username) {
     return !(username.length < 3 || reservedUsernames.has(username));
 }
 
-function validatePassword(password) {
+function validPassword(password) {
     return !(password.length < 4);
 }
 
-module.exports = { validateUsername, validatePassword };
+function checkPasswordForUser(user, rawPassword) {
+    if (!user) {
+        return false;
+    }
+    const newHashedPasswd =  crypto.pbkdf2Sync(rawPassword, user.salt, 310000, 32, 'sha256');
+    return Buffer.compare(newHashedPasswd, user.passwordHash) === 0;
+}
+
+/*
+ * Save user to db with generated hashedPassword and salt
+ * TODO: This should go to User controller
+ */
+async function create(req, res, next) {
+    const { username, password } = req.body;
+    let salt = crypto.randomBytes(16);
+    let passwordHash = crypto.pbkdf2Sync(password, salt, 310000, 32, 'sha256');
+    let user = new UserModel(username.toLowerCase(), passwordHash, salt, "DEAD", "SUPERDUPERADMIN");
+    await user.persist();
+    next();
+}
+
+async function validateUsernamePassword(req, res, next) {
+    const { username, password } = req.body;
+    let msg;
+    if (!validUsername(username)) {
+        msg = "bad username";
+    }
+    if (!validPassword(password)) {
+        msg = "bad password";
+    }
+    // TODO: This will be modified while fleshing out login/logout flows
+    const user = await UserModel.findByName(username.toLowerCase());
+    if (user) {
+        if (!checkPasswordForUser(user, password)) {
+            msg = "username taken";
+        } else {
+            msg = "login";
+        }
+    }
+    res.locals.data = { username, password, msg };
+    next();
+}
+
+export { create, validateUsernamePassword };

@@ -10,12 +10,12 @@ actor RemoteDB as rdb
 c -> w : // 1.1 Click Join Button
 activate c
 activate w
-w -> a : // 1.2 HTTP GET /join
+w -> a : // 1.2 join()
 activate a
 a --> w : // 2.1 Serve Join Page HTML 
 w --> c : // 2.2 Render Username and Password Form
 c -> w : // 3.1 Submit Form with Username and Password
-w -> a : // 3.2 HTTP POST /join
+w -> a : // 3.2 validateUsernamePassword()
 a -> u : // 3.3 findUserByName()
 activate u
 u -> db : // 3.4 SQL Query For User
@@ -54,7 +54,7 @@ deactivate u
 a --> w : // 5.7 Serve ESN Directory HTML
 w --> c : // 5.8 Render ESN Directory
 c -> w : // 6.1 Click Logout
-w -> a : // 6.2 HTTP GET /logout
+w -> a : // 6.2 logout()
 a --> w : // 7.1 Serve Home Page
 deactivate a
 w --> c : // 7.2 Render Home Page

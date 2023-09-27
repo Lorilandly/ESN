@@ -1,7 +1,19 @@
 @startuml
 
-class AuthController <<Controller>>
-class UserModel <<Entity>>
+skinparam ClassAttributeIconSize 0
+
+class AuthController <<Controller>> {
+    + join()
+    + checkUsernamePassword()
+    + logout()
+    - validateUsername()
+    - validatePassword()
+}
+class UserModel <<Entity>> {
+    + persist()
+    + nameExists()
+    + findByName()
+}
 
 AuthController "1" -- "1" UserModel 
 

@@ -1,10 +1,11 @@
-import express from 'express';
+import express from "express";
+import { checkUserAuthenticated } from "../controllers/auth.js";
 let router = express.Router();
 
 /* GET users listing. */
-router.get('/', (req, res) => {
-    // Redirect to "/login" if not logged in
-    res.render('welcome');
+router.get("/", checkUserAuthenticated, (req, res) => {
+	console.log(`req.user: ${JSON.stringify(req.user)}`);
+	res.render("welcome");
 });
 
 export default router;

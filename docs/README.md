@@ -6,11 +6,11 @@ This directory is intended to house diagrams, technical decisions and tradeoffs,
 
 ### Required Technologies
 
-- Runtime: Node.js (*REQUIRED*)
-- Framework: Express (*REQUIRED*)
-- HTML *(REQUIRED)*
-- CSS *(REQUIRED)*
-- Javascript *(REQUIRED)*
+-   Runtime: Node.js (_REQUIRED_)
+-   Framework: Express (_REQUIRED_)
+-   HTML _(REQUIRED)_
+-   CSS _(REQUIRED)_
+-   Javascript _(REQUIRED)_
 
 ### Database
 
@@ -28,6 +28,11 @@ We elected to use PostgreSQL after comparing it to NoSQL options (MongoDB) and o
 We elected to use Passport.js for our authentication middleware.
 
 We decided to use this library because our team is familiar with it and its an industry-standard option for authenticating requests over HTTP.
+
+Per the recommendation in use case 1, Join Community, we decided to use JWT based authentication, and set
+tokens in HTTP Only cookies on the server side as we handled requests. To accomplish this, we used
+the jsonwebtoken implementation of JWTs. Additionally, we decided to use dotenv to load our secret keys
+from the environment at runtime.
 
 ### Web Socket Library
 
@@ -47,12 +52,12 @@ We decided to use it because most of our team members are familiar with it and i
 
 ### Resources
 
-- [Database Design and Schema](https://app.diagrams.net/#G17hR_xSGP90rC-pllEnbJ8A7NLXeNjATB)
+-   [Database Design and Schema](https://app.diagrams.net/#G17hR_xSGP90rC-pllEnbJ8A7NLXeNjATB)
 
 ### References
 
-- [AWS Article Discussing Pros and Cons of PostgresSQL and MySQL](https://aws.amazon.com/compare/the-difference-between-mysql-vs-postgresql/#:~:text=PostgreSQL%20is%20an%20object%2Drelational%20database%20management%20system.&text=MySQL%20has%20limited%20support%20of,stored%20procedures%20in%20multiple%20languages.)
-- PostgreSQL [Docs](https://www.postgresql.org/docs/)
-- EJS [Docs](https://ejs.co/#docs)
-- Socket.IO [Docs](https://socket.io/docs/v4/)
-- Passport.js [Docs](https://www.passportjs.org/docs/)
+-   [AWS Article Discussing Pros and Cons of PostgresSQL and MySQL](https://aws.amazon.com/compare/the-difference-between-mysql-vs-postgresql/#:~:text=PostgreSQL%20is%20an%20object%2Drelational%20database%20management%20system.&text=MySQL%20has%20limited%20support%20of,stored%20procedures%20in%20multiple%20languages.)
+-   PostgreSQL [Docs](https://www.postgresql.org/docs/)
+-   EJS [Docs](https://ejs.co/#docs)
+-   Socket.IO [Docs](https://socket.io/docs/v4/)
+-   Passport.js [Docs](https://www.passportjs.org/docs/)

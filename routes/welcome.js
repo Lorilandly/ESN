@@ -4,7 +4,6 @@ let router = express.Router();
 
 /* GET users listing. */
 router.get("/", checkUserAuthenticated, (req, res) => {
-	console.log(`req.user: ${JSON.stringify(req.user)}`);
 	res.render("welcome");
 });
 

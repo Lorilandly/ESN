@@ -1,5 +1,8 @@
 import express from "express";
-import { validateUsernamePassword } from "../controllers/auth.js";
+import {
+	authenticateUser,
+	validateUsernamePassword,
+} from "../controllers/auth.js";
 let router = express.Router();
 
 /* GET join page. */
@@ -22,10 +25,9 @@ router.post("/", await validateUsernamePassword, (req, res) => {
 			errormsg = "The username is taken";
 			break;
 		case "login":
-			res.redirect("/");
-			break;
+			authenticateUser(req, res, () => {});
+			return res.redirect("/");
 	}
-	console.log(`about to render join`);
 	res.render("join", { errormsg, username, password });
 });
 

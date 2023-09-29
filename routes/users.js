@@ -11,7 +11,7 @@ import {
 router.post(
 	"/",
 	await validateUsernamePassword,
-	(req, res, next) => {
+	(_, res, next) => {
 		// Make sure user do not bypass username password checks
 		if (res.locals.data.msg) {
 			res.status(403).send({ message: "You sus" });
@@ -20,7 +20,7 @@ router.post(
 	},
 	await create,
 	authenticateUser,
-	(req, res) => {
+	(_, res) => {
 		res.redirect("welcome");
 	}
 );

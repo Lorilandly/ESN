@@ -9,13 +9,19 @@ import http from 'http';
 import config from 'config';
 import 'dotenv/config';
 import { createDBPool, initModels } from '../db.js';
+import { initAuthController } from '../controllers/auth.js';
 
 /**
  * Get port from environment and store in Express.
  */
 
-let serverPort = normalizePort(config.get('server.port'));
+const serverPort = normalizePort(config.get('server.port'));
 app.set('port', serverPort);
+
+/**
+ * Configure controllers
+ */
+initAuthController(config.get('auth'));
 
 /**
  * Get database configs and connect to database.

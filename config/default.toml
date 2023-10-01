@@ -1,10 +1,13 @@
 description = "default configuration file that provides a good starting point"
 
 [server]
-port = 3000         # the port used by the service
+port = 3000          # the port used by the service
 
 [db]
-host = "localhost"  # the database hosting address
-port = 5432         # the database port
-name = "sb2-project" 
+host = "localhost"   # the database hosting address
+port = 5432          # the database port
+name = "sb2-project"
 client = ""
+
+[auth]               # auth service config data
+reservedUsernamesRegistry = "config/reserved_usernames.txt"

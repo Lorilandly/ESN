@@ -5,6 +5,7 @@ import path from 'path';
 import logger from 'morgan';
 
 import indexRouter from './routes/index.js';
+import messagesRouter from './routes/messages.js';
 import joinRouter from './routes/join.js';
 import logoutRouter from './routes/logout.js';
 import loginRouter from './routes/login.js';
@@ -36,6 +37,7 @@ app.use(
 );
 
 app.use('/', indexRouter);
+app.use('/messages', messagesRouter);
 app.use('/join', joinRouter);
 app.use('/logout', logoutRouter);
 app.use('/login', loginRouter);

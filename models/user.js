@@ -54,28 +54,31 @@ class UserModel {
             this.salt,
             this.status,
             this.privilege,
-        ])
+        ]);
     }
 
     async nameExists(name) {
-        const res = await UserModel.dbPoolInstance.query(checkUserExists, [name]);
+        const res = await UserModel.dbPoolInstance.query(checkUserExists, [
+            name,
+        ]);
         return res.rows[0].exists;
     }
 
     static async findByName(name) {
-        const queryResponse = await this.dbPoolInstance.query(selectUserByName, [
-            name,
-        ]);
+        const queryResponse = await this.dbPoolInstance.query(
+            selectUserByName,
+            [name],
+        );
         if (queryResponse.rowCount == 0) {
             return null;
         } else {
             let row = queryResponse.rows[0];
             return new UserModel(
-                row.username, 
-                row.password_hash, 
-                row.salt, 
-                row.current_status, 
-                row.privilege
+                row.username,
+                row.password_hash,
+                row.salt,
+                row.current_status,
+                row.privilege,
             );
         }
     }

@@ -1,27 +1,31 @@
 {
-  "name": "18652-fse-f23-group-project-sb-2",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
-  },
-  "dependencies": {
-    "bootstrap": "^5.3.1",
-    "config": "^3.3.9",
-    "cookie-parser": "~1.4.4",
-    "crypto": "^1.0.1",
-    "debug": "~2.6.9",
-    "dotenv": "^16.3.1",
-    "ejs": "^3.1.9",
-    "express": "^4.18.2",
-    "http-errors": "~1.6.3",
-    "jsonwebtoken": "^9.0.2",
-    "morgan": "~1.9.1",
-    "nodemon": "^3.0.1",
-    "pg": "^8.11.3",
-    "pg-hstore": "^2.3.4",
-    "toml": "^3.0.0"
-  }
+    "name": "18652-fse-f23-group-project-sb-2",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "start": "node ./bin/www",
+        "dev": "nodemon ./bin/www",
+        "format": "prettier --write \"**/*.{js,jsx,json,md}\""
+    },
+    "dependencies": {
+        "bootstrap": "^5.3.1",
+        "config": "^3.3.9",
+        "cookie-parser": "~1.4.4",
+        "crypto": "^1.0.1",
+        "debug": "~2.6.9",
+        "dotenv": "^16.3.1",
+        "ejs": "^3.1.9",
+        "express": "^4.18.2",
+        "http-errors": "~1.6.3",
+        "jsonwebtoken": "^9.0.2",
+        "morgan": "~1.9.1",
+        "nodemon": "^3.0.1",
+        "pg": "^8.11.3",
+        "pg-hstore": "^2.3.4",
+        "toml": "^3.0.0"
+    },
+    "devDependencies": {
+        "prettier": "^3.0.3"
+    }
 }

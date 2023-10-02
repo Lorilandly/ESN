@@ -5,6 +5,7 @@ import {
     authenticateUser,
     create,
     validateUsernamePassword,
+    getAllUsers,
 } from '../controllers/auth.js';
 
 /* POST new user */
@@ -24,4 +25,12 @@ router.post(
         res.redirect('welcome');
     },
 );
+
+router.get('/', (req, res) => {
+    getAllUsers(req, res, () => {
+        res.render('index');
+    }); 
+});
+
+
 export default router;

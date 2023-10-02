@@ -29,7 +29,7 @@ SELECT EXISTS(
 );
 `;
 
-const getAllUsersOrderByStatus = `
+const getAllUsersOrdered = `
 SELECT username, current_status
 FROM users
 ORDER BY 
@@ -41,6 +41,11 @@ ORDER BY
     username;
 `;
 
+const changeUserStatus = `
+UPDATE users
+SET current_status = $1
+WHERE username = $2;
+`;
 
 /*
  * User Model - provides interface for inserting and reading users from the database.
@@ -79,6 +84,10 @@ class UserModel {
         return res.rows[0].exists;
     }
 
+    static async updateStatus(name, status) {
+        await this.dbPoolInstance.query(changeUserStatus, [status, name]);
+    }
+
     static async findByName(name) {
         const queryResponse = await this.dbPoolInstance.query(
             selectUserByName,
@@ -100,7 +109,7 @@ class UserModel {
 
     static async getAll() {
         const queryResponse = await this.dbPoolInstance.query(
-            getAllUsersOrderByStatus
+            getAllUsersOrdered,
         );
         if (queryResponse.rowCount == 0) {
             return null;

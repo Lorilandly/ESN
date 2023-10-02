@@ -26,7 +26,8 @@ router.post('/', await validateUsernamePassword, (req, res) => {
             break;
         case 'login':
             authenticateUser(req, res, () => {});
-            return res.redirect('/');
+            res.redirect('/users');
+            return;
     }
     res.render('join', { errormsg, username, password });
 });

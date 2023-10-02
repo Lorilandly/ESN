@@ -1,7 +1,5 @@
 import express from 'express';
-import {
-    checkUserAuthenticated,
-} from '../controllers/auth.js';
+import { checkUserAuthenticated } from '../controllers/auth.js';
 let router = express.Router();
 
 router.use(checkUserAuthenticated);
@@ -10,8 +8,7 @@ router.use(checkUserAuthenticated);
 router.get('/', (req, res) => {
     if (!res.locals.isAuthenticated) {
         res.render('join');
-    }
-    else{
+    } else {
         res.redirect('/users');
     }
 });

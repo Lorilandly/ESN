@@ -45,7 +45,7 @@ async function deauthenticateUser(req, res, next) {
     const token = req.cookies.jwtToken;
     const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
     req.user = decodedUser;
-    
+
     // sets JWT to expired cookie, effectively removing authentication
     res.cookie('jwtToken', '', {
         expires: new Date(0),
@@ -133,7 +133,7 @@ async function validateUsernamePassword(req, res, next) {
 
 async function getAllUsers(req, res, next) {
     try {
-        const users = await UserModel.getAll();
+        const users = await UserModel.getAllStatuses();
         res.locals.users = users;
         next();
     } catch (err) {

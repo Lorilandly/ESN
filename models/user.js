@@ -1,4 +1,4 @@
-import { query } from "express";
+import { query } from 'express';
 
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (
@@ -29,7 +29,7 @@ SELECT EXISTS(
 );
 `;
 
-const getAllUsersOrdered = `
+const getAllUserStatusesOrdered = `
 SELECT username, current_status
 FROM users
 ORDER BY 
@@ -107,9 +107,9 @@ class UserModel {
         }
     }
 
-    static async getAll() {
+    static async getAllStatuses() {
         const queryResponse = await this.dbPoolInstance.query(
-            getAllUsersOrdered,
+            getAllUserStatusesOrdered,
         );
         if (queryResponse.rowCount == 0) {
             return null;

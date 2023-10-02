@@ -41,7 +41,11 @@ function checkPasswordForUser(user, rawPassword) {
     return Buffer.compare(newHashedPasswd, user.passwordHash) === 0;
 }
 
-function deauthenticateUser(req, res, next) {
+async function deauthenticateUser(req, res, next) {
+    const token = req.cookies.jwtToken;
+    const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
+    req.user = decodedUser;
+
     // sets JWT to expired cookie, effectively removing authentication
     res.cookie('jwtToken', '', {
         expires: new Date(0),
@@ -49,11 +53,14 @@ function deauthenticateUser(req, res, next) {
         secure: true,
         sameSite: 'Strict',
     });
+    // change user status to OFFLINE
+    await UserModel.updateStatus(req.user.username, 'OFFLINE');
     next();
 }
 
-function authenticateUser(req, res, next) {
+async function authenticateUser(req, res, next) {
     const username = req.body.username;
+    // change user status to ONLINE
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
     });
@@ -62,21 +69,23 @@ function authenticateUser(req, res, next) {
         secure: true,
         sameSite: 'Strict',
     });
+    await UserModel.updateStatus(username, 'ONLINE');
     next();
 }
 
-function checkUserAuthenticated(req, res, next) {
+async function checkUserAuthenticated(req, res, next) {
     const token = req.cookies.jwtToken;
     if (!token) {
-        return res
-            .status(401)
-            .json({ message: 'Must be authenticated to access this resource' });
+        res.locals.isAuthenticated = false;
+        return next();
     }
     try {
         const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
         req.user = decodedUser;
+        res.locals.isAuthenticated = true;
     } catch (error) {
-        res.status(401).json({ message: 'Token expired or invalid' });
+        // res.status(401).json({ message: 'Token expired or invalid' });
+        res.locals.isAuthenticated = false;
     }
     next();
 }
@@ -122,6 +131,17 @@ async function validateUsernamePassword(req, res, next) {
     next();
 }
 
+async function getAllUsers(req, res, next) {
+    try {
+        const users = await UserModel.getAllStatuses();
+        res.locals.users = users;
+        next();
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
 export {
     initAuthController,
     authenticateUser,
@@ -129,4 +149,5 @@ export {
     checkUserAuthenticated,
     create,
     validateUsernamePassword,
+    getAllUsers,
 };

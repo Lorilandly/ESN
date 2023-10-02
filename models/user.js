@@ -1,3 +1,5 @@
+import { query } from 'express';
+
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -25,6 +27,24 @@ SELECT EXISTS(
     SELECT 1 FROM users
     WHERE username = $1
 );
+`;
+
+const getAllUserStatusesOrdered = `
+SELECT username, current_status
+FROM users
+ORDER BY 
+    CASE 
+        WHEN current_status = 'ONLINE' THEN 1
+        WHEN current_status = 'OFFLINE' THEN 2
+        ELSE 3
+    END,
+    username;
+`;
+
+const changeUserStatus = `
+UPDATE users
+SET current_status = $1
+WHERE username = $2;
 `;
 
 /*
@@ -64,6 +84,10 @@ class UserModel {
         return res.rows[0].exists;
     }
 
+    static async updateStatus(name, status) {
+        await this.dbPoolInstance.query(changeUserStatus, [status, name]);
+    }
+
     static async findByName(name) {
         const queryResponse = await this.dbPoolInstance.query(
             selectUserByName,
@@ -77,9 +101,20 @@ class UserModel {
                 row.username,
                 row.password_hash,
                 row.salt,
-                row.current_status,
+                row.current_statusG,
                 row.privilege,
             );
+        }
+    }
+
+    static async getAllStatuses() {
+        const queryResponse = await this.dbPoolInstance.query(
+            getAllUserStatusesOrdered,
+        );
+        if (queryResponse.rowCount == 0) {
+            return null;
+        } else {
+            return queryResponse.rows;
         }
     }
 }

@@ -1,14 +1,14 @@
 import express from 'express';
 import { checkUserAuthenticated } from '../controllers/auth.js';
-import { createMessage } from '../controllers/messages.js';
+import { createPublicMessage } from '../controllers/publicMessages.js';
 let router = express.Router();
 
 /* GET page. */
 router.get("/:id", (req, res) => {
-    res.send("page");
+    return res.json("{'page': 'resources'}");
 });
 
 /* POST page */
-router.post("/", checkUserAuthenticated, await createMessage)
+router.post("/", checkUserAuthenticated, await createPublicMessage)
 
 export default router;

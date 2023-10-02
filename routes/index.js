@@ -7,9 +7,9 @@ router.use(checkUserAuthenticated);
 /* GET home page. */
 router.get('/', (req, res) => {
     if (!res.locals.isAuthenticated) {
-        res.render('join');
+        return res.render('join');
     } else {
-        res.redirect('/users');
+        return res.redirect('/users');
     }
 });
 

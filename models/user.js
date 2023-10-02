@@ -1,3 +1,5 @@
+import { query } from "express";
+
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -26,6 +28,19 @@ SELECT EXISTS(
     WHERE username = $1
 );
 `;
+
+const getAllUsersOrderByStatus = `
+SELECT username, current_status
+FROM users
+ORDER BY 
+    CASE 
+        WHEN current_status = 'ONLINE' THEN 1
+        WHEN current_status = 'OFFLINE' THEN 2
+        ELSE 3
+    END,
+    username;
+`;
+
 
 /*
  * User Model - provides interface for inserting and reading users from the database.
@@ -77,9 +92,20 @@ class UserModel {
                 row.username,
                 row.password_hash,
                 row.salt,
-                row.current_status,
+                row.current_statusG,
                 row.privilege,
             );
+        }
+    }
+
+    static async getAll() {
+        const queryResponse = await this.dbPoolInstance.query(
+            getAllUsersOrderByStatus
+        );
+        if (queryResponse.rowCount == 0) {
+            return null;
+        } else {
+            return queryResponse.rows;
         }
     }
 }

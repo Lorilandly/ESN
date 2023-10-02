@@ -52,7 +52,7 @@ function deauthenticateUser(req, res, next) {
     next();
 }
 
-function authenticateUser(req, res, next) {
+async function authenticateUser(req, res, next) {
     const username = req.body.username;
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
@@ -65,18 +65,23 @@ function authenticateUser(req, res, next) {
     next();
 }
 
-function checkUserAuthenticated(req, res, next) {
+async function checkUserAuthenticated(req, res, next) {
     const token = req.cookies.jwtToken;
     if (!token) {
-        return res
-            .status(401)
-            .json({ message: 'Must be authenticated to access this resource' });
+        res.locals.isAuthenticated = false;
+        return next();
     }
     try {
         const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
         req.user = decodedUser;
+        res.locals.isAuthenticated = true;
+        // User is authenticated, need to fetch all user from db
+        const users = await UserModel.getAll();
+        res.locals.users = users;
+
     } catch (error) {
-        res.status(401).json({ message: 'Token expired or invalid' });
+        // res.status(401).json({ message: 'Token expired or invalid' });
+        res.locals.isAuthenticated = false;
     }
     next();
 }

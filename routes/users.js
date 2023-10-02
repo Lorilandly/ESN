@@ -24,5 +24,4 @@ router.post(
         res.redirect('welcome');
     },
 );
-
 export default router;

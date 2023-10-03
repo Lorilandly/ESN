@@ -1,7 +1,31 @@
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+import passport from 'passport';
+import { Strategy } from 'passport-jwt';
 import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
-import jwt from 'jsonwebtoken';
+
+const opts = {
+    secretOrKey: process.env.SECRET_KEY,
+    jwtFromRequest: (req) => {
+        let token = null;
+        if (req && req.cookies) {
+            token = req.cookies['jwtToken'];
+        }
+        return token;
+    },
+};
+
+passport.use(
+    new Strategy(opts, (jwt_payload, done) => {
+        const user = UserModel.findByName(jwt_payload.sub);
+        if (user) {
+            return done(null, user);
+        } else {
+            return done(null, false);
+        }
+    }),
+);
 
 let reservedUsernames = null;
 

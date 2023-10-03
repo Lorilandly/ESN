@@ -1,4 +1,4 @@
-import messagesModel from '../models/messages.js';
+import MessageModel from '../models/message.js';
 import UserModel from '../models/user.js';
 import jwt from 'jsonwebtoken';
 
@@ -25,7 +25,7 @@ async function createPublicMessage(req, res) {
         return res.status(400).json({ status: 'No messages provided' });
     }
     // Receiver Id 0 is for public chat
-    let message = new messagesModel(
+    let message = new MessageModel(
         user_id,
         0,
         req.body.message,

@@ -1,6 +1,6 @@
 import pg from 'pg';
 import UserModel from './models/user.js';
-import MessagesModel from './models/messages.js';
+import MessageModel from './models/message.js';
 
 /* Connect to Postgres db and initalize a connection pool */
 function createDBPool(host, port, name) {
@@ -18,7 +18,7 @@ function createDBPool(host, port, name) {
 /* Initialize all data models */
 function initModels(db) {
     UserModel.initModel(db);
-    MessagesModel.initModel(db);
+    MessageModel.initModel(db);
 }
 
 export { createDBPool, initModels };

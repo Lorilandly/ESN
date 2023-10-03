@@ -16,7 +16,7 @@ VALUES ($1, $2, $3, $4)
 RETURNING id;
 `;
 
-class MessagesModel {
+class MessageModel {
     constructor(sender_id, receiver_id, body, time) {
         this.sender_id = sender_id;
         this.receiver_id = receiver_id;
@@ -32,7 +32,7 @@ class MessagesModel {
     }
 
     async persist() {
-        await MessagesModel.dbPoolInstance.query(insertMessage, [
+        await MessageModel.dbPoolInstance.query(insertMessage, [
             this.sender_id,
             this.receiver_id,
             this.body,
@@ -41,4 +41,4 @@ class MessagesModel {
     }
 }
 
-export default MessagesModel;
+export default MessageModel;

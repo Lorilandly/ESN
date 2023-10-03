@@ -1,6 +1,6 @@
 import express from 'express';
 import { checkUserAuthenticated } from '../controllers/auth.js';
-import { createPublicMessage } from '../controllers/publicMessages.js';
+import { createPublicMessage } from '../controllers/publicMessage.js';
 let router = express.Router();
 
 /* GET page. */

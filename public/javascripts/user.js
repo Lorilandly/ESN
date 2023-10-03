@@ -23,7 +23,7 @@ function queryUserApi(dryRun) {
             let reason = res.responseJSON.error;
             if (reason == 'User exists') {
                 // login with the credential
-                console.log("exist");
+                console.log('exist');
                 $.ajax('/login', {
                     method: 'POST',
                     data: { username, password },
@@ -34,22 +34,23 @@ function queryUserApi(dryRun) {
                     },
                     error: (res) => {
                         console.log(res);
-                    }
-                })
+                    },
+                });
             }
             $('#alert-msg span').text(reason);
-        }
+        },
     });
-
 }
 
-$(document).ready(function() {
+$(document).ready(() => {
     // Capture form submission event
     $('#main-form').submit((event) => {
         event.preventDefault(); // Prevent the default form submission
         queryUserApi(true);
     });
-    $('#submitsubmit').button().click(() => {
-        queryUserApi();
-    })
+    $('#submitsubmit')
+        .button()
+        .click(() => {
+            queryUserApi();
+        });
 });

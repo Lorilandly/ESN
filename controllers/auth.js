@@ -138,7 +138,7 @@ async function validateNewCredential(req, res, next) {
             return res.status(400).json({ error: 'Username is already taken' });
         } else {
             // This case is handled on the client side
-            return res.status(401).json({ error: 'User exists' })
+            return res.status(401).json({ error: 'User exists' });
         }
     }
     if (dryRun) {

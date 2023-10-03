@@ -4,25 +4,18 @@ let router = express.Router();
 import {
     authenticateUser,
     create,
-    validateUsernamePassword,
+    validateNewCredential,
     getAllUsers,
 } from '../controllers/auth.js';
 
 /* POST new user */
 router.post(
     '/',
-    await validateUsernamePassword,
-    (_, res, next) => {
-        // Make sure user do not bypass username password checks
-        if (res.locals.data.msg) {
-            res.status(403).send({ message: 'You sus' });
-        }
-        next();
-    },
+    await validateNewCredential,
     await create,
     authenticateUser,
-    (_, res) => {
-        res.redirect('welcome');
+    (req, res) => {
+        res.status(201).json({});
     },
 );
 

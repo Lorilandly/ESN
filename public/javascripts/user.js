@@ -3,19 +3,19 @@ function queryUserApi(dryRun) {
     let username = $('#username').val();
     let password = $('#password').val();
 
-    // Make an AJAX request to user REST API
+    // Make request to create new user
     $.ajax('/users', {
         method: 'POST',
-        data: { username, password, dryRun }, // Pass data to the API
+        data: { username, password, dryRun }, // API won't create user if `dryRun` is set
         dataType: 'json', // Specify the response data type
         statusCode: {
             200: (_) => {
-                // credencial ok -> show confirm message
+                // credential ok -> show confirm message
                 $('#exampleModal').modal('show');
             },
             201: (_) => {
                 // user created successfully
-                location.href = '/welcome';
+                location.href = '/welcome'; // redirect to welocme page
             },
         },
         error: (res) => {
@@ -23,17 +23,15 @@ function queryUserApi(dryRun) {
             let reason = res.responseJSON.error;
             if (reason == 'User exists') {
                 // login with the credential
-                console.log('exist');
                 $.ajax('/login', {
                     method: 'POST',
                     data: { username, password },
                     dataType: 'json',
                     success: (_) => {
-                        console.log('success');
                         location.href = '/';
                     },
                     error: (res) => {
-                        console.log(res);
+                        console.error("Login error:", res);
                     },
                 });
             }

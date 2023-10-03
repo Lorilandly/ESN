@@ -7,6 +7,7 @@ import logger from 'morgan';
 import indexRouter from './routes/index.js';
 import joinRouter from './routes/join.js';
 import logoutRouter from './routes/logout.js';
+import loginRouter from './routes/login.js';
 import usersRouter from './routes/users.js';
 import welcomeRouter from './routes/welcome.js';
 import { fileURLToPath } from 'url';
@@ -37,6 +38,7 @@ app.use(
 app.use('/', indexRouter);
 app.use('/join', joinRouter);
 app.use('/logout', logoutRouter);
+app.use('/login', loginRouter);
 app.use('/users', usersRouter);
 app.use('/welcome', welcomeRouter);
 

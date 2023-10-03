@@ -37,7 +37,7 @@ class MessagesModel {
             this.receiver_id,
             this.body,
             this.time,
-        ])
+        ]);
     }
 }
 

@@ -1,26 +1,28 @@
-$(document).ready(function() {
+$(document).ready(() => {
     // Capture form submission event
-    $('#messageForm').submit(function(event) {
+    $('#messageForm').submit((event) => {
         event.preventDefault(); // Prevent the default form submission
 
         // Get the message body from the input field
-        var messageBody = $('#message').val();
+        let messageBody = $('#message').val();
 
-        // Make an AJAX request to your REST API
+        // Make an AJAX request to publicMessages API
         $.ajax('/publicMessages', {
             method: 'POST',
             data: { message: messageBody }, // Pass data to the API
             dataType: 'json', // Specify the response data type
-            success: function(response) {
+            success: (response) => {
                 // Handle the API response
-                var resultDiv = $('#result');
+                let resultDiv = $('#result');
                 resultDiv.empty(); // Clear previous results
                 resultDiv.append('<p>API Response:</p>');
-                resultDiv.append('<pre>' + JSON.stringify(response, null, 2) + '</pre>');
+                resultDiv.append(
+                    '<pre>' + JSON.stringify(response, null, 2) + '</pre>',
+                );
             },
-            error: function(error) {
+            error: (error) => {
                 console.error('API Error:', error);
-            }
+            },
         });
     });
 });

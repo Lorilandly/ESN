@@ -2,8 +2,11 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import { Strategy } from 'passport-jwt';
+import LocalStrategy from 'passport-local';
 import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
+
+let reservedUsernames = null;
 
 const opts = {
     secretOrKey: process.env.SECRET_KEY,
@@ -17,8 +20,8 @@ const opts = {
 };
 
 passport.use(
-    new Strategy(opts, (jwt_payload, done) => {
-        const user = UserModel.findByName(jwt_payload.sub);
+    new Strategy(opts, async (jwt_payload, done) => {
+        const user = await UserModel.findByName(jwt_payload.username);
         if (user) {
             return done(null, user);
         } else {
@@ -27,7 +30,20 @@ passport.use(
     }),
 );
 
-let reservedUsernames = null;
+passport.use(
+    new LocalStrategy(async (username, password, done) => {
+        if (!username || !password) {
+            return done(new Error('Missing credentials'));
+        }
+        const user = await UserModel.findByName(username.toLowerCase());
+        if (user) {
+            if (checkPasswordForUser(user, password)) {
+                return done(null, user);
+            }
+        }
+        return done(null, false);
+    }),
+);
 
 function initAuthController(config) {
     try {
@@ -133,20 +149,6 @@ async function create(req, res, next) {
     return next();
 }
 
-async function validateCredential(req, res, next) {
-    const { username, password } = req.body;
-    if (!username || !password) {
-        return res.status(400).json({});
-    }
-    const user = await UserModel.findByName(username.toLowerCase());
-    if (user) {
-        if (checkPasswordForUser(user, password)) {
-            return next();
-        }
-    }
-    return res.status(400).json({});
-}
-
 async function validateNewCredential(req, res, next) {
     const { username, password, dryRun } = req.body;
     if (!validUsername(username)) {
@@ -179,7 +181,7 @@ async function getAllUsers(req, res, next) {
         return next();
     } catch (err) {
         console.error(err);
-        res.status(500).send('Internal Server Error');
+        return res.sendStatus(500);
     }
 }
 
@@ -190,6 +192,5 @@ export {
     checkUserAuthenticated,
     create,
     validateNewCredential,
-    validateCredential,
     getAllUsers,
 };

@@ -19,10 +19,8 @@ router.post(
     },
 );
 
-router.get('/', (req, res) => {
-    getAllUsers(req, res, () => {
-        res.render('index');
-    });
+router.get('/', await getAllUsers, (req, res) => {
+    res.render('index');
 });
 
 export default router;

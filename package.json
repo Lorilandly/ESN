@@ -24,6 +24,7 @@
         "nodemon": "^3.0.1",
         "passport": "^0.6.0",
         "passport-jwt": "^4.0.1",
+        "passport-local": "^1.0.0",
         "pg": "^8.11.3",
         "pg-hstore": "^2.3.4",
         "toml": "^3.0.0"

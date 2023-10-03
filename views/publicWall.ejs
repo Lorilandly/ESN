@@ -1,5 +1,29 @@
 <body>
     <div>
+        <div class="message-container">
+            <% if (messages) { %>
+                <% messages.forEach((message)=> { %>
+                    <div class="message">
+                        <div class="message-title">
+                            <span class="message-sender-name">
+                                <%= message.sender_name %>
+                            </span>
+                            <span class="message-time">
+                                <%= message.time %>
+                            </span>
+                            <span class="message-status">
+                                <%= message.status %>
+                            </span>
+                        </div>
+                        <div class="message-body">
+                            <p>
+                                <%= message.body %>
+                            </p>
+                        </div>
+                    </div>
+                    <% }); %>
+                        <% } %>
+        </div>
         <form id="messageForm">
             <input id="message">
             <button type="submit">Post</button>

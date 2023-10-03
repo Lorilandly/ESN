@@ -4,14 +4,14 @@ let router = express.Router();
 import {
     authenticateUser,
     create,
-    validateNewCredential,
+    validateNewCredentials,
     getAllUsers,
 } from '../controllers/auth.js';
 
 /* POST new user */
 router.post(
     '/',
-    await validateNewCredential,
+    await validateNewCredentials,
     await create,
     authenticateUser,
     (req, res) => {

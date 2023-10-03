@@ -5,11 +5,13 @@ import path from 'path';
 import logger from 'morgan';
 
 import indexRouter from './routes/index.js';
+import messagesRouter from './routes/publicMessages.js';
 import joinRouter from './routes/join.js';
 import logoutRouter from './routes/logout.js';
 import loginRouter from './routes/login.js';
 import usersRouter from './routes/users.js';
 import welcomeRouter from './routes/welcome.js';
+import publicWallRouter from './routes/publicWall.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -36,10 +38,12 @@ app.use(
 );
 
 app.use('/', indexRouter);
+app.use('/publicMessages', messagesRouter);
 app.use('/join', joinRouter);
 app.use('/logout', logoutRouter);
 app.use('/login', loginRouter);
 app.use('/users', usersRouter);
 app.use('/welcome', welcomeRouter);
+app.use('/publicWall', publicWallRouter);
 
 export default app;

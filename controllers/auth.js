@@ -109,7 +109,7 @@ async function create(req, res, next) {
     return next();
 }
 
-async function validateCredential(req, res, next) {
+async function validateCredentials(req, res, next) {
     const { username, password } = req.body;
     if (!username || !password) {
         return res.status(400).json({});
@@ -123,7 +123,7 @@ async function validateCredential(req, res, next) {
     return res.status(400).json({});
 }
 
-async function validateNewCredential(req, res, next) {
+async function validateNewCredentials(req, res, next) {
     const { username, password, dryRun } = req.body;
     if (!validUsername(username)) {
         return res.status(400).json({ error: 'Illegal username' });
@@ -165,7 +165,7 @@ export {
     deauthenticateUser,
     checkUserAuthenticated,
     create,
-    validateNewCredential,
-    validateCredential,
+    validateNewCredentials,
+    validateCredentials,
     getAllUsers,
 };

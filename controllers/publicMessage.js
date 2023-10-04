@@ -29,8 +29,8 @@ async function createPublicMessage(req, res) {
 
     // Receiver Id 0 is for public chat
     let body = req.body.message;
-    let time = new Date(Date.now()).toISOString();
-    let status = 'PLACEHOLDER';
+    let time = new Date(Date.now()).toLocaleString();
+    let status = 'STATUS';
     let message = new MessageModel(user_id, 0, body, time, status);
     await message.persist();
 

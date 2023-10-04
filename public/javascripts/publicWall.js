@@ -6,11 +6,11 @@ $(document).ready(() => {
         url: '/publicMessages',
         method: 'GET',
         dataType: 'json',
-        success: function (response) {
+        success: (response) => {
             let messages = response.messages;
             if (messages && messages.length > 0) {
                 let messageHtml = '';
-                messages.forEach(function (message) {
+                messages.forEach((message) => {
                     messageHtml += `
                         <div class="message">
                             <div class="message-title">
@@ -24,9 +24,12 @@ $(document).ready(() => {
                         </div>`;
                 });
                 $('#message-container').append(messageHtml);
+                $('#message-container').scrollTop(
+                    $('#message-container')[0].scrollHeight,
+                );
             }
         },
-        error: function (error) {
+        error: (error) => {
             console.error('Failed to fetch messages:', error);
         },
     });
@@ -65,5 +68,7 @@ $(document).ready(() => {
         </div>
         `;
         messageList.append(message);
+        messageList.scrollTop(messageList[0].scrollHeight);
+        $('#message').val('');
     });
 });

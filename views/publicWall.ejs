@@ -1,11 +1,24 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/stylesheets/publicWall.css" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+
 <body>
-    <div>
+    <div class="main-chat-container">
+        <div class="chat-header">
+            <h1 class="header-text">Emergency Social Network</h1>
+        </div>
         <div class="message-container" id="message-container">
         </div>
-        <form id="messageForm">
-            <input id="message">
-            <button type="submit">Post</button>
-        </form>
+        <div class="input-container">
+            <form class="message-form" id="messageForm">
+                <textarea class="message-input" id="message"></textarea>
+                <button class="post-button" type="submit">Post</button>
+            </form>
+        </div>
+       
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

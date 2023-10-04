@@ -31,7 +31,7 @@ function queryUserApi(dryRun) {
                         location.href = '/';
                     },
                     error: (res) => {
-                        console.error("Login error:", res);
+                        console.error('Login error:', res);
                     },
                 });
             }

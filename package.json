@@ -24,6 +24,7 @@
         "nodemon": "^3.0.1",
         "pg": "^8.11.3",
         "pg-hstore": "^2.3.4",
+        "socket.io": "^4.7.2",
         "toml": "^3.0.0"
     },
     "devDependencies": {

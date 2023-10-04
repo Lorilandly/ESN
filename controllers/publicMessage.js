@@ -1,6 +1,7 @@
 import MessageModel from '../models/message.js';
 import UserModel from '../models/user.js';
 import jwt from 'jsonwebtoken';
+import { io } from '../bin/www.js';
 
 async function createPublicMessage(req, res) {
     const token = req.cookies.jwtToken;
@@ -27,14 +28,13 @@ async function createPublicMessage(req, res) {
     }
 
     // Receiver Id 0 is for public chat
-    let message = new MessageModel(
-        user_id,
-        0,
-        req.body.message,
-        new Date(Date.now()).toISOString(),
-        "PLACEHOLDER",
-    );
+    let body = req.body.message;
+    let time = new Date(Date.now()).toISOString();
+    let status = 'PLACEHOLDER';
+    let message = new MessageModel(user_id, 0, body, time, status);
     await message.persist();
+
+    io.emit('create message', { username, time, status, body });
     return res.status(201).json({ status: 'success' });
 }
 

@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
     if (users) {
         return res.status(200).json(users);
     } else {
-        res.sendStatus(500);
+        return res.sendStatus(500);
     }
 });
 

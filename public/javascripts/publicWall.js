@@ -25,8 +25,8 @@ $(document).ready(() => {
             }
         },
         error: (error) => {
-            console.error("Failed to fetch messages:", error);
-        }
+            console.error('Failed to fetch messages:', error);
+        },
     });
 
     // Capture form submission event

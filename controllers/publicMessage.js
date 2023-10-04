@@ -32,7 +32,7 @@ async function createPublicMessage(req, res) {
         0,
         req.body.message,
         new Date(Date.now()).toISOString(),
-        "PLACEHOLDER",
+        'PLACEHOLDER',
     );
     await message.persist();
     return res.status(201).json({ status: 'success' });

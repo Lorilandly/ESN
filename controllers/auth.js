@@ -22,27 +22,15 @@ function initAuthController(config) {
 // Function to handle Socket.IO connections and user status updates
 function handleSocketConnections(io) {
     io.on('connection', (socket) => {
-        console.log('A user connected');
-
         let cookie = socket.request.headers.cookie;
-
-        //let cookieParts = cookie.split.(";")("=");
-        console.log('Index of jwt token ' + cookie.indexOf('jwtToken'));
         let jwtIndex = cookie.indexOf('jwtToken');
-
         let jwtToken = cookie.substring(jwtIndex).split('=')[1];
-        console.log('jwt token: ' + jwtToken);
 
         const decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
-        console.log(`user ${decodedUser.username} connected`);
 
         io.emit('userStatus', {
             username: decodedUser.username,
             status: 'ONLINE',
-        });
-
-        socket.on('online', (data) => {
-            console.log('Data: ' + data);
         });
 
         // Handle user disconnection for offline status

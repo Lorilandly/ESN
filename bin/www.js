@@ -111,6 +111,4 @@ function onListening() {
     let addr = server.address();
     let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
     debug('18652-fse-f23-group-project-sb-2:server')('Listening on ' + bind);
-    console.log('--Server listening');
 }
-

@@ -1,18 +1,10 @@
-console.log('in status.js!!! on the client side, that is');
-
 var socket = io();
-
-// this particular client is online!
-socket.emit('online', { message: 'hi' });
 
 // Function to sort and display users based on status and username
 function sortAndDisplayUsers() {
     const userElements = Array.from(
         document.querySelectorAll('.user-list-body-element'),
     );
-
-    console.log('User elements ');
-    console.log(userElements);
 
     userElements.sort((a, b) => {
         const usernameA = a.querySelector(
@@ -29,19 +21,13 @@ function sortAndDisplayUsers() {
             `user-status-${usernameB}`,
         ).textContent;
 
-        console.log('username A: ' + usernameA + ' username B: ' + usernameB);
-        console.log('status A: ' + statusA + ' status B: ' + statusB);
-
         // Prioritize online users over offline users
         if (statusA === 'ONLINE' && statusB === 'OFFLINE') {
-            console.log('Online placed first');
             return -1; // Online users come first
         } else if (statusA === 'OFFLINE' && statusB === 'ONLINE') {
-            console.log('Online placed first');
             return 1; // Online users come first
         } else {
             // If statuses are the same, sort alphabetically by username
-            console.log('Sorting alphabetically');
             return usernameA.localeCompare(usernameB); // Sort by username
         }
     });
@@ -59,16 +45,17 @@ function sortAndDisplayUsers() {
 }
 
 // Listen for 'userStatus'
-// let me know if someone else's status changes
+// Notice all other clients if someone else's status changes
 socket.on('userStatus', (data) => {
     const { username, status } = data;
-    console.log('the status for ' + username + ' is ' + status);
 
     // Use a unique ID for each user's status element
     const statusElement = document.getElementById(`user-status-${username}`);
 
-    // Change the status placeholder to real-time status
+    // Change the status to real-time status
+    // If the current user is somone already in the ESN directory
     if (statusElement) {
+        // Based on the real-time status, set the corresponding class attribute
         statusElement.textContent = status;
         if (status === 'ONLINE') {
             statusElement.setAttribute(
@@ -82,9 +69,47 @@ socket.on('userStatus', (data) => {
             );
         }
     }
+    // If the current user is a first-time user just joined
+    else {
+        // Select the user list body class, which will append the new user list body element
+        const userListContainer = document.querySelector('.user-list-body');
 
-    // TODO: reorder elements such that they are
+        // Create a new new user list body element
+        const newUserListElement = document.createElement('div');
+        newUserListElement.setAttribute('class', 'user-list-body-element');
+
+        // Create a new status element
+        const newStatusElement = document.createElement('div');
+        newStatusElement.setAttribute('id', `user-status-${username}`);
+
+        // Set the status for current user
+        if (status === 'ONLINE') {
+            newStatusElement.setAttribute(
+                'class',
+                'user-list-body-element-status-online',
+            );
+        } else {
+            newStatusElement.setAttribute(
+                'class',
+                'user-list-body-element-status-offline',
+            );
+        }
+
+        newStatusElement.textContent = status;
+
+        // Create a new username element
+        newUsernameElement = document.createElement('div');
+        newUsernameElement.setAttribute('class', 'user-list-body-element-name');
+        newUsernameElement.textContent = username;
+
+        // Append the new username and status element to the user list element container
+        newUserListElement.appendChild(newUsernameElement);
+        newUserListElement.appendChild(newStatusElement);
+
+        // Append this new user list element to the entire user list
+        userListContainer.appendChild(newUserListElement);
+    }
+
     // alphabetical by ONLINE then alphabetical by OFFLINE
     sortAndDisplayUsers();
-    // set the change in the HTML
 });

@@ -148,12 +148,12 @@ async function validateNewCredentials(req, res, next) {
     return next();
 }
 
-async function getAllUsers(req, res) {
+async function getAllUsers() {
     try {
         const users = await UserModel.getAllStatuses();
         return users;
     } catch (err) {
-        return res.sendStatus(500);
+        return null;
     }
 }
 

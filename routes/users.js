@@ -20,7 +20,12 @@ router.post(
 );
 
 router.get('/', async (req, res) => {
-    return res.status(200).json(await getAllUsers(req, res));
+    const users = await getAllUsers();
+    if (users) {
+        return res.status(200).json(await getAllUsers(req, res));
+    } else {
+        res.sendStatus(500);
+    }
 });
 
 export default router;

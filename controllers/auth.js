@@ -19,6 +19,37 @@ function initAuthController(config) {
     }
 }
 
+// Function to handle Socket.IO connections and user status updates
+function handleSocketConnections(io) {
+    io.on('connection', (socket) => {
+        let cookie = socket.request.headers.cookie;
+        let jwtIndex = cookie.indexOf('jwtToken');
+        let jwtToken = cookie.substring(jwtIndex).split('=')[1];
+
+        const decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
+
+        io.emit('userStatus', {
+            username: decodedUser.username,
+            status: 'ONLINE',
+        });
+
+        // Handle user disconnection for offline status
+        socket.on('disconnect', async () => {
+            // Update the user status in the database to 'OFFLINE'
+            try {
+                await UserModel.updateStatus(decodedUser.username, 'OFFLINE');
+            } catch (error) {
+                console.error('Error updating user status:', error);
+            }
+            // Emit 'userStatus' event to notify other clients
+            io.emit('userStatus', {
+                username: decodedUser.username,
+                status: 'OFFLINE',
+            });
+        });
+    });
+}
+
 function validUsername(username) {
     return !(username.length < 3 || reservedUsernames.has(username));
 }
@@ -53,14 +84,12 @@ async function deauthenticateUser(req, res, next) {
         secure: true,
         sameSite: 'Strict',
     });
-    // change user status to OFFLINE
     await UserModel.updateStatus(req.user.username, 'OFFLINE');
     return next();
 }
 
 async function authenticateUser(req, res, next) {
     const username = req.body.username;
-    // change user status to ONLINE
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
     });
@@ -159,6 +188,7 @@ async function getAllUsers() {
 
 export {
     initAuthController,
+    handleSocketConnections,
     authenticateUser,
     deauthenticateUser,
     checkUserAuthenticated,

@@ -9,7 +9,12 @@ import http from 'http';
 import config from 'config';
 import 'dotenv/config';
 import { createDBPool, initModels } from '../db.js';
-import { initAuthController } from '../controllers/auth.js';
+import {
+    initAuthController,
+    handleSocketConnections,
+} from '../controllers/auth.js';
+import { Server } from 'socket.io';
+import jwt from 'jsonwebtoken';
 
 /**
  * Get port from environment and store in Express.
@@ -41,6 +46,8 @@ initModels(dbPool);
  */
 
 let server = http.createServer(app);
+const io = new Server(server);
+handleSocketConnections(io);
 
 /**
  * Listen on provided port, on all network interfaces.

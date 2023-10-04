@@ -13,8 +13,8 @@ import {
     initAuthController,
     handleSocketConnections,
 } from '../controllers/auth.js';
+import { initIOInstanceForChat } from '../controllers/publicMessage.js';
 import { Server } from 'socket.io';
-import jwt from 'jsonwebtoken';
 
 /**
  * Get port from environment and store in Express.
@@ -47,6 +47,8 @@ initModels(dbPool);
 
 let server = http.createServer(app);
 const io = new Server(server);
+
+initIOInstanceForChat(io);
 handleSocketConnections(io);
 
 /**
@@ -112,3 +114,5 @@ function onListening() {
     let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
     debug('18652-fse-f23-group-project-sb-2:server')('Listening on ' + bind);
 }
+
+export { io };

@@ -52,14 +52,15 @@ class MessageModel {
     }
 
     static async getAllPublicMessages() {
-        const queryResponse = await MessageModel.dbPoolInstance.query(getAllPublicMessages);
+        const queryResponse =
+            await MessageModel.dbPoolInstance.query(getAllPublicMessages);
         if (queryResponse.rowCount == 0) {
             return null;
         } else {
+            queryResponse.rows.forEach(row => row['time'] = row['time'].toLocaleString());
             return queryResponse.rows;
         }
     }
-
 }
 
 export default MessageModel;

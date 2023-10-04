@@ -1,5 +1,8 @@
 import express from 'express';
-import { createPublicMessage, getAllPublicMessages } from '../controllers/publicMessage.js';
+import {
+    createPublicMessage,
+    getAllPublicMessages,
+} from '../controllers/publicMessage.js';
 let router = express.Router();
 
 router.get('/', async (req, res) => {

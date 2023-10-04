@@ -22,7 +22,7 @@ router.post(
 router.get('/', async (req, res) => {
     const users = await getAllUsers();
     if (users) {
-        return res.status(200).json(await getAllUsers(req, res));
+        return res.status(200).json(users);
     } else {
         res.sendStatus(500);
     }

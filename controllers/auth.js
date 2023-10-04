@@ -38,7 +38,6 @@ function handleSocketConnections(io) {
             // Update the user status in the database to 'OFFLINE'
             try {
                 await UserModel.updateStatus(decodedUser.username, 'OFFLINE');
-                console.log(`User ${decodedUser.username} disconnected`);
             } catch (error) {
                 console.error('Error updating user status:', error);
             }
@@ -92,7 +91,6 @@ async function deauthenticateUser(req, res, next) {
 
 async function authenticateUser(req, res, next) {
     const username = req.body.username;
-    // change user status to ONLINE
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
     });
@@ -101,8 +99,8 @@ async function authenticateUser(req, res, next) {
         secure: true,
         sameSite: 'Strict',
     });
+    // change user status to ONLINE
     await UserModel.updateStatus(username, 'ONLINE');
-    console.log('status online for user ' + username + ' updated in auth.js');
     next();
 }
 

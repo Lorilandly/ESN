@@ -57,6 +57,7 @@ class MessageModel {
         if (queryResponse.rowCount == 0) {
             return null;
         } else {
+            queryResponse.rows.forEach(row => row['time'] = row['time'].toLocaleString());
             return queryResponse.rows;
         }
     }

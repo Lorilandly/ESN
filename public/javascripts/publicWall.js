@@ -4,11 +4,11 @@ $(document).ready(() => {
         url: '/publicMessages',
         method: 'GET',
         dataType: 'json',
-        success: function (response) {
+        success: (response) => {
             let messages = response.messages;
             if (messages && messages.length > 0) {
                 let messageHtml = '';
-                messages.forEach(function (message) {
+                messages.forEach((message) => {
                     messageHtml += `
                         <div class="message">
                             <div class="message-title">
@@ -24,7 +24,7 @@ $(document).ready(() => {
                 $('#message-container').append(messageHtml);
             }
         },
-        error: function (error) {
+        error: (error) => {
             console.error("Failed to fetch messages:", error);
         }
     });

@@ -1,8 +1,5 @@
 import express from 'express';
-import { 
-    checkUserAuthenticated,
-    getAllUsers     
-} from '../controllers/auth.js';
+import { checkUserAuthenticated, getAllUsers } from '../controllers/auth.js';
 let router = express.Router();
 
 router.use(checkUserAuthenticated);

@@ -63,6 +63,8 @@ io.on('connection', (socket) => {
     const decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
     console.log(`user ${decodedUser.username} connected`);
 
+    io.emit('userStatus', { username: decodedUser.username, status: 'ONLINE' });
+
     socket.on('online', (data) => {
         console.log("Data: " + data);
     })

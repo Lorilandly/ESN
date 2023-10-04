@@ -86,6 +86,7 @@ class UserModel {
 
     static async updateStatus(name, status) {
         await this.dbPoolInstance.query(changeUserStatus, [status, name]);
+        // Emit the 'userStatus' event with the updated status
     }
 
     static async findByName(name) {
@@ -101,7 +102,7 @@ class UserModel {
                 row.username,
                 row.password_hash,
                 row.salt,
-                row.current_statusG,
+                row.current_status,
                 row.privilege,
             );
         }

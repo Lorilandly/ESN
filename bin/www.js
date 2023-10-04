@@ -10,6 +10,8 @@ import config from 'config';
 import 'dotenv/config';
 import { createDBPool, initModels } from '../db.js';
 import { initAuthController } from '../controllers/auth.js';
+import { Server } from 'socket.io';
+import jwt from 'jsonwebtoken';
 
 /**
  * Get port from environment and store in Express.
@@ -41,6 +43,38 @@ initModels(dbPool);
  */
 
 let server = http.createServer(app);
+const io = new Server(server);
+
+// TODO: init AuthController with login-logout flow by passing in 
+//setIOInAuthController(io);
+
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    let cookie = socket.request.headers.cookie; 
+
+    //let cookieParts = cookie.split.(";")("=");
+    console.log("Index of jwt token " + cookie.indexOf('jwtToken'));
+    let jwtIndex = cookie.indexOf('jwtToken');
+
+    let jwtToken = cookie.substring(jwtIndex).split("=")[1];
+    console.log("jwt token: " + jwtToken);
+
+    const decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
+    console.log(`user ${decodedUser.username} connected`);
+
+    socket.on('online', (data) => {
+        console.log("Data: " + data);
+    })
+
+    // Handle user disconnection for offline status
+    socket.on('disconnect', (username) => {
+        // TODO: update it in the database
+        io.emit('userStatus', { username: decodedUser.username, status: 'OFFLINE' });
+        // update their status in the database
+        console.log("   emit user status to offline");
+    });
+});
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -104,4 +138,7 @@ function onListening() {
     let addr = server.address();
     let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
     debug('18652-fse-f23-group-project-sb-2:server')('Listening on ' + bind);
+    console.log("--Server listening");
 }
+
+export { io };

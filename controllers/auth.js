@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
 import jwt from 'jsonwebtoken';
+import { io } from '../bin/www.js';
 
 let reservedUsernames = null;
 

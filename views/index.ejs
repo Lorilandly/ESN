@@ -26,16 +26,19 @@
                         <div class="user-list-header-name">Name</div>
                         <div class="user-list-header-status">Status</div>
                     </div>
+                    <script src="/socket.io/socket.io.js"></script>
+                    <script src="/javascripts/status.js"></script>
                     <% if (users.length) { %>
                         <div class="user-list-body">
                             <% users.forEach(function(user) { %>
                                     <div class="user-list-body-element">
                                         <div class="user-list-body-element-name"><%= user.username %></div>
                                         <% if (user.current_status === 'ONLINE') { %>
-                                            <div class="user-list-body-element-status-online"><%= user.current_status %></div>
+                                            <div class="user-list-body-element-status-online" id="user-status-<%= user.username %>"><%= user.current_status %></div>
                                         <% } else { %>
-                                            <div class="user-list-body-element-status-offline"><%= user.current_status %></div>
+                                            <div class="user-list-body-element-status-offline" id="user-status-<%= user.username %>"><%= user.current_status %></div>
                                         <% } %>
+                                        <!-- <div class="user-list-body-element-status" id="user-status-<%= user.username %>">Status</div> -->
                                     </div>
                             <% }); %>
                         </div>

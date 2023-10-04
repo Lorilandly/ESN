@@ -10,6 +10,7 @@ import config from 'config';
 import 'dotenv/config';
 import { createDBPool, initModels } from '../db.js';
 import { initAuthController } from '../controllers/auth.js';
+import { initIOInstanceForChat } from '../controllers/publicMessage.js';
 import { Server } from 'socket.io';
 
 /**
@@ -44,10 +45,7 @@ initModels(dbPool);
 let server = http.createServer(app);
 const io = new Server(server);
 
-// TODO: init AuthController with login-logout flow by passing in
-//setIOInAuthController(io);
-
-io.on('connection', (socket) => {});
+initIOInstanceForChat(io);
 
 /**
  * Listen on provided port, on all network interfaces.

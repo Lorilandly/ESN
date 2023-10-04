@@ -7,12 +7,9 @@ $(document).ready(() => {
         datatype: 'json',
         statusCode:{
             200: (res) => {
-                console.log(res);
                 let listbody = document.getElementById('user-list-body');
                 for (let i in res){
                     let user = res[i];
-                    console.log(user);
-                    console.log(i);
                     let element = document.createElement('div');
                     element.className = 'user-list-body-element';
                     let name = document.createElement('div');

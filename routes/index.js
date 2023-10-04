@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
     if (!res.locals.isAuthenticated) {
         return res.render('join');
     } else {
-        res.render('index');
+        return res.render('index');
     }
 });
 

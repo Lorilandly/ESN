@@ -154,13 +154,12 @@ async function validateCredentials(req, res, next) {
 
 async function validateNewCredentials(req, res, next) {
     const { username, password, dryRun } = req.body;
-    if (!validUsername(username)) {
+    if (!validUsername(username.toLowerCase())) {
         return res.status(403).json({ error: 'Illegal username' });
     }
     if (!validPassword(password)) {
         return res.status(403).json({ error: 'Illegal password' });
     }
-    // TODO: This will be modified while fleshing out login/logout flows
     const user = await UserModel.findByName(username.toLowerCase());
     if (user) {
         if (!checkPasswordForUser(user, password)) {

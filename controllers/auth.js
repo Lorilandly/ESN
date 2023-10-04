@@ -141,7 +141,7 @@ async function create(req, res, next) {
 async function validateCredentials(req, res, next) {
     const { username, password } = req.body;
     if (!username || !password) {
-        return res.status(400).json({});
+        return res.status(403).json({});
     }
     const user = await UserModel.findByName(username.toLowerCase());
     if (user) {
@@ -149,22 +149,22 @@ async function validateCredentials(req, res, next) {
             return next();
         }
     }
-    return res.status(400).json({});
+    return res.status(403).json({});
 }
 
 async function validateNewCredentials(req, res, next) {
     const { username, password, dryRun } = req.body;
     if (!validUsername(username)) {
-        return res.status(400).json({ error: 'Illegal username' });
+        return res.status(403).json({ error: 'Illegal username' });
     }
     if (!validPassword(password)) {
-        return res.status(400).json({ error: 'Illegal password' });
+        return res.status(403).json({ error: 'Illegal password' });
     }
     // TODO: This will be modified while fleshing out login/logout flows
     const user = await UserModel.findByName(username.toLowerCase());
     if (user) {
         if (!checkPasswordForUser(user, password)) {
-            return res.status(400).json({ error: 'Username is already taken' });
+            return res.status(403).json({ error: 'Username is already taken' });
         } else {
             // This case is handled on the client side
             return res.status(401).json({ error: 'User exists' });

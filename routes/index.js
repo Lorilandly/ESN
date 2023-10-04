@@ -1,5 +1,5 @@
 import express from 'express';
-import { checkUserAuthenticated } from '../controllers/auth.js';
+import { checkUserAuthenticated, getAllUsers } from '../controllers/auth.js';
 let router = express.Router();
 
 router.use(checkUserAuthenticated);
@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
     if (!res.locals.isAuthenticated) {
         return res.render('join');
     } else {
-        return res.redirect('/users');
+        return res.render('index');
     }
 });
 

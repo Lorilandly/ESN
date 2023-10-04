@@ -34,8 +34,9 @@ function queryUserApi(dryRun) {
                         console.error('Login error:', res);
                     },
                 });
+            } else {
+                $('#alert-msg span').text(reason);
             }
-            $('#alert-msg span').text(reason);
         },
     });
 }

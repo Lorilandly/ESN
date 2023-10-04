@@ -46,70 +46,77 @@ function sortAndDisplayUsers() {
 
 // Listen for 'userStatus'
 // Notice all other clients if someone else's status changes
-socket.on('userStatus', (data) => {
-    const { username, status } = data;
+$(document).ready(() => {
+    socket.on('userStatus', (data) => {
+        const { username, status } = data;
 
-    // Use a unique ID for each user's status element
-    const statusElement = document.getElementById(`user-status-${username}`);
+        // Use a unique ID for each user's status element
+        const statusElement = document.getElementById(
+            `user-status-${username}`,
+        );
 
-    // Change the status to real-time status
-    // If the current user is somone already in the ESN directory
-    if (statusElement) {
-        // Based on the real-time status, set the corresponding class attribute
-        statusElement.textContent = status;
-        if (status === 'ONLINE') {
-            statusElement.setAttribute(
-                'class',
-                'user-list-body-element-status-online',
-            );
-        } else {
-            statusElement.setAttribute(
-                'class',
-                'user-list-body-element-status-offline',
-            );
+        // Change the status to real-time status
+        // If the current user is somone already in the ESN directory
+        if (statusElement) {
+            // Based on the real-time status, set the corresponding class attribute
+            statusElement.textContent = status;
+            if (status === 'ONLINE') {
+                statusElement.setAttribute(
+                    'class',
+                    'user-list-body-element-status-online',
+                );
+            } else {
+                statusElement.setAttribute(
+                    'class',
+                    'user-list-body-element-status-offline',
+                );
+            }
         }
-    }
-    // If the current user is a first-time user just joined
-    else {
-        // Select the user list body class, which will append the new user list body element
-        const userListContainer = document.querySelector('.user-list-body');
+        // If the current user is a first-time user just joined
+        else {
+            // Select the user list body class, which will append the new user list body element
+            const userListContainer = document.querySelector('.user-list-body');
 
-        // Create a new new user list body element
-        const newUserListElement = document.createElement('div');
-        newUserListElement.setAttribute('class', 'user-list-body-element');
+            // Create a new new user list body element
+            const newUserListElement = document.createElement('div');
+            newUserListElement.setAttribute('class', 'user-list-body-element');
 
-        // Create a new status element
-        const newStatusElement = document.createElement('div');
-        newStatusElement.setAttribute('id', `user-status-${username}`);
+            // Create a new status element
+            const newStatusElement = document.createElement('div');
+            newStatusElement.setAttribute('id', `user-status-${username}`);
 
-        // Set the status for current user
-        if (status === 'ONLINE') {
-            newStatusElement.setAttribute(
+            // Set the status for current user
+            if (status === 'ONLINE') {
+                newStatusElement.setAttribute(
+                    'class',
+                    'user-list-body-element-status-online',
+                );
+            } else {
+                newStatusElement.setAttribute(
+                    'class',
+                    'user-list-body-element-status-offline',
+                );
+            }
+
+            newStatusElement.textContent = status;
+
+            // Create a new username element
+            newUsernameElement = document.createElement('div');
+            newUsernameElement.setAttribute(
                 'class',
-                'user-list-body-element-status-online',
+                'user-list-body-element-name',
             );
-        } else {
-            newStatusElement.setAttribute(
-                'class',
-                'user-list-body-element-status-offline',
-            );
+            newUsernameElement.textContent = username;
+
+            // Append the new username and status element to the user list element container
+            newUserListElement.appendChild(newUsernameElement);
+            newUserListElement.appendChild(newStatusElement);
+
+            // Append this new user list element to the entire user list
+            userListContainer.appendChild(newUserListElement);
         }
 
-        newStatusElement.textContent = status;
-
-        // Create a new username element
-        newUsernameElement = document.createElement('div');
-        newUsernameElement.setAttribute('class', 'user-list-body-element-name');
-        newUsernameElement.textContent = username;
-
-        // Append the new username and status element to the user list element container
-        newUserListElement.appendChild(newUsernameElement);
-        newUserListElement.appendChild(newStatusElement);
-
-        // Append this new user list element to the entire user list
-        userListContainer.appendChild(newUserListElement);
-    }
-
-    // alphabetical by ONLINE then alphabetical by OFFLINE
-    sortAndDisplayUsers();
+        // alphabetical by ONLINE then alphabetical by OFFLINE
+        sortAndDisplayUsers();
+    });
 });

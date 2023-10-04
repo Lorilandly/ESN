@@ -148,14 +148,12 @@ async function validateNewCredentials(req, res, next) {
     return next();
 }
 
-async function getAllUsers(req, res, next) {
+async function getAllUsers() {
     try {
         const users = await UserModel.getAllStatuses();
-        res.locals.users = users;
-        return next();
+        return users;
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Internal Server Error');
+        res.sendStatus(500);
     }
 }
 

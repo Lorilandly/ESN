@@ -19,10 +19,8 @@ router.post(
     },
 );
 
-router.get('/', (req, res) => {
-    getAllUsers(req, res, () => {
-        res.render('index');
-    });
+router.get('/', async (req, res) => {
+    return res.status(200).json(await getAllUsers(req, res));
 });
 
 export default router;

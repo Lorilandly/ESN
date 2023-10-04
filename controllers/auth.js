@@ -84,9 +84,8 @@ async function deauthenticateUser(req, res, next) {
         secure: true,
         sameSite: 'Strict',
     });
-    // change user status to OFFLINE
     await UserModel.updateStatus(req.user.username, 'OFFLINE');
-    next();
+    return next();
 }
 
 async function authenticateUser(req, res, next) {
@@ -94,14 +93,13 @@ async function authenticateUser(req, res, next) {
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
     });
+    await UserModel.updateStatus(username, 'ONLINE');
     res.cookie('jwtToken', token, {
         httpOnly: true,
         secure: true,
         sameSite: 'Strict',
     });
-    // change user status to ONLINE
-    await UserModel.updateStatus(username, 'ONLINE');
-    next();
+    return next();
 }
 
 async function checkUserAuthenticated(req, res, next) {
@@ -118,7 +116,7 @@ async function checkUserAuthenticated(req, res, next) {
         // res.status(401).json({ message: 'Token expired or invalid' });
         res.locals.isAuthenticated = false;
     }
-    next();
+    return next();
 }
 
 /*
@@ -137,36 +135,53 @@ async function create(req, res, next) {
         'SUPERDUPERADMIN',
     );
     await user.persist();
-    next();
+    return next();
 }
 
-async function validateUsernamePassword(req, res, next) {
+async function validateCredentials(req, res, next) {
     const { username, password } = req.body;
-    let msg;
+    if (!username || !password) {
+        return res.status(400).json({});
+    }
+    const user = await UserModel.findByName(username.toLowerCase());
+    if (user) {
+        if (checkPasswordForUser(user, password)) {
+            return next();
+        }
+    }
+    return res.status(400).json({});
+}
+
+async function validateNewCredentials(req, res, next) {
+    const { username, password, dryRun } = req.body;
     if (!validUsername(username)) {
-        msg = 'bad username';
+        return res.status(400).json({ error: 'Illegal username' });
     }
     if (!validPassword(password)) {
-        msg = 'bad password';
+        return res.status(400).json({ error: 'Illegal password' });
     }
     // TODO: This will be modified while fleshing out login/logout flows
     const user = await UserModel.findByName(username.toLowerCase());
     if (user) {
         if (!checkPasswordForUser(user, password)) {
-            msg = 'username taken';
+            return res.status(400).json({ error: 'Username is already taken' });
         } else {
-            msg = 'login';
+            // This case is handled on the client side
+            return res.status(401).json({ error: 'User exists' });
         }
     }
-    res.locals.data = { username, password, msg };
-    next();
+    if (dryRun) {
+        return res.status(200).json({});
+    }
+    res.locals.data = { username, password };
+    return next();
 }
 
 async function getAllUsers(req, res, next) {
     try {
         const users = await UserModel.getAllStatuses();
         res.locals.users = users;
-        next();
+        return next();
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
@@ -180,6 +195,7 @@ export {
     deauthenticateUser,
     checkUserAuthenticated,
     create,
-    validateUsernamePassword,
+    validateNewCredentials,
+    validateCredentials,
     getAllUsers,
 };

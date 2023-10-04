@@ -88,6 +88,19 @@ class UserModel {
         await this.dbPoolInstance.query(changeUserStatus, [status, name]);
     }
 
+    static async findIdByName(name) {
+        const queryResponse = await this.dbPoolInstance.query(
+            selectUserByName,
+            [name],
+        );
+        if (queryResponse.rowCount == 0) {
+            return null;
+        } else {
+            let row = queryResponse.rows[0];
+            return row.id;
+        }
+    }
+
     static async findByName(name) {
         const queryResponse = await this.dbPoolInstance.query(
             selectUserByName,

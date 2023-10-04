@@ -25,13 +25,14 @@ async function createPublicMessage(req, res) {
     if (!req.body.message) {
         return res.status(400).json({ status: 'No messages provided' });
     }
+
     // Receiver Id 0 is for public chat
     let message = new MessageModel(
         user_id,
-        username,
         0,
         req.body.message,
         new Date(Date.now()).toISOString(),
+        "PLACEHOLDER",
     );
     await message.persist();
     return res.status(201).json({ status: 'success' });
@@ -39,7 +40,7 @@ async function createPublicMessage(req, res) {
 
 async function getAllPublicMessages() {
     try {
-        const messages = await messagesModel.getAllPublicMessages();
+        const messages = await MessageModel.getAllPublicMessages();
         return messages;
     } catch (err) {
         console.error(err);

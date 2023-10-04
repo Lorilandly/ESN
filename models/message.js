@@ -20,7 +20,7 @@ RETURNING id;
 const getAllPublicMessages = `
 SELECT users.username, sender_id, receiver_id, body, time, status
 FROM messages
-JOIN user ON messages.sender_id = users.id
+JOIN users ON messages.sender_id = users.id
 WHERE receiver_id = 0
 ORDER BY time ASC;
 `;
@@ -52,7 +52,7 @@ class MessageModel {
     }
 
     static async getAllPublicMessages() {
-        const queryResponse = await MessagesModel.dbPoolInstance.query(getAllPublicMessages);
+        const queryResponse = await MessageModel.dbPoolInstance.query(getAllPublicMessages);
         if (queryResponse.rowCount == 0) {
             return null;
         } else {

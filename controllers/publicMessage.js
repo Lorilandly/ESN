@@ -37,11 +37,10 @@ async function createPublicMessage(req, res) {
     return res.status(201).json({ status: 'success' });
 }
 
-async function getAllPublicMessages(req, res, next) {
+async function getAllPublicMessages() {
     try {
         const messages = await messagesModel.getAllPublicMessages();
-        res.locals.messages = messages;
-        return next();
+        return messages;
     } catch (err) {
         console.error(err);
         return res.sendStatus(500);

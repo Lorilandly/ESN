@@ -25,7 +25,7 @@ WHERE receiver_id = 0
 ORDER BY time ASC;
 `;
 
-class MessagesModel {
+class MessageModel {
     constructor(sender_id, receiver_id, body, time, status) {
         this.sender_id = sender_id;
         this.receiver_id = receiver_id;

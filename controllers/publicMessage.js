@@ -49,7 +49,7 @@ async function getAllPublicMessages() {
         return messages;
     } catch (err) {
         console.error(err);
-        return res.sendStatus(500);
+        return null;
     }
 }
 

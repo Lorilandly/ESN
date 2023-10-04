@@ -1,14 +1,12 @@
 import express from 'express';
-import { checkUserAuthenticated } from '../controllers/auth.js';
-import { createPublicMessage } from '../controllers/publicMessage.js';
+import { createPublicMessage, getAllPublicMessages } from '../controllers/publicMessage.js';
 let router = express.Router();
 
-/* GET page. */
-router.get('/:id', (req, res) => {
-    return res.json("{'page': 'resources'}");
+router.get('/', async (req, res) => {
+    const messages = await getAllPublicMessages();
+    return res.status(200).json({ messages: messages });
 });
 
-/* POST page */
 router.post('/', await createPublicMessage);
 
 export default router;

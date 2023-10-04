@@ -114,7 +114,7 @@ class UserModel {
                 row.username,
                 row.password_hash,
                 row.salt,
-                row.current_statusG,
+                row.current_status,
                 row.privilege,
             );
         }

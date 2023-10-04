@@ -2,7 +2,6 @@ import crypto from 'crypto';
 import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
 import jwt from 'jsonwebtoken';
-import { io } from '../bin/www.js';
 
 let reservedUsernames = null;
 
@@ -18,6 +17,50 @@ function initAuthController(config) {
     } catch (error) {
         console.error('Failed to parse reserved usernames:', error);
     }
+}
+
+// Function to handle Socket.IO connections and user status updates
+function handleSocketConnections(io) {
+    io.on('connection', (socket) => {
+        console.log('A user connected');
+
+        let cookie = socket.request.headers.cookie;
+
+        //let cookieParts = cookie.split.(";")("=");
+        console.log('Index of jwt token ' + cookie.indexOf('jwtToken'));
+        let jwtIndex = cookie.indexOf('jwtToken');
+
+        let jwtToken = cookie.substring(jwtIndex).split('=')[1];
+        console.log('jwt token: ' + jwtToken);
+
+        const decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
+        console.log(`user ${decodedUser.username} connected`);
+
+        io.emit('userStatus', {
+            username: decodedUser.username,
+            status: 'ONLINE',
+        });
+
+        socket.on('online', (data) => {
+            console.log('Data: ' + data);
+        });
+
+        // Handle user disconnection for offline status
+        socket.on('disconnect', async () => {
+            // Update the user status in the database to 'OFFLINE'
+            try {
+                await UserModel.updateStatus(decodedUser.username, 'OFFLINE');
+                console.log(`User ${decodedUser.username} disconnected`);
+            } catch (error) {
+                console.error('Error updating user status:', error);
+            }
+            // Emit 'userStatus' event to notify other clients
+            io.emit('userStatus', {
+                username: decodedUser.username,
+                status: 'OFFLINE',
+            });
+        });
+    });
 }
 
 function validUsername(username) {
@@ -146,6 +189,7 @@ async function getAllUsers(req, res, next) {
 
 export {
     initAuthController,
+    handleSocketConnections,
     authenticateUser,
     deauthenticateUser,
     checkUserAuthenticated,

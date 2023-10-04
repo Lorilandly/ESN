@@ -9,7 +9,10 @@ import http from 'http';
 import config from 'config';
 import 'dotenv/config';
 import { createDBPool, initModels } from '../db.js';
-import { initAuthController } from '../controllers/auth.js';
+import {
+    initAuthController,
+    handleSocketConnections,
+} from '../controllers/auth.js';
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
 
@@ -44,42 +47,7 @@ initModels(dbPool);
 
 let server = http.createServer(app);
 const io = new Server(server);
-
-// TODO: init AuthController with login-logout flow by passing in
-//setIOInAuthController(io);
-
-io.on('connection', (socket) => {
-    console.log('A user connected');
-
-    let cookie = socket.request.headers.cookie;
-
-    //let cookieParts = cookie.split.(";")("=");
-    console.log('Index of jwt token ' + cookie.indexOf('jwtToken'));
-    let jwtIndex = cookie.indexOf('jwtToken');
-
-    let jwtToken = cookie.substring(jwtIndex).split('=')[1];
-    console.log('jwt token: ' + jwtToken);
-
-    const decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
-    console.log(`user ${decodedUser.username} connected`);
-
-    io.emit('userStatus', { username: decodedUser.username, status: 'ONLINE' });
-
-    socket.on('online', (data) => {
-        console.log('Data: ' + data);
-    });
-
-    // Handle user disconnection for offline status
-    socket.on('disconnect', () => {
-        // TODO: update it in the database
-        io.emit('userStatus', {
-            username: decodedUser.username,
-            status: 'OFFLINE',
-        });
-        // update their status in the database
-        console.log('   emit user status to offline');
-    });
-});
+handleSocketConnections(io);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -146,4 +114,3 @@ function onListening() {
     console.log('--Server listening');
 }
 
-export { io };

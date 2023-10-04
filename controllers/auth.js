@@ -71,6 +71,7 @@ async function authenticateUser(req, res, next) {
         sameSite: 'Strict',
     });
     await UserModel.updateStatus(username, 'ONLINE');
+    console.log('status online for user ' + username + ' updated in auth.js');
     next();
 }
 

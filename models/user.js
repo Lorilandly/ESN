@@ -86,7 +86,6 @@ class UserModel {
 
     static async updateStatus(name, status) {
         await this.dbPoolInstance.query(changeUserStatus, [status, name]);
-        // Emit the 'userStatus' event with the updated status
     }
 
     static async findByName(name) {

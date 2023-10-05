@@ -15,7 +15,7 @@ $(document).ready(() => {
             },
         });
     });
-    
+
     // Fetch and render all messages
     $.ajax({
         url: '/publicMessages',

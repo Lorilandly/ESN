@@ -137,7 +137,7 @@ async function deauthenticateUser(req, res, next) {
     return next();
 }
 
-async function sendJwtCookie(req, res, next) {
+async function setJwtCookie(req, res, next) {
     const username = req.body.username;
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
@@ -222,7 +222,7 @@ async function getAllUsers() {
 
 export {
     initAuthController,
-    sendJwtCookie,
+    setJwtCookie,
     handleSocketConnections,
     deauthenticateUser,
     checkUserAuthenticated,

@@ -3,7 +3,7 @@ import passport from 'passport';
 let router = express.Router();
 
 import {
-    sendJwtCookie,
+    setJwtCookie,
     create,
     validateNewCredentials,
     deauthenticateUser,
@@ -29,7 +29,7 @@ router.post(
     '/',
     await validateNewCredentials,
     await create,
-    sendJwtCookie,
+    setJwtCookie,
     (req, res) => {
         res.status(201).json({});
     },
@@ -38,7 +38,7 @@ router.post(
 router.put(
     '/login',
     passport.authenticate('local', { session: false }),
-    sendJwtCookie,
+    setJwtCookie,
     (req, res) => {
         return res.status(200).json({});
     },

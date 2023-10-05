@@ -70,7 +70,12 @@ function handleSocketConnections(io) {
         let jwtIndex = cookie.indexOf('jwtToken');
         let jwtToken = cookie.substring(jwtIndex).split('=')[1];
 
-        const decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
+        let decodedUser;
+        try {
+            decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
+        } catch (exception) {
+            console.error(`failed to decode user from jwt, ${exception}`);
+        }
 
         io.emit('userStatus', {
             username: decodedUser.username,

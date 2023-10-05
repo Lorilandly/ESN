@@ -1,7 +1,9 @@
 import express from 'express';
-import { checkUserAuthenticated } from '../controllers/auth.js';
+import passport from 'passport';
 import { createPublicMessage } from '../controllers/publicMessage.js';
 let router = express.Router();
+
+router.use(passport.authenticate('jwt', { session: false }));
 
 /* GET page. */
 router.get('/:id', (req, res) => {

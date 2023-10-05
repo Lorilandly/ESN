@@ -23,7 +23,7 @@ function queryUserApi(dryRun) {
             let reason = res.responseJSON.error;
             if (reason == 'User exists') {
                 // login with the credential
-                $.ajax('/login', {
+                $.ajax('/users/login', {
                     method: 'PUT',
                     data: { username, password },
                     dataType: 'json',

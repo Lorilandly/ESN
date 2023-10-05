@@ -28,4 +28,13 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.put(
+    '/login',
+    passport.authenticate('local', { session: false }),
+    sendJwtCookie,
+    (req, res) => {
+        return res.status(200).json({});
+    },
+);
+
 export default router;

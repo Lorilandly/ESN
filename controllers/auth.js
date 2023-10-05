@@ -20,8 +20,8 @@ const opts = {
 };
 
 passport.use(
-    new Strategy(opts, async (jwt_payload, done) => {
-        const user = await UserModel.findByName(jwt_payload.username);
+    new Strategy(opts, async (jwtPayload, done) => {
+        const user = await UserModel.findByName(jwtPayload.username);
         if (user) {
             return done(null, user);
         } else {
@@ -35,13 +35,17 @@ passport.use(
         if (!username || !password) {
             return done(new Error('Missing credentials'));
         }
-        const user = await UserModel.findByName(username.toLowerCase());
-        if (user) {
-            if (checkPasswordForUser(user, password)) {
-                return done(null, user);
-            }
-        }
-        return done(null, false);
+        UserModel.findByName(username.toLowerCase()).then(
+            (user) => {
+                if (checkPasswordForUser(user, password)) {
+                    return done(null, user);
+                }
+                return done(null, false);
+            },
+            (err) => {
+                return done(err);
+            },
+        );
     }),
 );
 
@@ -98,7 +102,7 @@ async function deauthenticateUser(req, res, next) {
     return next();
 }
 
-async function authenticateUser(req, res, next) {
+async function sendJwtCookie(req, res, next) {
     const username = req.body.username;
     // change user status to ONLINE
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
@@ -149,7 +153,7 @@ async function create(req, res, next) {
     return next();
 }
 
-async function validateNewCredential(req, res, next) {
+async function validateNewCredentials(req, res, next) {
     const { username, password, dryRun } = req.body;
     if (!validUsername(username)) {
         return res.status(400).json({ error: 'Illegal username' });
@@ -187,10 +191,10 @@ async function getAllUsers(req, res, next) {
 
 export {
     initAuthController,
-    authenticateUser,
+    sendJwtCookie,
     deauthenticateUser,
     checkUserAuthenticated,
     create,
-    validateNewCredential,
+    validateNewCredentials,
     getAllUsers,
 };

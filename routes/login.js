@@ -1,12 +1,12 @@
 import express from 'express';
 import passport from 'passport';
-import { authenticateUser } from '../controllers/auth.js';
+import { sendJwtCookie } from '../controllers/auth.js';
 let router = express.Router();
 
 router.post(
     '/',
     passport.authenticate('local', { session: false }),
-    authenticateUser,
+    sendJwtCookie,
     (req, res) => {
         return res.status(200).json({});
     },

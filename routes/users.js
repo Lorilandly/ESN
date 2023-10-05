@@ -2,7 +2,7 @@ import express from 'express';
 let router = express.Router();
 
 import {
-    authenticateUser,
+    sendJwtCookie,
     create,
     validateNewCredentials,
     getAllUsers,
@@ -13,7 +13,7 @@ router.post(
     '/',
     await validateNewCredentials,
     await create,
-    authenticateUser,
+    sendJwtCookie,
     (req, res) => {
         res.status(201).json({});
     },

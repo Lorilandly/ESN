@@ -102,21 +102,25 @@ class UserModel {
     }
 
     static async findByName(name) {
-        const queryResponse = await this.dbPoolInstance.query(
-            selectUserByName,
-            [name],
-        );
-        if (queryResponse.rowCount == 0) {
-            return null;
-        } else {
-            let row = queryResponse.rows[0];
-            return new UserModel(
-                row.username,
-                row.password_hash,
-                row.salt,
-                row.current_statusG,
-                row.privilege,
+        try {
+            const queryResponse = await this.dbPoolInstance.query(
+                selectUserByName,
+                [name],
             );
+            if (queryResponse.rowCount == 0) {
+                return null;
+            } else {
+                let row = queryResponse.rows[0];
+                return new UserModel(
+                    row.username,
+                    row.password_hash,
+                    row.salt,
+                    row.current_statusG,
+                    row.privilege,
+                );
+            }
+        } catch (err) {
+            return err;
         }
     }
 

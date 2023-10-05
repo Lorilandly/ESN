@@ -1,10 +1,14 @@
 import express from 'express';
-import { checkUserAuthenticated } from '../controllers/auth.js';
+import passport from 'passport';
 let router = express.Router();
 
 /* GET users listing. */
-router.get('/', checkUserAuthenticated, (req, res) => {
-    return res.render('welcome');
-});
+router.get(
+    '/',
+    passport.authenticate('jwt', { failureRedirect: '/', session: false }),
+    (req, res) => {
+        res.render('welcome');
+    },
+);
 
 export default router;

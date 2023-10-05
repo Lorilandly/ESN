@@ -1,5 +1,20 @@
 $(document).ready(() => {
     // Capture form submission event
+    $('#logout-form').submit((event) => {
+        event.preventDefault(); // Prevent the default form submission
+        $.ajax('/users/logout', {
+            method: 'PUT',
+            datatype: 'json',
+            success: () => {
+                location.href = '/';
+            },
+            error: (_) => {
+                console.error('Login error:', res);
+            },
+        });
+    });
+
+    // Get user list from API
     $.ajax('/users', {
         method: 'GET',
         datatype: 'json',

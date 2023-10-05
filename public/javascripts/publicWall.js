@@ -1,6 +1,21 @@
 var socket = io();
 
 $(document).ready(() => {
+    // Capture form submission event
+    $('#logout-form').submit((event) => {
+        event.preventDefault(); // Prevent the default form submission
+        $.ajax('/users/logout', {
+            method: 'PUT',
+            datatype: 'json',
+            success: () => {
+                location.href = '/';
+            },
+            error: (_) => {
+                console.error('Login error:', res);
+            },
+        });
+    });
+
     // Fetch and render all messages
     $.ajax({
         url: '/publicMessages',

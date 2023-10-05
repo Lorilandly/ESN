@@ -1,9 +1,53 @@
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+import passport from 'passport';
+import { Strategy } from 'passport-jwt';
+import LocalStrategy from 'passport-local';
 import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
-import jwt from 'jsonwebtoken';
 
 let reservedUsernames = null;
+
+const opts = {
+    secretOrKey: process.env.SECRET_KEY,
+    jwtFromRequest: (req) => {
+        let token = null;
+        if (req && req.cookies) {
+            token = req.cookies['jwtToken'];
+        }
+        return token;
+    },
+};
+
+passport.use(
+    new Strategy(opts, async (jwtPayload, done) => {
+        const user = await UserModel.findByName(jwtPayload.username);
+        if (user) {
+            return done(null, user);
+        } else {
+            return done(null, false);
+        }
+    }),
+);
+
+passport.use(
+    new LocalStrategy(async (username, password, done) => {
+        if (!username || !password) {
+            return done(new Error('Missing credentials'));
+        }
+        UserModel.findByName(username.toLowerCase()).then(
+            (user) => {
+                if (checkPasswordForUser(user, password)) {
+                    return done(null, user);
+                }
+                return done(null, false);
+            },
+            (err) => {
+                return done(err);
+            },
+        );
+    }),
+);
 
 function initAuthController(config) {
     try {
@@ -26,7 +70,12 @@ function handleSocketConnections(io) {
         let jwtIndex = cookie.indexOf('jwtToken');
         let jwtToken = cookie.substring(jwtIndex).split('=')[1];
 
-        const decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
+        let decodedUser;
+        try {
+            decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
+        } catch (exception) {
+            console.error(`failed to decode user from jwt, ${exception}`);
+        }
 
         io.emit('userStatus', {
             username: decodedUser.username,
@@ -88,7 +137,7 @@ async function deauthenticateUser(req, res, next) {
     return next();
 }
 
-async function authenticateUser(req, res, next) {
+async function setJwtCookie(req, res, next) {
     const username = req.body.username;
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
@@ -138,20 +187,6 @@ async function create(req, res, next) {
     return next();
 }
 
-async function validateCredentials(req, res, next) {
-    const { username, password } = req.body;
-    if (!username || !password) {
-        return res.status(403).json({});
-    }
-    const user = await UserModel.findByName(username.toLowerCase());
-    if (user) {
-        if (checkPasswordForUser(user, password)) {
-            return next();
-        }
-    }
-    return res.status(403).json({});
-}
-
 async function validateNewCredentials(req, res, next) {
     const { username, password, dryRun } = req.body;
     if (!validUsername(username.toLowerCase())) {
@@ -187,12 +222,11 @@ async function getAllUsers() {
 
 export {
     initAuthController,
+    setJwtCookie,
     handleSocketConnections,
-    authenticateUser,
     deauthenticateUser,
     checkUserAuthenticated,
     create,
     validateNewCredentials,
-    validateCredentials,
     getAllUsers,
 };

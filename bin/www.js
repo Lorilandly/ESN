@@ -3,11 +3,11 @@
 /**
  * Module dependencies.
  */
+import 'dotenv/config';
 import app from '../app.js';
 import debug from 'debug';
 import http from 'http';
 import config from 'config';
-import 'dotenv/config';
 import { createDBPool, initModels } from '../db.js';
 import {
     initAuthController,

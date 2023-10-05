@@ -63,6 +63,37 @@ function initAuthController(config) {
     }
 }
 
+// Function to handle Socket.IO connections and user status updates
+function handleSocketConnections(io) {
+    io.on('connection', (socket) => {
+        let cookie = socket.request.headers.cookie;
+        let jwtIndex = cookie.indexOf('jwtToken');
+        let jwtToken = cookie.substring(jwtIndex).split('=')[1];
+
+        const decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
+
+        io.emit('userStatus', {
+            username: decodedUser.username,
+            status: 'ONLINE',
+        });
+
+        // Handle user disconnection for offline status
+        socket.on('disconnect', async () => {
+            // Update the user status in the database to 'OFFLINE'
+            try {
+                await UserModel.updateStatus(decodedUser.username, 'OFFLINE');
+            } catch (error) {
+                console.error('Error updating user status:', error);
+            }
+            // Emit 'userStatus' event to notify other clients
+            io.emit('userStatus', {
+                username: decodedUser.username,
+                status: 'OFFLINE',
+            });
+        });
+    });
+}
+
 function validUsername(username) {
     return !(username.length < 3 || reservedUsernames.has(username));
 }
@@ -97,14 +128,12 @@ async function deauthenticateUser(req, res, next) {
         secure: true,
         sameSite: 'Strict',
     });
-    // change user status to OFFLINE
     await UserModel.updateStatus(req.user.username, 'OFFLINE');
     return next();
 }
 
 async function sendJwtCookie(req, res, next) {
     const username = req.body.username;
-    // change user status to ONLINE
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
     });
@@ -155,17 +184,16 @@ async function create(req, res, next) {
 
 async function validateNewCredentials(req, res, next) {
     const { username, password, dryRun } = req.body;
-    if (!validUsername(username)) {
-        return res.status(400).json({ error: 'Illegal username' });
+    if (!validUsername(username.toLowerCase())) {
+        return res.status(403).json({ error: 'Illegal username' });
     }
     if (!validPassword(password)) {
-        return res.status(400).json({ error: 'Illegal password' });
+        return res.status(403).json({ error: 'Illegal password' });
     }
-    // TODO: This will be modified while fleshing out login/logout flows
     const user = await UserModel.findByName(username.toLowerCase());
     if (user) {
         if (!checkPasswordForUser(user, password)) {
-            return res.status(400).json({ error: 'Username is already taken' });
+            return res.status(403).json({ error: 'Username is already taken' });
         } else {
             // This case is handled on the client side
             return res.status(401).json({ error: 'User exists' });
@@ -178,20 +206,19 @@ async function validateNewCredentials(req, res, next) {
     return next();
 }
 
-async function getAllUsers(req, res, next) {
+async function getAllUsers() {
     try {
         const users = await UserModel.getAllStatuses();
-        res.locals.users = users;
-        return next();
+        return users;
     } catch (err) {
-        console.error(err);
-        return res.sendStatus(500);
+        return null;
     }
 }
 
 export {
     initAuthController,
     sendJwtCookie,
+    handleSocketConnections,
     deauthenticateUser,
     checkUserAuthenticated,
     create,

@@ -24,7 +24,7 @@ function queryUserApi(dryRun) {
             if (reason == 'User exists') {
                 // login with the credential
                 $.ajax('/login', {
-                    method: 'POST',
+                    method: 'PUT',
                     data: { username, password },
                     dataType: 'json',
                     success: (_) => {
@@ -34,8 +34,9 @@ function queryUserApi(dryRun) {
                         console.error('Login error:', res);
                     },
                 });
+            } else {
+                $('#alert-msg span').text(reason);
             }
-            $('#alert-msg span').text(reason);
         },
     });
 }

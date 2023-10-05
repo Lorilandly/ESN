@@ -3,7 +3,7 @@ import passport from 'passport';
 import { sendJwtCookie } from '../controllers/auth.js';
 let router = express.Router();
 
-router.post(
+router.put(
     '/',
     passport.authenticate('local', { session: false }),
     sendJwtCookie,

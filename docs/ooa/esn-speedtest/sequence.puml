@@ -1,0 +1,46 @@
+@startuml
+
+actor Admin as a
+boundary SpeedTestBoundary as stb
+control SpeedTestController as stc
+participant ":PerformanceTestResult" as ptr
+
+a -> stb : 1.1 startSpeedTest()
+activate stb
+stb -> stb: 1.2 displaySpeedTestOptions()
+a -> stb: 1.3 setTestOptions()
+stb -> stc : 1.4 startSpeedTest()
+activate stc
+stc -> stc: 1.5 startPerformanceTestingMode()
+loop for each reqeust
+stc -> ptr: recordTestRequest()
+activate ptr
+end loop
+' stc -> stc: 1.6 recordTestRequests()
+
+alt Test Runs Entire Duation
+stc --> stb: POST and GET performances
+stb -> stb: 1.7 displaySpeedTestResults()
+stc -> ptr: getTestResults()
+ptr --> stc: Performance Test Results
+else A1 Admin Terminates Test
+a -> stb: 1.8 stopSpeedTest()
+stb -> stc: 1.9 stopSpeedTest()
+stc -> stc: 1.12 stopPerformanceTestingMode()
+stb -> stb: 1.10 displaySpeedTestOptions()
+else A2 POST Requests Exceed Limit
+stc -> stc: 1.12 stopPerformanceTestingMode()
+loop for each reqeust
+stc -> ptr: 1.13 removePerformanceTestData()
+end loop
+stc --> stb: POST Request Limit Exceeded
+stb -> stb: 1.14 displaySpeedTestError()
+end
+
+
+
+deactivate ptr
+deactivate stc
+deactivate stb
+
+@enduml

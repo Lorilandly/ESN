@@ -1,0 +1,23 @@
+@startuml
+actor Citizen as c
+boundary StatusBoundary as sb
+control StatusController as sc
+entity User as u
+
+c -> sb: 1: accessStatusPage 
+activate sb
+sb -> sb: 1.2: displayStatus
+activate sb
+deactivate sb
+c -> sb: 1.3: selectStatus
+sb -> sc: 1.4: updateStatus(status)
+activate sc
+sc -> u : 1.5: update(status, timestamp)
+activate u
+sb -> sb: 1.6: displayStatus
+activate sb
+deactivate sc
+deactivate u
+deactivate sb
+deactivate sb
+@enduml

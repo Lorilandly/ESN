@@ -1,0 +1,30 @@
+@startuml
+entity User {
+    void sendPrivateMessage(receiver_id, text, timestamp, status)
+}
+class PrivateChatController {
+    void sendPrivateMessage(receiver_id, text, timestamp, status)
+    void getLatestMessages()
+    void sendAlert(receiver_id)
+}
+entity PrivateWindow {
+    void addMessage(receiver_id, text, timestamp, status)
+    void addAlert()
+}
+class PrivateChatBoundary {
+    void displayMessages()
+    void displayMessageInputField()
+    void updatePrivateWindow(receiver_id, text, timestamp, status)
+    void displayAlert()
+}
+entity PrivateMessage {
+    string getText()
+    int getSender()
+    string getTime()
+    string getStatus()
+}
+User  "0..*" -- "0..1" PrivateChatController
+PrivateChatController "1" -- "1" PrivateChatBoundary
+PrivateChatController "0..1" -- "0..1" PrivateWindow
+PrivateWindow "0..*" -- "0..*" PrivateMessage
+@enduml

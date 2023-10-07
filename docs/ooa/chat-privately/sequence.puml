@@ -5,7 +5,7 @@ control PrivateChatController as pcc
 entity PrivateWindow as pw
 entity PrivateMessage as pm
 entity "new:PrivateMessage" as npm
-boundary "other:PrivateChatView" as opvc
+boundary "other:PrivateChatBoundary" as opvc
 actor "other:User" as ou
 u -> pcv: 1: accessPrivateWindow
 activate pcv

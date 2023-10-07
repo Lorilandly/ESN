@@ -1,0 +1,71 @@
+@startuml
+actor User as u
+boundary PrivateChatView as pcv
+control PrivateChatController as pcc
+entity PrivateWindow as pw
+entity PrivateMessage as pm
+entity "new:PrivateMessage" as npm
+boundary "other:PrivateChatView" as opvc
+actor "other:User" as ou
+u -> pcv: 1: accessPrivateWindow
+activate pcv
+pcv -> pcc: 2: getLatestMessages
+activate pcc
+pcc -> pw: 3: getLatestMessages
+activate pw
+pw -> pm: 4: getText
+note left of pw
+ Do steps 4 to 7 for all latest messages
+end note
+activate pm
+deactivate pm
+pw -> pm: 5: getSender
+activate pm
+deactivate pm
+pw -> pm: 6: getTime
+activate pm
+deactivate pm
+pw -> pm: 7: getStatus
+activate pm
+deactivate pm
+pw --> pcc
+pcc --> pcv
+deactivate pcc
+deactivate pw
+pcv -> pcv: 8:displayLatestMessages
+activate pcv
+deactivate pcv
+pcv -> pcv: 9:displayMessageInputField
+activate pcv
+deactivate pcv
+deactivate pcv
+u -> pcv: 10: writeNew(message)
+activate pcv
+pcv -> pcc: 11: postNew(message)
+activate pcc
+pcc -> npm: 12: createNewMessage(text, sender, timestamp, status)
+activate npm
+deactivate npm
+pcc -> pw: 13: addMessage(text, sender, timestamp, status)
+activate pw
+pcc -> pw: 14: addAlert
+pw -> opvc: 15: addAlert
+deactivate pw
+activate opvc
+opvc -> opvc: 16:displayAlert
+activate opvc
+deactivate opvc
+pcv <-> opvc: 17: updatePrivateWindow(text, sender, timestamp, status)                                       18: updatePrivateWindow(text, sender, timestamp, status)
+note left of pcv
+ The user can now see her new message on the private window
+end note
+note right of opvc
+ The other user can now also see her new message on the private window
+end note
+activate pcv
+deactivate pcv
+deactivate pcc
+deactivate opvc
+deactivate pcv
+
+@enduml

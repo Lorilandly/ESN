@@ -1,6 +1,6 @@
 @startuml
 actor User as u
-boundary PrivateChatView as pcv
+boundary PrivateChatBoundary as pcv
 control PrivateChatController as pcc
 entity PrivateWindow as pw
 entity PrivateMessage as pm

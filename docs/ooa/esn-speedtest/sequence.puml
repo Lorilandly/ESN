@@ -19,10 +19,10 @@ end loop
 ' stc -> stc: 1.6 recordTestRequests()
 
 alt Test Runs Entire Duation
+stc -> ptr: 1.6 getTestResults()
+ptr --> stc: Performance Test Results
 stc --> stb: POST and GET performances
 stb -> stb: 1.7 displaySpeedTestResults()
-stc -> ptr: getTestResults()
-ptr --> stc: Performance Test Results
 else A1 Admin Terminates Test
 a -> stb: 1.8 stopSpeedTest()
 stb -> stc: 1.9 stopSpeedTest()

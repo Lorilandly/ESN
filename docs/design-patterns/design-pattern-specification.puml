@@ -1,0 +1,26 @@
+@startuml
+class Client
+class Target <<interface>>
+class PerformanceTestModel
+class PostgresSQLClient
+Target : saveResult()
+PerformanceTestModel : saveResult()
+PostgresSQLClient : saveResultPostgresSQL()
+
+note right of Target
+Non-existent, but shows the decoupling
+of client from adaptee's interface
+end note
+
+note bottom of PerformanceTestModel
+Adapter
+end note
+
+note bottom of PostgresSQLClient
+Adaptee
+end note
+
+Client -> Target
+Target <|.. PerformanceTestModel 
+PerformanceTestModel -> PostgresSQLClient
+@enduml

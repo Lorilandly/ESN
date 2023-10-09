@@ -1,13 +1,13 @@
 @startuml
-actor User as u
+actor Citizen as c1
 boundary PrivateChatBoundary as pcv
 control PrivateChatController as pcc
 entity PrivateWindow as pw
 entity PrivateMessage as pm
 entity "new:PrivateMessage" as npm
 boundary "other:PrivateChatBoundary" as opvc
-actor "other:User" as ou
-u -> pcv: 1: accessPrivateWindow
+actor "other:Citizen" as c2
+c1 -> pcv: 1: accessPrivateWindow
 activate pcv
 pcv -> pcc: 2: getLatestMessages
 activate pcc
@@ -39,28 +39,31 @@ pcv -> pcv: 9:displayMessageInputField
 activate pcv
 deactivate pcv
 deactivate pcv
-u -> pcv: 10: writeNew(message)
+
+c1 -> pcv: 10: writeNew(message)
 activate pcv
-pcv -> pcc: 11: postNew(message)
+pcv -> pcc: 11: sendPrivateMessage(receiver, text, timestamp, status)
 activate pcc
 pcc -> npm: 12: createNewMessage(text, sender, timestamp, status)
 activate npm
 deactivate npm
 pcc -> pw: 13: addMessage(text, sender, timestamp, status)
 activate pw
-pcc -> pw: 14: addAlert
-pw -> opvc: 15: addAlert
 deactivate pw
 activate opvc
-opvc -> opvc: 16:displayAlert
 activate opvc
 deactivate opvc
-pcv <-> opvc: 17: updatePrivateWindow(text, sender, timestamp, status)                                       18: updatePrivateWindow(text, sender, timestamp, status)
+pcv <-> opvc: 14: updatePrivateWindowAndAlert(text, sender, timestamp, status)                                       15: updatePrivateWindow(text, sender, timestamp, status)
+opvc -> opvc: 16:displayAlert
 note left of pcv
- The user can now see her new message on the private window
+The user can now see
+her new message on 
+the private window
 end note
 note right of opvc
- The other user can now also see her new message on the private window
+The other user can now
+also see her new message
+on the private window
 end note
 activate pcv
 deactivate pcv

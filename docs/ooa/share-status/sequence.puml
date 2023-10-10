@@ -2,7 +2,7 @@
 actor Citizen as c
 boundary StatusBoundary as sb
 control StatusController as sc
-entity User as u
+entity :User as u
 
 c -> sb: 1: accessStatusPage 
 activate sb

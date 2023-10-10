@@ -8,8 +8,7 @@ PerformanceTestModel : saveResult()
 PostgresSQLClient : saveResultPostgresSQL()
 
 note right of Target
-Non-existent, but shows the decoupling
-of client from adaptee's interface
+Not present in our implementation
 end note
 
 note bottom of PerformanceTestModel

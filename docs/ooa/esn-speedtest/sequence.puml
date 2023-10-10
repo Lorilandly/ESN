@@ -3,7 +3,7 @@
 actor Admin as a
 boundary SpeedTestBoundary as stb
 control SpeedTestController as stc
-participant ":PerformanceTestResult" as ptr
+entity ":PerformanceTestResult" as ptr
 
 a -> stb : 1.1 startSpeedTest()
 activate stb

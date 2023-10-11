@@ -65,7 +65,7 @@ function initAuthController(config) {
 
 // Function to handle Socket.IO connections and user status updates
 function handleSocketConnections(io) {
-    io.on('connection', (socket) => {
+    io.on('connection', async (socket) => {
         let cookie = socket.request.headers.cookie;
         let jwtIndex = cookie.indexOf('jwtToken');
         let jwtToken = cookie.substring(jwtIndex).split('=')[1];
@@ -77,9 +77,12 @@ function handleSocketConnections(io) {
             console.error(`failed to decode user from jwt, ${exception}`);
         }
 
+        let status = await UserModel.findByName(decodedUser.username);
+        status = status.status;
         io.emit('userStatus', {
             username: decodedUser.username,
-            status: 'ONLINE',
+            loginStatus: 'ONLINE',
+            status,
         });
 
         // Handle user disconnection for offline status
@@ -93,7 +96,8 @@ function handleSocketConnections(io) {
             // Emit 'userStatus' event to notify other clients
             io.emit('userStatus', {
                 username: decodedUser.username,
-                status: 'OFFLINE',
+                loginStatus: 'OFFLINE',
+                status,
             });
         });
     });
@@ -163,7 +167,8 @@ async function create(req, res, next) {
         username.toLowerCase(),
         passwordHash,
         salt,
-        'DEAD',
+        'OFFLINE',
+        null,
         new Date(Date.now()).toLocaleString(),
         'SUPERDUPERADMIN',
     );
@@ -197,7 +202,7 @@ async function validateNewCredentials(req, res, next) {
 
 async function getAllUsers() {
     try {
-        const users = await UserModel.getAllLoginStatuses();
+        const users = await UserModel.getAllStatuses();
         return users;
     } catch (err) {
         return null;

@@ -31,8 +31,8 @@ SELECT EXISTS(
 );
 `;
 
-const getAllUserLoginStatusesOrdered = `
-SELECT username, login_status
+const getAllUserStatusesOrdered = `
+SELECT username, login_status, status
 FROM users
 ORDER BY 
     CASE 
@@ -54,11 +54,11 @@ WHERE username = $2;
  * TODO: have a Model interface
  */
 class UserModel {
-    constructor(username, passwordHash, salt, status, statusTime, privilege) {
+    constructor(username, passwordHash, salt, loginStatus, status, statusTime, privilege) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.salt = salt;
-        this.loginStatus = 'OFFLINE';
+        this.loginStatus = loginStatus;
         this.status = status;
         this.statusTime = statusTime;
         this.privilege = privilege;
@@ -132,9 +132,9 @@ class UserModel {
         }
     }
 
-    static async getAllLoginStatuses() {
+    static async getAllStatuses() {
         const queryResponse = await this.dbPoolInstance.query(
-            getAllUserLoginStatusesOrdered,
+            getAllUserStatusesOrdered,
         );
         if (queryResponse.rowCount == 0) {
             return null;

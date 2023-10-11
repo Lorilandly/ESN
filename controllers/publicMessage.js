@@ -10,7 +10,7 @@ function initIOInstanceForChat(io) {
 
 async function createPublicMessage(req, res) {
     const token = req.cookies.jwtToken;
-    let user_id, username;
+    let user, user_id, username;
     if (!token) {
         // handle case where user isn't authenticated
         return res.status(401).json({});
@@ -20,6 +20,7 @@ async function createPublicMessage(req, res) {
         // handle decodedUser (username) string
         username = decodedUser.username;
         user_id = await UserModel.findIdByName(username);
+        user = await UserModel.findByName(username);
     } catch {
         // handle failure to decode JWT
         return res.status(401).json({});
@@ -35,7 +36,7 @@ async function createPublicMessage(req, res) {
     // Receiver Id 0 is for public chat
     let body = req.body.message;
     let time = new Date(Date.now()).toLocaleString();
-    let status = 'STATUS';
+    let status = user.status;
     let message = new MessageModel(user_id, 0, body, time, status);
     await message.persist();
 

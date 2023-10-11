@@ -8,10 +8,10 @@ function sortAndDisplayUsers() {
 
     userElements.sort((a, b) => {
         const usernameA = a.querySelector(
-            '.user-list-body-element-name',
+            '.user-list-body-element-name-username',
         ).textContent;
         const usernameB = b.querySelector(
-            '.user-list-body-element-name',
+            '.user-list-body-element-name-username',
         ).textContent;
 
         const statusA = document.getElementById(
@@ -48,7 +48,7 @@ function sortAndDisplayUsers() {
 // Notice all other clients if someone else's status changes
 $(document).ready(() => {
     socket.on('userStatus', (data) => {
-        const { username, status } = data;
+        const { username, loginStatus, status } = data;
 
         // Use a unique ID for each user's status element
         const statusElement = document.getElementById(
@@ -59,8 +59,8 @@ $(document).ready(() => {
         // If the current user is somone already in the ESN directory
         if (statusElement) {
             // Based on the real-time status, set the corresponding class attribute
-            statusElement.textContent = status;
-            if (status === 'ONLINE') {
+            statusElement.textContent = loginStatus;
+            if (loginStatus === 'ONLINE') {
                 statusElement.setAttribute(
                     'class',
                     'user-list-body-element-status-online',
@@ -86,7 +86,7 @@ $(document).ready(() => {
             newStatusElement.setAttribute('id', `user-status-${username}`);
 
             // Set the status for current user
-            if (status === 'ONLINE') {
+            if (loginStatus === 'ONLINE') {
                 newStatusElement.setAttribute(
                     'class',
                     'user-list-body-element-status-online',
@@ -98,18 +98,42 @@ $(document).ready(() => {
                 );
             }
 
-            newStatusElement.textContent = status;
+            newStatusElement.textContent = loginStatus;
 
             // Create a new username element
-            newUsernameElement = document.createElement('div');
-            newUsernameElement.setAttribute(
+            let newUserElement = document.createElement('div');
+            newUserElement.setAttribute(
                 'class',
                 'user-list-body-element-name',
             );
+            let newUsernameElement = document.createElement('span');
+            newUserElement.setAttribute(
+                'class',
+                'user-list-body-element-name-username',
+            );
             newUsernameElement.textContent = username;
+            let newUserStatusElement = document.createElement('span');
+            let str;
+            switch(status) {
+                case 'OK':
+                    str = ' - 🟢';
+                    break;
+                case 'HELP':
+                    str = ' - 🟡';
+                    break;
+                case 'EMERGENCY':
+                    str = ' - 🔴';
+                    break;
+                default:
+                    str = '';
+                    break;
+            }
+            newUserStatusElement.textContent = str;
 
             // Append the new username and status element to the user list element container
-            newUserListElement.appendChild(newUsernameElement);
+            newUserElement.appendChild(newUsernameElement);
+            newUserElement.appendChild(newUserStatusElement);
+            newUserListElement.appendChild(newUserElement);
             newUserListElement.appendChild(newStatusElement);
 
             // Append this new user list element to the entire user list

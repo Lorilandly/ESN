@@ -1,0 +1,26 @@
+@startuml
+class PrivateChatController {
+    void sendPrivateMessage(receiver, text, timestamp, status)
+    void getLatestMessages()
+}
+entity PrivateWindow {
+    void addMessage(receiver, text, timestamp, status)
+    void getLatestMessages()
+}
+class PrivateChatBoundary {
+    void displayMessages()
+    void displayMessageInputField()
+    void updatePrivateWindowAndAlert(receiver, text, timestamp, status)
+    void displayAlert()
+}
+entity PrivateMessage {
+    void createNewMessage(sender, receiver, text, timestamp, status)
+    string getText()
+    int getSender()
+    string getTime()
+    string getStatus()
+}
+PrivateChatController "1" -- "1" PrivateChatBoundary
+PrivateChatController "0..1" -- "0..1" PrivateWindow
+PrivateWindow "0..*" -- "0..*" PrivateMessage
+@enduml

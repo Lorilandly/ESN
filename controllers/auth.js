@@ -86,7 +86,7 @@ function handleSocketConnections(io) {
         socket.on('disconnect', async () => {
             // Update the user status in the database to 'OFFLINE'
             try {
-                await UserModel.updateStatus(decodedUser.username, 'OFFLINE');
+                await UserModel.updateLoginStatus(decodedUser.username, 'OFFLINE');
             } catch (error) {
                 console.error('Error updating user status:', error);
             }
@@ -133,7 +133,7 @@ async function deauthenticateUser(req, res, next) {
         secure: true,
         sameSite: 'Strict',
     });
-    await UserModel.updateStatus(req.user.username, 'OFFLINE');
+    await UserModel.updateLoginStatus(req.user.username, 'OFFLINE');
     return next();
 }
 
@@ -142,29 +142,12 @@ async function setJwtCookie(req, res, next) {
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
     });
-    await UserModel.updateStatus(username, 'ONLINE');
+    await UserModel.updateLoginStatus(username, 'ONLINE');
     res.cookie('jwtToken', token, {
         httpOnly: true,
         secure: true,
         sameSite: 'Strict',
     });
-    return next();
-}
-
-async function checkUserAuthenticated(req, res, next) {
-    const token = req.cookies.jwtToken;
-    if (!token) {
-        res.locals.isAuthenticated = false;
-        return next();
-    }
-    try {
-        const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
-        req.user = decodedUser;
-        res.locals.isAuthenticated = true;
-    } catch (error) {
-        // res.status(401).json({ message: 'Token expired or invalid' });
-        res.locals.isAuthenticated = false;
-    }
     return next();
 }
 
@@ -181,6 +164,7 @@ async function create(req, res, next) {
         passwordHash,
         salt,
         'DEAD',
+        new Date(Date.now()).toLocaleString(),
         'SUPERDUPERADMIN',
     );
     await user.persist();
@@ -213,7 +197,7 @@ async function validateNewCredentials(req, res, next) {
 
 async function getAllUsers() {
     try {
-        const users = await UserModel.getAllStatuses();
+        const users = await UserModel.getAllLoginStatuses();
         return users;
     } catch (err) {
         return null;
@@ -225,7 +209,6 @@ export {
     setJwtCookie,
     handleSocketConnections,
     deauthenticateUser,
-    checkUserAuthenticated,
     create,
     validateNewCredentials,
     getAllUsers,

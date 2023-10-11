@@ -41,7 +41,7 @@ $(document).ready(() => {
                                 'user-list-body-element-status-offline';
                         }
                         status.id = `user-status-${user.username}`;
-                        status.innerHTML = user.current_status;
+                        status.innerHTML = user.login_status;
                         element.appendChild(name);
                         element.appendChild(status);
                         listbody.appendChild(element);

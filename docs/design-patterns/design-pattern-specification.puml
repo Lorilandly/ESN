@@ -1,25 +1,20 @@
 @startuml
 class Client
-class Target <<interface>>
 class PerformanceTestModel
-class PostgresSQLClient
-Target : saveResult()
+class Pool
 PerformanceTestModel : saveResult()
-PostgresSQLClient : saveResultPostgresSQL()
-
-note right of Target
-Not present in our implementation
-end note
+Pool : query(arg1, arg2...)
 
 note bottom of PerformanceTestModel
 Adapter
 end note
 
-note bottom of PostgresSQLClient
+note bottom of Pool
 Adaptee
+PostgreSQL Client Object (Connection "Pool")
+makes PostgreSQL specific queries
 end note
 
-Client -> Target
-Target <|.. PerformanceTestModel 
-PerformanceTestModel -> PostgresSQLClient
+Client -> PerformanceTestModel
+PerformanceTestModel -> Pool
 @enduml

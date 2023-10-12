@@ -26,11 +26,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        
-    - name: Set up environment variables
-      env:
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      run: echo "SECRET_KEY=$JWT_SECRET" >> .env
 
     - run: npm ci
-    - run: npm run dev
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run test
+      run: npm test

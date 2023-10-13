@@ -1,5 +1,5 @@
 import MessageModel from '../models/message.js';
-import { createDBPool } from '../db.js';
+import { createDBPool, initModels, getDBPool } from '../db.js';
 
 let testDBHost = null;
 let testDBPort = null;
@@ -22,11 +22,16 @@ async function startPerformanceTestMode(testDuration, requestInterval) {
     // broadcast message to all connected users that performance test mode is stating
     ioInstance.emit('performance-mode-start');
 
+    // get current DB pool
+    let savedDBPool = getDBPool();
+
     // create new DB pool
     let pool = createDBPool(testDBHost, testDBPort, testDBName);
 
+    initModels(pool);
+
     // init models with new DB pool
-    await MessageModel.initModel(pool);
+    // await MessageModel.initModel(pool);
 
     console.log('performance test mode active!!!');
 
@@ -41,6 +46,12 @@ async function startPerformanceTestMode(testDuration, requestInterval) {
     console.log(
         `End of performance test mode, time taken: ${new Date() - startTime}`,
     );
+
+    // drop all the messages created during the test
+    await MessageModel.dropAllMessages();
+
+    // reinstall old DB Pool
+    initModels(savedDBPool);
 }
 
 export { initPerformanceTestController, startPerformanceTestMode };

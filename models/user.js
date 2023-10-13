@@ -62,9 +62,9 @@ class UserModel {
 
     static dbPoolInstance = null;
 
-    static initModel(dbPool) {
-        this.dbPoolInstance = dbPool;
-        this.dbPoolInstance.query(createUsersTable);
+    static async initModel(dbPool) {
+        UserModel.dbPoolInstance = dbPool;
+        await UserModel.dbPoolInstance.query(createUsersTable);
     }
 
     async persist() {
@@ -85,11 +85,11 @@ class UserModel {
     }
 
     static async updateStatus(name, status) {
-        await this.dbPoolInstance.query(changeUserStatus, [status, name]);
+        await UserModel.dbPoolInstance.query(changeUserStatus, [status, name]);
     }
 
     static async findIdByName(name) {
-        const queryResponse = await this.dbPoolInstance.query(
+        const queryResponse = await UserModel.dbPoolInstance.query(
             selectUserByName,
             [name],
         );
@@ -103,7 +103,7 @@ class UserModel {
 
     static async findByName(name) {
         try {
-            const queryResponse = await this.dbPoolInstance.query(
+            const queryResponse = await UserModel.dbPoolInstance.query(
                 selectUserByName,
                 [name],
             );
@@ -125,7 +125,7 @@ class UserModel {
     }
 
     static async getAllStatuses() {
-        const queryResponse = await this.dbPoolInstance.query(
+        const queryResponse = await UserModel.dbPoolInstance.query(
             getAllUserStatusesOrdered,
         );
         if (queryResponse.rowCount == 0) {

@@ -25,6 +25,10 @@ WHERE receiver_id = 0
 ORDER BY time ASC;
 `;
 
+const dropAllMessages = `
+DELETE FROM messages;
+`;
+
 class MessageModel {
     constructor(sender_id, receiver_id, body, time, status) {
         this.sender_id = sender_id;
@@ -36,9 +40,9 @@ class MessageModel {
 
     static dbPoolInstance = null;
 
-    static initModel(dbPool) {
-        this.dbPoolInstance = dbPool;
-        this.dbPoolInstance.query(createMessagesTable);
+    static async initModel(dbPool) {
+        MessageModel.dbPoolInstance = dbPool;
+        await MessageModel.dbPoolInstance.query(createMessagesTable);
     }
 
     async persist() {
@@ -62,6 +66,10 @@ class MessageModel {
             );
             return queryResponse.rows;
         }
+    }
+
+    static async dropAllMessages() {
+        await MessageModel.dbPoolInstance.query(dropAllMessages);
     }
 }
 

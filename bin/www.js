@@ -14,6 +14,7 @@ import {
     handleSocketConnections,
 } from '../controllers/auth.js';
 import { initIOInstanceForChat } from '../controllers/publicMessage.js';
+import { initPerformanceTestController } from '../controllers/performanceTest.js';
 import { Server } from 'socket.io';
 
 /**
@@ -48,8 +49,16 @@ initModels(dbPool);
 let server = http.createServer(app);
 const io = new Server(server);
 
+/**
+ * Get test database configs for performance test controller configuration.
+ */
+const testDBHost = config.get('performance-test-db.host');
+const testDBPort = normalizePort(config.get('performance-test-db.port'));
+const testDBName = config.get('performance-test-db.name');
+
 initIOInstanceForChat(io);
 handleSocketConnections(io);
+initPerformanceTestController(testDBHost, testDBPort, testDBName, io);
 
 /**
  * Listen on provided port, on all network interfaces.

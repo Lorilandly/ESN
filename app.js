@@ -10,6 +10,8 @@ import joinRouter from './routes/join.js';
 import usersRouter from './routes/users.js';
 import welcomeRouter from './routes/welcome.js';
 import publicWallRouter from './routes/publicWall.js';
+import performanceTestRouter from './routes/performanceTest.js';
+
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -41,5 +43,6 @@ app.use('/join', joinRouter);
 app.use('/users', usersRouter);
 app.use('/welcome', welcomeRouter);
 app.use('/publicWall', publicWallRouter);
+app.use('/performanceTest', performanceTestRouter);
 
 export default app;

@@ -27,7 +27,7 @@ $(document).ready(() => {
                 let messageHtml = '';
                 messages.forEach((message) => {
                     let status;
-                    switch(message.status) {
+                    switch (message.status) {
                         case 'OK':
                             status = ' - 🟢';
                             break;
@@ -85,7 +85,7 @@ $(document).ready(() => {
     socket.on('create message', ({ username, time, status, body }) => {
         let messageList = $('#message-container');
         let message = document.createElement('div');
-        switch(status) {
+        switch (status) {
             case 'OK':
                 status = ' - 🟢';
                 break;

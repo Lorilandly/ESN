@@ -46,15 +46,13 @@ router.post(
 );
 
 // return current user status
-router.get(
-    '/status', (req, res) => {
-        passport.authenticate('jwt', (err, user) => {
-            if (user) return res.status(200).json({status: user.currentStatus});
-            if (err) return res.status(500).json({});
-            return res.status(401).json({});
-        })(req, res);
-    }
-);
+router.get('/status', (req, res) => {
+    passport.authenticate('jwt', (err, user) => {
+        if (user) return res.status(200).json({ status: user.currentStatus });
+        if (err) return res.status(500).json({});
+        return res.status(401).json({});
+    })(req, res);
+});
 
 router.put(
     '/login',

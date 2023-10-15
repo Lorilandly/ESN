@@ -60,7 +60,15 @@ WHERE username = $2;
  * TODO: have a Model interface
  */
 class UserModel {
-    constructor(username, passwordHash, salt, loginStatus, status, statusTime, privilege) {
+    constructor(
+        username,
+        passwordHash,
+        salt,
+        loginStatus,
+        status,
+        statusTime,
+        privilege,
+    ) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.salt = salt;
@@ -95,9 +103,12 @@ class UserModel {
         ]);
         return res.rows[0].exists;
     }
-    
+
     async updateStatus(status) {
-        await UserModel.dbPoolInstance.query(changeUserStatus, [status, this.username]);
+        await UserModel.dbPoolInstance.query(changeUserStatus, [
+            status,
+            this.username,
+        ]);
     }
 
     static async updateLoginStatus(name, status) {

@@ -10,7 +10,7 @@ $(document).ready(() => {
             success: () => {
                 location.href = '/';
             },
-            error: (_) => {
+            error: (res) => {
                 console.error('Login error:', res);
             },
         });

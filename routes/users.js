@@ -1,5 +1,6 @@
 import express from 'express';
 import passport from 'passport';
+import updateUserStatus from '../controllers/status.js';
 let router = express.Router();
 
 import {
@@ -36,15 +37,17 @@ router.post(
 );
 
 router.post(
-    '/:id/status',
+    '/status',
     await passport.authenticate('jwt', { session: false }),
+    updateUserStatus,
     (req, res) => {
-        userId = req.params.id;
+        return res.status(200).json({});
     },
 );
 
+// return current user status
 router.get(
-    '/:id/status', (req, res) => {
+    '/status', (req, res) => {
         passport.authenticate('jwt', (err, user) => {
             if (user) return res.status(200).json({status: user.currentStatus});
             if (err) return res.status(500).json({});

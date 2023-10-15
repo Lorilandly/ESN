@@ -49,6 +49,12 @@ SET login_status = $1
 WHERE username = $2;
 `;
 
+const changeUserStatus = `
+UPDATE users
+SET status = $1
+WHERE username = $2;
+`;
+
 /*
  * User Model - provides interface for inserting and reading users from the database.
  * TODO: have a Model interface
@@ -88,6 +94,10 @@ class UserModel {
             name,
         ]);
         return res.rows[0].exists;
+    }
+    
+    async updateStatus(status) {
+        await UserModel.dbPoolInstance.query(changeUserStatus, [status, this.username]);
     }
 
     static async updateLoginStatus(name, status) {

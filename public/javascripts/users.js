@@ -1,3 +1,26 @@
+function createPrivateChatButton(senderId, receiverId) {
+    // Create the form element
+    const form = document.createElement('form');
+    form.action = '/privateChatWindow/' + senderId + "/" + receiverId;
+    form.method = 'get';
+
+    // Create the button inside the form
+    const chatButton = document.createElement('button');
+    chatButton.type = 'submit';
+    chatButton.innerText = 'Start Chat';
+
+    // Append the button to the form
+    form.appendChild(chatButton);
+    return form;
+}
+
+function getCurrentUserId() {
+    return $.ajax('/users/current', {
+        method: 'GET',
+        datatype: 'json'
+    });
+}
+
 $(document).ready(() => {
     // Capture form submission event
     $('#logout-form').submit((event) => {
@@ -42,8 +65,12 @@ $(document).ready(() => {
                         }
                         status.id = `user-status-${user.username}`;
                         status.innerHTML = user.current_status;
+                        // add private chat button
+                        // button/form
+                        let button = createPrivateChatButton(getCurrentUserId(), user.id);
                         element.appendChild(name);
                         element.appendChild(status);
+                        element.appendChild(button);
                         listbody.appendChild(element);
                     }
                 }

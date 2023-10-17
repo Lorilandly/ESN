@@ -8,12 +8,14 @@ import {
     validateNewCredentials,
     deauthenticateUser,
     getAllUsers,
+    getCurrentUserId,
 } from '../controllers/auth.js';
 
 /* GET all users */
 router.get(
     '/',
     passport.authenticate('jwt', { session: false }),
+    setJwtCookie,
     async (req, res) => {
         const users = await getAllUsers();
         if (users) {
@@ -50,6 +52,15 @@ router.put(
     deauthenticateUser,
     (req, res) => {
         return res.status(200).json({});
+    },
+);
+
+router.get(
+    '/current',
+    passport.authenticate('jwt', { session: false }),
+    async (req, res) => {
+        const userId = getCurrentUserId(req);
+        return res.status(200).json(userId);
     },
 );
 

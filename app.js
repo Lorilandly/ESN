@@ -5,7 +5,7 @@ import path from 'path';
 import logger from 'morgan';
 
 import indexRouter from './routes/index.js';
-import messagesRouter from './routes/publicMessages.js';
+import messagesRouter from './routes/messages.js';
 import joinRouter from './routes/join.js';
 import usersRouter from './routes/users.js';
 import welcomeRouter from './routes/welcome.js';
@@ -36,7 +36,7 @@ app.use(
 );
 
 app.use('/', indexRouter);
-app.use('/publicMessages', messagesRouter);
+app.use('/messages', messagesRouter);
 app.use('/join', joinRouter);
 app.use('/users', usersRouter);
 app.use('/welcome', welcomeRouter);

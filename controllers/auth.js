@@ -168,6 +168,14 @@ async function checkUserAuthenticated(req, res, next) {
     return next();
 }
 
+async function validateUrlParam(req, res, next) {
+    let userId = await UserModel.findIdByName(req.user.username);
+    if (req.params.senderId != userId) {
+        return res.status(403).json({ error: 'Illegal sender Id' });
+    }
+    return next();
+}
+
 /*
  * Save user to db with generated hashedPassword and salt
  * TODO: This should go to User controller
@@ -220,13 +228,20 @@ async function getAllUsers() {
     }
 }
 
+async function getCurrentUserId(req) {
+    let userId = await UserModel.findIdByName(req.user.username);
+    return userId;
+}
+
 export {
     initAuthController,
     setJwtCookie,
     handleSocketConnections,
     deauthenticateUser,
     checkUserAuthenticated,
+    validateUrlParam,
     create,
     validateNewCredentials,
     getAllUsers,
+    getCurrentUserId,
 };

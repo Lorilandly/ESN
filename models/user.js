@@ -30,7 +30,7 @@ SELECT EXISTS(
 `;
 
 const getAllUserStatusesOrdered = `
-SELECT username, current_status
+SELECT id, username, current_status
 FROM users
 ORDER BY 
     CASE 

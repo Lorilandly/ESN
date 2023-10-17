@@ -1,5 +1,15 @@
 var socket = io();
 
+function getReceiverIdFromPath() {
+    const pathSegments = window.location.pathname.split('/');
+    return pathSegments[2];  
+}
+
+function getReceiverIdFromPath() {
+    const pathSegments = window.location.pathname.split('/');
+    return pathSegments[2];
+}
+
 $(document).ready(() => {
     // Capture form submission event
     $('#logout-form').submit((event) => {
@@ -17,10 +27,12 @@ $(document).ready(() => {
     });
 
     // Fetch and render all messages
+    //
     $.ajax({
-        url: '/messages/public',
+        url: '/messages/private',
         method: 'GET',
         dataType: 'json',
+        data: { senderId: senderId, receiverId: getReceiverIdFromPath() },
         success: (response) => {
             let messages = response.messages;
             if (messages && messages.length > 0) {
@@ -57,7 +69,7 @@ $(document).ready(() => {
         let messageBody = $('#message').val();
 
         // Create message by calling API
-        $.ajax('/messages/public', {
+        $.ajax('/messages/private', {
             method: 'POST',
             data: { message: messageBody },
             dataType: 'json', // Specify the response data type

@@ -40,7 +40,7 @@ const dbPool = createDBPool(dbHost, dbPort, dbName);
 /**
  * Use database connection to initialize our data models.
  */
-initModels(dbPool);
+await initModels(dbPool);
 
 /**
  * Create HTTP server.
@@ -52,13 +52,10 @@ const io = new Server(server);
 /**
  * Get test database configs for performance test controller configuration.
  */
-const testDBHost = config.get('performance-test-db.host');
-const testDBPort = normalizePort(config.get('performance-test-db.port'));
-const testDBName = config.get('performance-test-db.name');
 
 initIOInstanceForChat(io);
 handleSocketConnections(io);
-initPerformanceTestController(testDBHost, testDBPort, testDBName, io);
+initPerformanceTestController(io);
 
 /**
  * Listen on provided port, on all network interfaces.

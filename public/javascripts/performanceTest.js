@@ -1,7 +1,7 @@
 document.getElementById('startTest').addEventListener('click', () => {
     let interval = document.getElementById('interval').value;
     let duration = document.getElementById('duration').value;
-    fetch('/performanceTest', {
+    fetch('/performanceTest/start', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

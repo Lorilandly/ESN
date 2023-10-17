@@ -6,7 +6,7 @@ router.get('/', (req, res) => {
     return res.render('performanceTest');
 });
 
-router.post('/', (req, res) => {
+router.post('/start', (req, res) => {
     const { interval, duration } = req.body;
     startPerformanceTestMode(duration, interval);
     res.status(201).json({ message: 'testing complete' });

@@ -15,7 +15,6 @@ import {
 router.get(
     '/',
     passport.authenticate('jwt', { session: false }),
-    setJwtCookie,
     async (req, res) => {
         const users = await getAllUsers();
         if (users) {
@@ -59,8 +58,9 @@ router.get(
     '/current',
     passport.authenticate('jwt', { session: false }),
     async (req, res) => {
-        const userId = getCurrentUserId(req);
-        return res.status(200).json(userId);
+        const userId = await getCurrentUserId(req);
+        console.log("id " + userId);
+        return res.status(200).json({userId: userId});
     },
 );
 

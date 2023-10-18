@@ -1,13 +1,13 @@
 var socket = io();
 
-function getReceiverIdFromPath() {
+function getSenderIdFromPath() {
     const pathSegments = window.location.pathname.split('/');
     return pathSegments[2];  
 }
 
 function getReceiverIdFromPath() {
     const pathSegments = window.location.pathname.split('/');
-    return pathSegments[2];
+    return pathSegments[3];
 }
 
 $(document).ready(() => {
@@ -26,13 +26,16 @@ $(document).ready(() => {
         });
     });
 
+    console.log(getSenderIdFromPath());
+    console.log(getReceiverIdFromPath());
+
     // Fetch and render all messages
     //
     $.ajax({
         url: '/messages/private',
         method: 'GET',
         dataType: 'json',
-        data: { senderId: senderId, receiverId: getReceiverIdFromPath() },
+        data: { senderId: getSenderIdFromPath(), receiverId: getReceiverIdFromPath() },
         success: (response) => {
             let messages = response.messages;
             if (messages && messages.length > 0) {

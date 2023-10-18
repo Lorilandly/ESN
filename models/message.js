@@ -25,6 +25,15 @@ WHERE receiver_id = 0
 ORDER BY time ASC;
 `;
 
+const getAllPrivateMessages = `
+SELECT sender.username, receiver.username, sender_id, receiver_id, body, time, status
+FROM messages
+JOIN users AS sender ON messages.sender_id = sender.id
+JOIN users AS receiver ON messages.receiver_id = receiver.id
+WHERE (messages.receiver_id = $1 AND messages.sender_id = $2)
+   OR (messages.receiver_id = $2 AND messages.sender_id = $1)
+ORDER BY messages.time ASC;`
+
 class MessageModel {
     constructor(sender_id, receiver_id, body, time, status) {
         this.sender_id = sender_id;
@@ -54,6 +63,19 @@ class MessageModel {
     static async getAllPublicMessages() {
         const queryResponse =
             await MessageModel.dbPoolInstance.query(getAllPublicMessages);
+        if (queryResponse.rowCount == 0) {
+            return null;
+        } else {
+            queryResponse.rows.forEach(
+                (row) => (row['time'] = row['time'].toLocaleString()),
+            );
+            return queryResponse.rows;
+        }
+    }
+
+    static async getAllPrivateMessages() {
+        const queryResponse =
+            await MessageModel.dbPoolInstance.query(getAllPrivateMessages);
         if (queryResponse.rowCount == 0) {
             return null;
         } else {

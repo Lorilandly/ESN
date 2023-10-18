@@ -1,7 +1,6 @@
 import MessageModel from '../models/message.js';
-import { createTestDB, initModels, getDBPool } from '../db.js';
+import { initAndSetTestDB, initModels, deleteTestDBAndRestore } from '../db.js';
 
-let testDBName = "sb2-project-performance";
 let ioInstance = null;
 
 function initPerformanceTestController(io) {
@@ -17,20 +16,7 @@ async function startPerformanceTestMode(testDuration, requestInterval) {
     // broadcast message to all connected users that performance test mode is starting
     ioInstance.emit('performance-mode-start');
 
-    // get current DB pool
-    let savedDBPool = getDBPool();
-    
-    // create test database using existing db
-    // 1. createTestDB
-        // 2. connect to testDB pool
-    let pool = await createTestDB(savedDBPool, testDBName);
-
-    console.log(`test pool: ${JSON.stringify(pool)}`);
-
-    await initModels(pool);
-
-    // init models with new DB pool
-    // await MessageModel.initModel(pool);
+    await initAndSetTestDB();
 
     console.log('performance test mode active!!!');
 
@@ -45,11 +31,14 @@ async function startPerformanceTestMode(testDuration, requestInterval) {
     console.log(
         `End of performance test mode, time taken: ${new Date() - startTime}`,
     );
-
-    // 3. delete test database
-
-    // reinstall old DB Pool
-    initModels(savedDBPool);
 }
 
-export { initPerformanceTestController, startPerformanceTestMode };
+async function endPerformanceTestMode() {
+    await deleteTestDBAndRestore();
+}
+
+export {
+    initPerformanceTestController,
+    startPerformanceTestMode,
+    endPerformanceTestMode,
+};

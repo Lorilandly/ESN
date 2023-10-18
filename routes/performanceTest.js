@@ -1,14 +1,18 @@
 import express from 'express';
-import { startPerformanceTestMode } from '../controllers/performanceTest.js';
+import {
+    startPerformanceTestMode,
+    endPerformanceTestMode,
+} from '../controllers/performanceTest.js';
 let router = express.Router();
 
 router.get('/', (req, res) => {
     return res.render('performanceTest');
 });
 
-router.post('/start', (req, res) => {
+router.post('/start', async (req, res) => {
     const { interval, duration } = req.body;
-    startPerformanceTestMode(duration, interval);
+    await startPerformanceTestMode(duration, interval);
+    await endPerformanceTestMode();
     res.status(201).json({ message: 'testing complete' });
 });
 

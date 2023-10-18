@@ -3,6 +3,10 @@ var testInProgress = false;
 document.getElementById('startTest').addEventListener('click', async () => {
     let interval = document.getElementById('interval').value;
     let duration = document.getElementById('duration').value;
+    if(interval == '' || duration == ''){
+        alert('Please enter a value for both interval and duration');
+        return;
+    }
     fetch('/performanceTest/start', {
         method: 'POST',
         headers: {
@@ -18,7 +22,7 @@ document.getElementById('startTest').addEventListener('click', async () => {
         document.getElementById('performance-setting').style = 'display: none';
         document.getElementById('performance-ongoing').style = 'display: flex';
         testInProgress = true;
-
+        showTestProgress(duration);
         await new Promise(r => setTimeout(r, duration * 1000));
         document.getElementById('performance-ongoing').style = 'display: none';
         document.getElementById('performance-setting').style = 'display: flex';
@@ -51,4 +55,18 @@ function stopPerformanceTest() {
     .catch((error) => {
         console.error('Error:', error);
     });
+}
+
+function showTestProgress(duration){
+    var progress_bar = document.getElementById('progress-bar');
+    var width = 1;
+    var id = setInterval(frame, duration * 10);
+    function frame() {
+        if (width >= 100) {
+            clearInterval(id);
+        } else {
+            width++;
+            progress_bar.style.width = width + '%';
+        }
+    }
 }

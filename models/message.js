@@ -26,7 +26,7 @@ ORDER BY time ASC;
 `;
 
 const getAllPrivateMessages = `
-SELECT sender.username, receiver.username, sender_id, receiver_id, body, time, status
+SELECT sender.username AS sender_name, receiver.username AS receiver_name, sender_id, receiver_id, body, time, status
 FROM messages
 JOIN users AS sender ON messages.sender_id = sender.id
 JOIN users AS receiver ON messages.receiver_id = receiver.id
@@ -73,9 +73,9 @@ class MessageModel {
         }
     }
 
-    static async getAllPrivateMessages() {
+    static async getAllPrivateMessages(senderId, receiverId) {
         const queryResponse =
-            await MessageModel.dbPoolInstance.query(getAllPrivateMessages);
+            await MessageModel.dbPoolInstance.query(getAllPrivateMessages, [senderId, receiverId]);
         if (queryResponse.rowCount == 0) {
             return null;
         } else {

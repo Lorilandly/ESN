@@ -10,7 +10,7 @@ function initIOInstanceForChat(io) {
 
 async function createMessage(req, res) {
     const token = req.cookies.jwtToken;
-    let user_id, username;
+    let userId, username;
     if (!token) {
         // handle case where user isn't authenticated
         return res.status(401).json({});
@@ -19,13 +19,13 @@ async function createMessage(req, res) {
         const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
         // handle decodedUser (username) string
         username = decodedUser.username;
-        user_id = await UserModel.findIdByName(username);
+        userId = await UserModel.findIdByName(username);
     } catch {
         // handle failure to decode JWT
         return res.status(401).json({});
     }
 
-    if (!user_id || !username) {
+    if (!userId || !username) {
         return res.status(401).json({});
     }
     if (!req.body.message) {
@@ -36,12 +36,11 @@ async function createMessage(req, res) {
     let body = req.body.message;
     let time = new Date(Date.now()).toLocaleString();
     let status = 'STATUS';
-    let receiver_name = req.body.receiver_name;
-    let receiver_id = 0;
-    if (receiver_name) {
-        receiver_id = await UserModel.findIdByName(receiver_name);
+    let receiverId = 0;
+    if (req.body.receiverId) {
+        receiverId = req.body.receiverId;
     }
-    let message = new MessageModel(user_id, receiver_id, body, time, status);
+    let message = new MessageModel(userId, receiverId, body, time, status);
     await message.persist();
 
     ioInstance.emit('create message', { username, time, status, body });
@@ -93,9 +92,9 @@ async function getAllPublicMessages() {
     }
 }
 
-async function getAllPrivateMessages() {
+async function getAllPrivateMessages(senderId, receiverId) {
     try {
-        const messages = await MessageModel.getAllPrivateMessages();
+        const messages = await MessageModel.getAllPrivateMessages(senderId, receiverId);
         return messages;
     } catch (err) {
         console.error(err);

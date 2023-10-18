@@ -26,8 +26,8 @@ $(document).ready(() => {
         });
     });
 
-    console.log(getSenderIdFromPath());
-    console.log(getReceiverIdFromPath());
+    let senderId = getSenderIdFromPath();
+    let receiverId = getReceiverIdFromPath();
 
     // Fetch and render all messages
     //
@@ -35,7 +35,7 @@ $(document).ready(() => {
         url: '/messages/private',
         method: 'GET',
         dataType: 'json',
-        data: { senderId: getSenderIdFromPath(), receiverId: getReceiverIdFromPath() },
+        data: { senderId: senderId, receiverId: receiverId },
         success: (response) => {
             let messages = response.messages;
             if (messages && messages.length > 0) {
@@ -44,7 +44,7 @@ $(document).ready(() => {
                     messageHtml += `
                         <div class="message">
                             <div class="message-title">
-                                <span class="message-sender-name">${message.username}</span>
+                                <span class="message-sender-name">${message.sender_name}</span>
                                 <span class="message-time">${message.time}</span>
                                 <span class="message-status">${message.status}</span>
                             </div>
@@ -74,7 +74,7 @@ $(document).ready(() => {
         // Create message by calling API
         $.ajax('/messages/private', {
             method: 'POST',
-            data: { message: messageBody },
+            data: { message: messageBody, receiverId: receiverId },
             dataType: 'json', // Specify the response data type
             error: (error) => {
                 console.error('API Error:', error);

@@ -59,7 +59,6 @@ router.get(
     passport.authenticate('jwt', { session: false }),
     async (req, res) => {
         const userId = await getCurrentUserId(req);
-        console.log("id " + userId);
         return res.status(200).json({userId: userId});
     },
 );

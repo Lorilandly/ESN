@@ -1,0 +1,43 @@
+.main-container .performance-holder{
+    width: 100%;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-container .performance-holder .input-field{
+    width: calc(100% - 20px);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.main-container .performance-holder .input-field .form-label{
+    width: 60%;
+    text-align: left;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.main-container .performance-holder .input-field .form-input{
+    width: 30%;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid black;
+    padding: 5px;
+    font-size: 16px;
+}
+
+.main-container .performance-holder button {
+    width: 150px;
+    height: 50px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    font-size: 16px;
+    color: white;
+    background-color: rgb(0, 0, 0);
+    font-weight: bold;
+    margin: 30px;
+}

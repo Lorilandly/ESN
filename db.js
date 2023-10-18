@@ -53,7 +53,7 @@ const deleteTestDBQuery = `DROP DATABASE "sb2-project-performance";`;
 async function deleteTestDBAndRestore() {
     // expects test db is active
     await currentDBPool.end();
-    initModels(savedDBPool);
+    await initModels(savedDBPool);
     await currentDBPool.query(deleteTestDBQuery);
 }
 

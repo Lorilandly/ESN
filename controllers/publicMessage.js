@@ -1,6 +1,7 @@
 import MessageModel from '../models/message.js';
 import UserModel from '../models/user.js';
 import jwt from 'jsonwebtoken';
+import { testModeActive, testUserId } from './performanceTest.js';
 
 let ioInstance = null;
 
@@ -16,8 +17,8 @@ async function createPublicMessage(req, res) {
         return res.status(401).json({});
     }
     try {
-        const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
         // handle decodedUser (username) string
+        const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
         username = decodedUser.username;
         user_id = await UserModel.findIdByName(username);
     } catch {
@@ -36,6 +37,7 @@ async function createPublicMessage(req, res) {
     let body = req.body.message;
     let time = new Date(Date.now()).toLocaleString();
     let status = 'STATUS';
+    user_id = testModeActive ? testUserId : user_id;
     let message = new MessageModel(user_id, 0, body, time, status);
     await message.persist();
 

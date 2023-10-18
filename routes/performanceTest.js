@@ -1,9 +1,12 @@
 import express from 'express';
+import passport from 'passport';
 import {
     startPerformanceTestMode,
     endPerformanceTestMode,
 } from '../controllers/performanceTest.js';
 let router = express.Router();
+
+router.use(passport.authenticate('jwt', { session: false }));
 
 router.get('/', (req, res) => {
     return res.render('performanceTest');
@@ -16,7 +19,6 @@ router.post('/start', async (req, res) => {
 });
 
 router.post('/stop', async (req, res) => {
-    console.log(`stopping performance test mode!`);
     await endPerformanceTestMode();
     res.status(201).json({ message: 'testing stopped' });
 });

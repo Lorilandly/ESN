@@ -2,7 +2,7 @@ var socket = io();
 
 function getSenderIdFromPath() {
     const pathSegments = window.location.pathname.split('/');
-    return pathSegments[2];  
+    return pathSegments[2];
 }
 
 function getReceiverIdFromPath() {

@@ -4,7 +4,7 @@ import {
     createMessage,
     createPublicMessage,
     getAllPublicMessages,
-    getAllPrivateMessages
+    getAllPrivateMessages,
 } from '../controllers/publicMessage.js';
 let router = express.Router();
 
@@ -18,7 +18,10 @@ router.get('/public', async (req, res) => {
 router.post('/public', await createPublicMessage);
 
 router.get('/private', async (req, res) => {
-    const messages = await getAllPrivateMessages(req.query.senderId, req.query.receiverId);
+    const messages = await getAllPrivateMessages(
+        req.query.senderId,
+        req.query.receiverId,
+    );
     return res.status(200).json({ messages: messages });
 });
 

@@ -94,7 +94,10 @@ async function getAllPublicMessages() {
 
 async function getAllPrivateMessages(senderId, receiverId) {
     try {
-        const messages = await MessageModel.getAllPrivateMessages(senderId, receiverId);
+        const messages = await MessageModel.getAllPrivateMessages(
+            senderId,
+            receiverId,
+        );
         return messages;
     } catch (err) {
         console.error(err);
@@ -102,4 +105,10 @@ async function getAllPrivateMessages(senderId, receiverId) {
     }
 }
 
-export { initIOInstanceForChat, createMessage, createPublicMessage, getAllPublicMessages, getAllPrivateMessages };
+export {
+    initIOInstanceForChat,
+    createMessage,
+    createPublicMessage,
+    getAllPublicMessages,
+    getAllPrivateMessages,
+};

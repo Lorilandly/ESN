@@ -32,7 +32,7 @@ JOIN users AS sender ON messages.sender_id = sender.id
 JOIN users AS receiver ON messages.receiver_id = receiver.id
 WHERE (messages.receiver_id = $1 AND messages.sender_id = $2)
    OR (messages.receiver_id = $2 AND messages.sender_id = $1)
-ORDER BY messages.time ASC;`
+ORDER BY messages.time ASC;`;
 
 class MessageModel {
     constructor(sender_id, receiver_id, body, time, status) {
@@ -74,8 +74,10 @@ class MessageModel {
     }
 
     static async getAllPrivateMessages(senderId, receiverId) {
-        const queryResponse =
-            await MessageModel.dbPoolInstance.query(getAllPrivateMessages, [senderId, receiverId]);
+        const queryResponse = await MessageModel.dbPoolInstance.query(
+            getAllPrivateMessages,
+            [senderId, receiverId],
+        );
         if (queryResponse.rowCount == 0) {
             return null;
         } else {

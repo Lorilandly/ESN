@@ -49,7 +49,8 @@ function sortAndDisplayUsers() {
 $(document).ready(() => {
     socket.on('userStatus', (data) => {
         const { username, status } = data;
-
+        console.log('In listening user status');
+        console.log(username + ' is ' + status);
         // Use a unique ID for each user's status element
         const statusElement = document.getElementById(
             `user-status-${username}`,
@@ -119,4 +120,14 @@ $(document).ready(() => {
         // alphabetical by ONLINE then alphabetical by OFFLINE
         sortAndDisplayUsers();
     });
+});
+
+let windowClosed = false;
+
+window.addEventListener('beforeunload', (event) => {
+    // Check if the window is being closed intentionally
+    if (!windowClosed) {
+        //console.log("window close");
+        socket.emit('window-close');
+    }
 });

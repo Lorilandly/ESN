@@ -65,7 +65,7 @@ function initAuthController(config) {
 
 // Function to handle Socket.IO connections and user status updates
 function handleSocketConnections(io) {
-    io.on('connection', (socket) => {
+    io.on('connection', async (socket) => {
         let cookie = socket.request.headers.cookie;
         let jwtIndex = cookie.indexOf('jwtToken');
         let jwtToken = cookie.substring(jwtIndex).split('=')[1];
@@ -73,6 +73,8 @@ function handleSocketConnections(io) {
         let decodedUser;
         try {
             decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
+            await UserModel.updateStatus(decodedUser.username, 'ONLINE');
+            console.log('!!! ' + decodedUser.username + ' is ONLINE');
         } catch (exception) {
             console.error(`failed to decode user from jwt, ${exception}`);
         }
@@ -81,12 +83,27 @@ function handleSocketConnections(io) {
             username: decodedUser.username,
             status: 'ONLINE',
         });
+        // console.log("!!! " + decodedUser.username + " is ONLINE");
 
         // Handle user disconnection for offline status
         socket.on('disconnect', async () => {
+            //console.log("a user disconnected");
+        });
+
+        socket.on('window-close', async (reason) => {
             // Update the user status in the database to 'OFFLINE'
             try {
-                await UserModel.updateStatus(decodedUser.username, 'OFFLINE');
+                if (reason === 'INTENTIONAL_CLOSE') {
+                    await UserModel.updateStatus(
+                        decodedUser.username,
+                        'OFFLINE',
+                    );
+                    console.log(
+                        'Socket disconnect, ' +
+                            decodedUser.username +
+                            ' is OFFLINE',
+                    );
+                }
             } catch (error) {
                 console.error('Error updating user status:', error);
             }
@@ -134,6 +151,7 @@ async function deauthenticateUser(req, res, next) {
         sameSite: 'Strict',
     });
     await UserModel.updateStatus(req.user.username, 'OFFLINE');
+    console.log('--- Deauthenticate ' + req.user.username + ' to offline');
     return next();
 }
 
@@ -143,6 +161,7 @@ async function setJwtCookie(req, res, next) {
         expiresIn: '1h',
     });
     await UserModel.updateStatus(username, 'ONLINE');
+    console.log('-- DB updated ' + username + ' to ONLINE');
     res.cookie('jwtToken', token, {
         httpOnly: true,
         secure: true,
@@ -222,6 +241,8 @@ async function validateNewCredentials(req, res, next) {
 async function getAllUsers() {
     try {
         const users = await UserModel.getAllStatuses();
+        console.log('Get all users');
+        console.log(users);
         return users;
     } catch (err) {
         return null;

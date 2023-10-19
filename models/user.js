@@ -22,10 +22,22 @@ SELECT * FROM users
 WHERE username = $1;
 `;
 
-const checkUserExists = `
+const selectUserById = `
+SELECT * FROM users
+WHERE id = $1;
+`;
+
+const checkUserExistsWithName = `
 SELECT EXISTS(
     SELECT 1 FROM users
     WHERE username = $1
+);
+`;
+
+const checkUserExistsWithId = `
+SELECT EXISTS(
+    SELECT 1 FROM users
+    WHERE id = $1
 );
 `;
 
@@ -77,10 +89,19 @@ class UserModel {
         ]);
     }
 
-    async nameExists(name) {
-        const res = await UserModel.dbPoolInstance.query(checkUserExists, [
-            name,
-        ]);
+    static async nameExists(name) {
+        const res = await UserModel.dbPoolInstance.query(
+            checkUserExistsWithName,
+            [name],
+        );
+        return res.rows[0].exists;
+    }
+
+    static async idExists(id) {
+        const res = await UserModel.dbPoolInstance.query(
+            checkUserExistsWithId,
+            [id],
+        );
         return res.rows[0].exists;
     }
 

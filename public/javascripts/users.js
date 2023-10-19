@@ -59,8 +59,6 @@ $(document).ready(() => {
                             `user-status-${user.username}`,
                         );
                         if (!user_id) {
-                            //console.log("username is " + user.username);
-                            //console.log("current status is " + user.current_status);
                             let element = document.createElement('div');
                             element.className = 'user-list-body-element';
                             let name = document.createElement('div');

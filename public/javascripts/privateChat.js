@@ -10,6 +10,21 @@ function getReceiverIdFromPath() {
     return pathSegments[3];
 }
 
+function getCurrentUserId() {
+    return new Promise((resolve, reject) => {
+        $.ajax('/users/current', {
+            method: 'GET',
+            datatype: 'json',
+            success: (response) => {
+                resolve(response.userId);
+            },
+            error: (error) => {
+                reject(error);
+            },
+        });
+    });
+}
+
 $(document).ready(() => {
     // Capture form submission event
     $('#logout-form').submit((event) => {
@@ -27,15 +42,14 @@ $(document).ready(() => {
     });
 
     let senderId = getSenderIdFromPath();
-    let receiverId = getReceiverIdFromPath();
+    let receiverIdFromPath = getReceiverIdFromPath();
 
     // Fetch and render all messages
-    //
     $.ajax({
         url: '/messages/private',
         method: 'GET',
         dataType: 'json',
-        data: { senderId: senderId, receiverId: receiverId },
+        data: { senderId: senderId, receiverId: receiverIdFromPath },
         success: (response) => {
             let messages = response.messages;
             if (messages && messages.length > 0) {
@@ -68,24 +82,31 @@ $(document).ready(() => {
     $('#messageForm').submit((event) => {
         event.preventDefault();
 
-        // Get the message body from the input field
         let messageBody = $('#message').val();
 
-        // Create message by calling API
         $.ajax('/messages/private', {
             method: 'POST',
-            data: { message: messageBody, receiverId: receiverId },
-            dataType: 'json', // Specify the response data type
+            data: { message: messageBody, receiverId: receiverIdFromPath },
+            dataType: 'json',
             error: (error) => {
                 console.error('API Error:', error);
             },
         });
     });
 
-    socket.on('create message', ({ username, time, status, body }) => {
-        let messageList = $('#message-container');
-        let message = document.createElement('div');
-        message.innerHTML = `
+    getCurrentUserId().then((currentId) => {
+        socket.on(
+            'create private message',
+            ({ username, time, status, body, userId, receiverId }) => {
+                // only render message if receiver is correct
+                if (
+                    currentId == receiverId && receiverIdFromPath != userId
+                ) {
+                    return;
+                }
+                let messageList = $('#message-container');
+                let message = document.createElement('div');
+                message.innerHTML = `
         <div class="message">
             <div class="message-title">
                 <span class="message-sender-name">${username}</span>
@@ -97,8 +118,10 @@ $(document).ready(() => {
             </div>
         </div>
         `;
-        messageList.append(message);
-        messageList.scrollTop(messageList[0].scrollHeight);
-        $('#message').val('');
+                messageList.append(message);
+                messageList.scrollTop(messageList[0].scrollHeight);
+                $('#message').val('');
+            },
+        );
     });
 });

@@ -67,7 +67,7 @@ $(document).ready(() => {
         });
     });
 
-    socket.on('create message', ({ username, time, status, body }) => {
+    socket.on('create public message', ({ username, time, status, body }) => {
         let messageList = $('#message-container');
         let message = document.createElement('div');
         message.innerHTML = `

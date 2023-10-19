@@ -127,7 +127,6 @@ let windowClosed = false;
 window.addEventListener('beforeunload', (event) => {
     // Check if the window is being closed intentionally
     if (!windowClosed) {
-        //console.log("window close");
         socket.emit('window-close');
     }
 });

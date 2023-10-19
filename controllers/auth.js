@@ -7,6 +7,7 @@ import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
 
 let reservedUsernames = null;
+let userSocketMapping = {};
 
 const opts = {
     secretOrKey: process.env.SECRET_KEY,
@@ -70,11 +71,13 @@ function handleSocketConnections(io) {
         let jwtIndex = cookie.indexOf('jwtToken');
         let jwtToken = cookie.substring(jwtIndex).split('=')[1];
 
-        let decodedUser;
+        let decodedUser, userId;
         try {
             decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
             await UserModel.updateStatus(decodedUser.username, 'ONLINE');
+            userId = await UserModel.findIdByName(decodedUser.username);
             console.log('!!! ' + decodedUser.username + ' is ONLINE');
+            userSocketMapping[userId] = socket.id;
         } catch (exception) {
             console.error(`failed to decode user from jwt, ${exception}`);
         }
@@ -83,11 +86,10 @@ function handleSocketConnections(io) {
             username: decodedUser.username,
             status: 'ONLINE',
         });
-        // console.log("!!! " + decodedUser.username + " is ONLINE");
 
-        // Handle user disconnection for offline status
-        socket.on('disconnect', async () => {
-            //console.log("a user disconnected");
+        socket.on('disconnect', () => {
+            // Remove the user from the mapping on disconnect
+            delete userSocketMapping[Object.keys(userSocketMapping).find(key => userSocketMapping[key] === socket.id)];
         });
 
         socket.on('window-close', async (reason) => {
@@ -192,6 +194,10 @@ async function validateUrlParam(req, res, next) {
     if (req.params.senderId != userId) {
         return res.status(403).json({ error: 'Illegal sender Id' });
     }
+    let receiverIdExists = await UserModel.idExists(req.params.receiverId);
+    if (!receiverIdExists) {
+        return res.status(403).json({ error: 'Illegal receiver Id' });
+    }
     return next();
 }
 
@@ -241,8 +247,6 @@ async function validateNewCredentials(req, res, next) {
 async function getAllUsers() {
     try {
         const users = await UserModel.getAllStatuses();
-        console.log('Get all users');
-        console.log(users);
         return users;
     } catch (err) {
         return null;
@@ -255,6 +259,7 @@ async function getCurrentUserId(req) {
 }
 
 export {
+    userSocketMapping,
     initAuthController,
     setJwtCookie,
     handleSocketConnections,

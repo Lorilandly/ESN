@@ -23,6 +23,12 @@
             <% } else { %>
                 <!-- Show this when authenticated -->
                 <!-- Display locals.users -->
+                <div class="alert-container" id="alert-container">
+                    <span>You received new messages!</span>
+                    <form action="/newMessages" class="new-message-button" method="GET">
+                        <button class="form-button">View</button>
+                    </form>
+                </div>
                 <div class="user-list">
                     <div class="user-list-header">
                         <div class="user-list-header-name">Name</div>
@@ -61,5 +67,6 @@
                 </div>
             <% } %>
         </div>
+        <script src="/javascripts/alert.js"></script>
     </body>
 </html>

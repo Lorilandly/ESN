@@ -81,11 +81,13 @@ function handleSocketConnections(io) {
         } catch (exception) {
             console.error(`failed to decode user from jwt, ${exception}`);
         }
-
-        io.emit('userStatus', {
-            username: decodedUser.username,
-            status: 'ONLINE',
-        });
+        if (decodedUser) {
+            io.emit('userStatus', {
+                username: decodedUser.username,
+                status: 'ONLINE',
+            });
+        }
+        
 
         socket.on('disconnect', () => {
             // Remove the user from the mapping on disconnect

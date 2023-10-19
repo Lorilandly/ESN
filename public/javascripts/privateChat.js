@@ -107,17 +107,17 @@ $(document).ready(() => {
                 let messageList = $('#message-container');
                 let message = document.createElement('div');
                 message.innerHTML = `
-        <div class="message">
-            <div class="message-title">
-                <span class="message-sender-name">${username}</span>
-                <span class="message-time">${time}</span>
-                <span class="message-status">${status}</span>
-            </div>
-            <div class="message-body">
-                <p>${body}</p>
-            </div>
-        </div>
-        `;
+                    <div class="message">
+                        <div class="message-title">
+                            <span class="message-sender-name">${username}</span>
+                            <span class="message-time">${time}</span>
+                            <span class="message-status">${status}</span>
+                        </div>
+                        <div class="message-body">
+                            <p>${body}</p>
+                        </div>
+                    </div>
+                    `;
                 messageList.append(message);
                 messageList.scrollTop(messageList[0].scrollHeight);
                 $('#message').val('');

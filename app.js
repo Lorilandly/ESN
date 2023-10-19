@@ -11,6 +11,7 @@ import usersRouter from './routes/users.js';
 import welcomeRouter from './routes/welcome.js';
 import publicWallRouter from './routes/publicWall.js';
 import privateChatRouter from './routes/privateChat.js';
+import newMessagesRouter from './routes/newMessages.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -43,5 +44,6 @@ app.use('/users', usersRouter);
 app.use('/welcome', welcomeRouter);
 app.use('/publicWall', publicWallRouter);
 app.use('/privateChat', privateChatRouter);
+app.use('/newMessages', newMessagesRouter);
 
 export default app;

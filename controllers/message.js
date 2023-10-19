@@ -9,7 +9,7 @@ function initIOInstanceForChat(io) {
     ioInstance = io;
 }
 
-async function createMessage(req, res) {
+async function createMessage(req, res, next) {
     const token = req.cookies.jwtToken;
     let userId, username;
     if (!token) {
@@ -41,7 +41,8 @@ async function createMessage(req, res) {
     if (req.body.receiverId) {
         receiverId = req.body.receiverId;
     }
-    let message = new MessageModel(userId, receiverId, body, time, status);
+    let readStatus = 'UNREAD';
+    let message = new MessageModel(userId, receiverId, body, time, status, readStatus);
     await message.persist();
 
     if (receiverId == 0) {
@@ -60,6 +61,14 @@ async function createMessage(req, res) {
             userId,
             receiverId,
         });
+        ioInstance.to(userSocketMapping[receiverId]).emit('new message', {
+            username,
+            time,
+            status,
+            body,
+            userId,
+            receiverId,
+        });
         ioInstance.to(userSocketMapping[userId]).emit('create private message', {
             username,
             time,
@@ -68,9 +77,10 @@ async function createMessage(req, res) {
             userId,
             receiverId,
         });
+
     }
 
-    return res.status(201).json({ status: 'success' });
+    return next();
 }
 
 async function getAllPublicMessages() {
@@ -96,9 +106,34 @@ async function getAllPrivateMessages(senderId, receiverId) {
     }
 }
 
+async function getAllNewPrivateMessages(receiverId) {
+    try {
+        const messages = await MessageModel.getAllNewPrivateMessages(
+            receiverId,
+        );
+        return messages;
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
+}
+
+async function updatePrivateMessagesStatus(receiverId) {
+    try {
+        await MessageModel.updatePrivateMessagesStatus(
+            receiverId,
+        );
+        ioInstance.to(userSocketMapping[receiverId]).emit('new messages viewed');
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 export {
     initIOInstanceForChat,
     createMessage,
     getAllPublicMessages,
     getAllPrivateMessages,
+    getAllNewPrivateMessages,
+    updatePrivateMessagesStatus
 };

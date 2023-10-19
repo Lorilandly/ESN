@@ -9,6 +9,7 @@ import {
     deauthenticateUser,
     getAllUsers,
     getCurrentUserId,
+    checkUserAuthenticated,
 } from '../controllers/auth.js';
 
 /* GET all users */
@@ -56,7 +57,7 @@ router.put(
 
 router.get(
     '/current',
-    passport.authenticate('jwt', { session: false }),
+    checkUserAuthenticated,
     async (req, res) => {
         const userId = await getCurrentUserId(req);
         return res.status(200).json({ userId: userId });

@@ -144,3 +144,14 @@ body {
     background-color: inherit;
     border: none;
 }
+
+.alert-container {
+    height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+}
+
+.alert-container.visible {
+    height: 30px;
+}

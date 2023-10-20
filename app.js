@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import logger from 'morgan';
 
-import normalOperationsChecker from './middlewares/normalOperationsChecker.js'
+import normalOperationsChecker from './middlewares/normalOperationsChecker.js';
 
 import indexRouter from './routes/index.js';
 import messagesRouter from './routes/publicMessages.js';

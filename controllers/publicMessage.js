@@ -40,7 +40,7 @@ async function createPublicMessage(req, res) {
     user_id = testModeActive ? testUserId : user_id;
     let message = new MessageModel(user_id, 0, body, time, status);
     await message.persist();
-    if(!testModeActive){
+    if (!testModeActive) {
         ioInstance.emit('create message', { username, time, status, body });
     }
     return res.status(201).json({ status: 'success' });

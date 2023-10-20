@@ -15,7 +15,7 @@ async function startPerformanceTestMode(req, res) {
     // broadcast message to all connected users that performance test mode is starting
     const token = req.cookies.jwtToken;
     let adminUsername;
-    if (!token){
+    if (!token) {
         return res.status(401).json({});
     }
     try {

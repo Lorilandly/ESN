@@ -12,15 +12,8 @@ router.get('/', (req, res) => {
     return res.render('performanceTest');
 });
 
-router.post('/start', async (req, res) => {
-    const { interval, duration } = req.body;
-    await startPerformanceTestMode(duration, interval);
-    res.status(201).json({ message: 'testing complete' });
-});
+router.post('/start', startPerformanceTestMode);
 
-router.post('/stop', async (req, res) => {
-    await endPerformanceTestMode();
-    res.status(201).json({ message: 'testing stopped' });
-});
+router.post('/stop', endPerformanceTestMode);
 
 export default router;

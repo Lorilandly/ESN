@@ -7,6 +7,13 @@
     align-items: center;
 }
 
+.main-container .performance-holder .test-results{
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    width: calc(100% - 20px);
+}
+
 .main-container .performance-holder .input-field{
     width: calc(100% - 20px);
     display: flex;

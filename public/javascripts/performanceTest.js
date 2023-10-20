@@ -1,5 +1,21 @@
 var testInProgress = false;
 
+$(document).ready(() => {
+    $('#logout-form').submit((event) => {
+        event.preventDefault();
+        $.ajax('/users/logout', {
+            method: 'PUT',
+            datatype: 'json',
+            success: () => {
+                location.href = '/';
+            },
+            error: (_) => {
+                console.error('Login error:', res);
+            },
+        });
+    });
+});
+
 document.getElementById('startTest').addEventListener('click', async () => {
     let interval = document.getElementById('interval').value;
     let duration = document.getElementById('duration').value;
@@ -22,11 +38,23 @@ document.getElementById('startTest').addEventListener('click', async () => {
                 'display: none';
             document.getElementById('performance-ongoing').style =
                 'display: flex';
-
+            document.getElementById('test-results').style = 'display: none';
             showTestProgress(duration);
-            await startPerformanceTest(duration, interval);
+            let testResult = await startPerformanceTest(duration, interval);
             if (testInProgress) {
                 stopPerformanceTest();
+                // Display test results
+                let partDuration = duration / 2;
+                let postsPerSecond = testResult.postCompleted / partDuration;
+                let getsPerSecond = testResult.getCompleted / partDuration;
+
+                console.log(testResult);
+
+                document.getElementById('test-results').style = 'display: flex';
+                document.getElementById('post-result').innerHTML =
+                    'POST requests completed per second: ' + postsPerSecond;
+                document.getElementById('get-result').innerHTML =
+                    'GET requests completed per second: ' + getsPerSecond;
             }
         })
         .catch((error) => {
@@ -42,36 +70,54 @@ async function startPerformanceTest(duration, interval) {
     testInProgress = true;
     let startTime = new Date().getTime();
     // POST Requests
-    let numPOST = 0;
+    let numPOSTSent = 0;
+    let numPOSTCompleted = 0;
     let postDuration = duration / 2;
-    while (
-        testInProgress &&
-        !timeElapsed(postDuration, startTime) &&
-        numPOST < 1000
-    ) {
-        messageBody = generateMessage(numPOST);
+
+    while (testInProgress && !timeElapsed(postDuration, startTime)) {
+        if (numPOSTSent > 1000) {
+            alert('POST requests sent exceeded 1000');
+            stopPerformanceTest();
+            return;
+        }
+        messageBody = generateMessage(numPOSTSent);
         $.ajax('/publicMessages', {
             method: 'POST',
             data: { message: messageBody },
             dataType: 'json',
+            success: () => {
+                numPOSTCompleted++;
+            },
             error: (error) => {
                 console.error('API Error:', error);
             },
         });
-        numPOST++;
+        numPOSTSent++;
         await new Promise((r) => setTimeout(r, interval));
     }
+
     // GET Requests
+    let numGETCompleted = 0;
     while (testInProgress && !timeElapsed(duration, startTime)) {
         $.ajax('/publicMessages', {
             method: 'GET',
             dataType: 'json',
+            success: () => {
+                numGETCompleted++;
+            },
             error: (error) => {
                 console.error('API Error:', error);
             },
         });
         await new Promise((r) => setTimeout(r, interval));
     }
+    // testResult should contain the number of post and get requests
+    // completed at the time that the test expires
+    testResult = {
+        postCompleted: numPOSTCompleted,
+        getCompleted: numGETCompleted,
+    };
+    return testResult;
 }
 
 function timeElapsed(duration, startTime) {
@@ -80,12 +126,12 @@ function timeElapsed(duration, startTime) {
 
 // Satisfies Test Payload Rule
 function generateMessage(n) {
-    message = n.toString();
-    message += '-'.repeat(20 - message.length);
-    return message;
+    let message = n.toString();
+    return message + '-'.repeat(20 - message.length);
 }
 
 function stopPerformanceTest() {
+    testInProgress = false;
     fetch('/performanceTest/stop', {
         method: 'POST',
         headers: {
@@ -97,7 +143,6 @@ function stopPerformanceTest() {
                 'display: flex';
             document.getElementById('performance-ongoing').style =
                 'display: none';
-            testInProgress = false;
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -105,9 +150,10 @@ function stopPerformanceTest() {
 }
 
 function showTestProgress(duration) {
-    var progress_bar = document.getElementById('progress-bar');
-    var width = 1;
-    var id = setInterval(frame, duration * 10);
+    let progress_bar = document.getElementById('progress-bar');
+    progress_bar.style.width = '0%';
+    let width = 1;
+    let id = setInterval(frame, duration * 10);
     function frame() {
         if (width >= 100) {
             clearInterval(id);

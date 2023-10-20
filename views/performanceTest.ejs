@@ -11,7 +11,6 @@
         <script src="/socket.io/socket.io.js"></script>
     </head>
 <body>
-    <script src="/javascripts/users.js"></script>
     <div class="main-container">
         <div class="header">
             <h1 class="header-text">Performance Test</h1>
@@ -26,6 +25,10 @@
                 <input class="form-input" id="duration" type="text" name="duration">
             </div>
             <button id="startTest">Start</button>
+            <div class="test-results" id="test-results" style="display: none;">
+                <h3 class="post-result" id="post-result"></h3>
+                <h3 class="get-result" id="get-result"></h3>
+            </div>
         </div>
         <div id="performance-ongoing" class="performance-holder" style="display: none;">
             <div class="progress-border" id="progress-bar-border">

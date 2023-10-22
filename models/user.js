@@ -1,5 +1,3 @@
-import { query } from 'express';
-
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,

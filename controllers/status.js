@@ -1,5 +1,3 @@
-import UserModel from '../models/user.js';
-
 // get userid，update status by id
 async function updateUserStatus(req, res, next) {
     let user = req.user;

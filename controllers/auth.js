@@ -75,6 +75,7 @@ function handleSocketConnections(io) {
             decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
         } catch (exception) {
             console.error(`failed to decode user from jwt, ${exception}`);
+            return;
         }
 
         let status = await UserModel.findByName(decodedUser.username);
@@ -92,6 +93,7 @@ function handleSocketConnections(io) {
                 await UserModel.updateLoginStatus(decodedUser.username, 'OFFLINE');
             } catch (error) {
                 console.error('Error updating user status:', error);
+                return;
             }
             // Emit 'userStatus' event to notify other clients
             io.emit('userStatus', {

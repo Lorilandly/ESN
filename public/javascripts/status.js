@@ -107,7 +107,7 @@ $(document).ready(() => {
                 'user-list-body-element-name',
             );
             let newUsernameElement = document.createElement('span');
-            newUserElement.setAttribute(
+            newUsernameElement.setAttribute(
                 'class',
                 'user-list-body-element-name-username',
             );

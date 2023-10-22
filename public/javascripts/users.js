@@ -50,7 +50,7 @@ $(document).ready(() => {
                                 break;
                         }
                         let loginStatus = document.createElement('div');
-                        if (user.current_status == 'ONLINE') {
+                        if (user.login_status == 'ONLINE') {
                             loginStatus.className =
                                 'user-list-body-element-status-online';
                         } else {

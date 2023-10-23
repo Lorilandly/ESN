@@ -1,5 +1,5 @@
-var testInProgress = false;
 var intervalID = null;
+var testInProgress = false;
 
 $(document).ready(() => {
     $('#logout-form').submit((event) => {
@@ -15,6 +15,7 @@ $(document).ready(() => {
             },
         });
     });
+    getTestMode();
 });
 
 document.getElementById('startTest').addEventListener('click', async () => {
@@ -55,8 +56,6 @@ document.getElementById('startTest').addEventListener('click', async () => {
                 let postsPerSecond = testResult.postCompleted / partDuration;
                 let getsPerSecond = testResult.getCompleted / partDuration;
 
-                console.log(testResult);
-
                 document.getElementById('test-results').style = 'display: flex';
                 document.getElementById('post-result').innerHTML =
                     'POST requests completed per second: ' + postsPerSecond;
@@ -75,6 +74,7 @@ document.getElementById('stopTest').addEventListener('click', async () => {
 
 async function startPerformanceTest(duration, interval) {
     testInProgress = true;
+    localStorage.setItem('testInProgress', 'true');
     let startTime = new Date().getTime();
     // POST Requests
     let numPOSTSent = 0;
@@ -139,6 +139,7 @@ function generateMessage(n) {
 
 function stopPerformanceTest() {
     testInProgress = false;
+    localStorage.setItem('testInProgress', 'false');
     let progress_bar = document.getElementById('progress-bar');
     progress_bar.style.width = '0%';
     clearInterval(intervalID);
@@ -173,16 +174,26 @@ function showTestProgress(duration) {
     }
 }
 
-const beforeUnloadListener = (event) => {
-    if (testInProgress) {
-        event.preventDefault();
-        event.returnValue = "";
+async function getTestMode(){
+    let response = await fetch('/performanceTest/testStatus', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    let json = await response.json();
+    testInProgress = json.testModeActive;
+    return json.testModeActive;
+}
+
+window.onload = async function() {
+    if (await getTestMode()){
+        stopPerformanceTest();
     }
 }
-window.addEventListener('beforeunload', beforeUnloadListener);
 
-window.addEventListener('unload', function() {
-    if (testInProgress) {
+window.addEventListener('visibilitychange', async function() {
+    if (testInProgress){
         stopPerformanceTest();
     }
 });

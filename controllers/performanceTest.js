@@ -7,14 +7,14 @@ let testUserId = null;
 async function startPerformanceTestMode(req, res) {
     const dbManager = DatabaseManager.getInstance();
     testAdminUsername = req.user.username;
-    testUserId = await dbManager.initAndSetTestDB();
+    testUserId = await dbManager.activateTestDB();
     testModeActive = true;
     res.status(201).json({ message: 'test mode active' });
 }
 
 async function endPerformanceTestMode(req, res) {
     const dbManager = DatabaseManager.getInstance();
-    await dbManager.deleteTestDBAndRestore();
+    await dbManager.deactivateTestDB();
     testModeActive = false;
     testAdminUsername = null;
     res.status(201).json({ message: 'testing stopped' });

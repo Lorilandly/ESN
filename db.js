@@ -6,15 +6,17 @@ class DatabaseManager {
     static instance;
 
     constructor() {
-        this.mainDBPool = null;
-        this.mainDBPort = null;
-        this.mainDBName = null;
+        this.activeDB = null;
+
+        this.DBPool = null;
+        this.DBHost = null;
+        this.DBPort = null;
+        this.DBName = null;
 
         this.testDBPool = null;
         this.testDBHost = null;
         this.testDBPort = null;
         this.testDBName = null;
-        this.testUserId = null;
     }
 
     static getInstance() {
@@ -24,19 +26,12 @@ class DatabaseManager {
         return DatabaseManager.instance;
     }
 
-    setMainDBConfigs(host, port, name) {
-        this.mainDBPool = host;
-        this.mainDBPort = port;
-        this.mainDBName = name;
+    static async initModels(db) {
+        await UserModel.initModel(db);
+        await MessageModel.initModel(db);
     }
 
-    setTestDBConfigs(host, port, name) {
-        this.testDBHost = host;
-        this.testDBPort = port;
-        this.testDBName = name;
-    }
-
-    createDBPool(host, port, name) {
+    static createDBPool(host, port, name) {
         let pool = new pg.Pool({
             host: host,
             port: port,
@@ -47,59 +42,74 @@ class DatabaseManager {
         return pool;
     }
 
-    async initModels(db) {
-        await UserModel.initModel(db);
-        await MessageModel.initModel(db);
-    }
-
-    async initAndSetMainDB() {
-        this.mainDBPool = this.createDBPool(
-            this.mainDBHost,
-            this.mainDBPort,
-            this.mainDBName,
+    configureDB(host, port, name) {
+        this.DBHost = host;
+        this.DBPort = port;
+        this.DBName = name;
+        this.DBPool = DatabaseManager.createDBPool(
+            this.DBHost,
+            this.DBPort,
+            this.DBName,
         );
-        await this.initModels(this.mainDBPool);
     }
 
-    async initAndSetTestDB() {
-        // expects currentDBPool is Production DB Pool
-        const createTestDBQuery = `CREATE DATABASE "sb2-project-performance";`;
-        try {
-            await this.mainDBPool.query(createTestDBQuery);
-        } catch (e) {
-            console.error(`failed to create test db: ${e}`);
+    configureTestDB(host, port, name) {
+        this.testDBHost = host;
+        this.testDBPort = port;
+        this.testDBName = name;
+    }
+
+    async activateDB() {
+        if (this.activeDB === 'main') {
             return;
         }
-        this.testDBPool = this.createDBPool(
+        this.activeDB = 'main';
+        await DatabaseManager.initModels(this.DBPool);
+    }
+
+    async activateTestDB() {
+        // expects currentDBPool is not test DB Pool
+        if (this.activeDB === 'test') {
+            return;
+        }
+        this.activeDB = 'test';
+        const createTestDBQuery = `CREATE DATABASE "${this.testDBName}";`;
+        try {
+            await this.DBPool.query(createTestDBQuery);
+        } catch (e) {
+            // DB already created. We'll let this fall through.
+            console.error(`failed to create test db: ${e}`);
+        }
+        this.testDBPool = DatabaseManager.createDBPool(
             this.testDBHost,
             this.testDBPort,
             this.testDBName,
         );
 
-        await this.initModels(this.testDBPool);
+        await DatabaseManager.initModels(this.testDBPool);
 
         let testUser = new UserModel(
             'testUser',
-            'testPass',
-            '',
+            'hash',
+            'salt',
             'ONLINE',
-            'ADMIN',
+            'UNDEFINED',
         );
-        this.testUserId = await testUser.persist();
+        let testUserId = await testUser.persist();
 
-        await UserModel.initModel(this.mainDBPool);
-        return this.testUserId;
+        await UserModel.initModel(this.DBPool);
+        return testUserId;
     }
 
-    async deleteTestDBAndRestore() {
+    async deactivateTestDB() {
         // expects test db is active
-        if (this.testDBPool === null) {
+        if (this.activeDB != 'test') {
             return;
         }
-        const deleteTestDBQuery = `DROP DATABASE "sb2-project-performance";`;
+        const deleteTestDBQuery = `DROP DATABASE "${this.testDBName}";`;
         await this.testDBPool.end();
-        await this.initModels(this.mainDBPool);
-        await this.mainDBPool.query(deleteTestDBQuery);
+        await this.activateDB();
+        await this.DBPool.query(deleteTestDBQuery);
     }
 }
 

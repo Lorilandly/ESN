@@ -33,9 +33,7 @@ router.post('/private', await createMessage, async (req, res) => {
 });
 
 router.get('/private/new', async (req, res) => {
-    const messages = await getAllNewPrivateMessages(
-        req.query.receiverId,
-    );
+    const messages = await getAllNewPrivateMessages(req.query.receiverId);
     return res.status(200).json({ messages: messages });
 });
 

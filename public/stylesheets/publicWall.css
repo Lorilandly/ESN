@@ -123,3 +123,7 @@ body {
 .alert-container.visible {
     height: 30px;
 }
+
+.notification {
+    margin-right: 1.25em;
+}

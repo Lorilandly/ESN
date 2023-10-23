@@ -55,13 +55,9 @@ router.put(
     },
 );
 
-router.get(
-    '/current',
-    checkUserAuthenticated,
-    async (req, res) => {
-        const userId = await getCurrentUserId(req);
-        return res.status(200).json({ userId: userId });
-    },
-);
+router.get('/current', checkUserAuthenticated, async (req, res) => {
+    const userId = await getCurrentUserId(req);
+    return res.status(200).json({ userId: userId });
+});
 
 export default router;

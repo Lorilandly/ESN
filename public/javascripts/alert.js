@@ -25,21 +25,20 @@ $(document).ready(function () {
             success: (response) => {
                 let messages = response.messages;
                 if (messages && messages.length > 0) {
-                    $("#alert-container").addClass("visible");
+                    $('#alert-container').addClass('visible');
                 }
             },
             error: (error) => {
                 console.error('Failed to fetch messages:', error);
             },
-        })
+        });
     });
-    
+
     socket.on('new message', () => {
-        $("#alert-container").addClass("visible");
-    })
+        $('#alert-container').addClass('visible');
+    });
 
     socket.on('new messages viewed', () => {
-        $("#alert-container").removeClass("visible");
-    })
-
+        $('#alert-container').removeClass('visible');
+    });
 });

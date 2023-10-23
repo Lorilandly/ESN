@@ -7,7 +7,7 @@ function createPrivateChatButton(senderId, receiverId) {
     // Create the button inside the form
     const chatButton = document.createElement('button');
     chatButton.type = 'submit';
-    chatButton.innerText = 'Start Chat';
+    chatButton.innerText = 'Chat';
 
     // Append the button to the form
     form.appendChild(chatButton);

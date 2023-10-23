@@ -25,6 +25,7 @@ function createReplyButton(senderId, receiverId) {
     const chatButton = document.createElement('button');
     chatButton.type = 'submit';
     chatButton.innerText = 'Reply';
+    chatButton.setAttribute('class', 'reply-button');
 
     // Append the button to the form
     form.appendChild(chatButton);
@@ -75,7 +76,7 @@ $(document).ready(() => {
                     let senderText = $('<span>').text(sender);
                     senderDiv.append(senderText);
                     senderDiv.append(button);
-                    $('#message-container').append(senderDiv);  // Assuming you have a container div with id="container"
+                    $('#message-container').append(senderDiv); // Assuming you have a container div with id="container"
 
                     let messageHtml = '';
                     groupedMessages[sender].forEach((message) => {
@@ -98,23 +99,21 @@ $(document).ready(() => {
             error: (error) => {
                 console.error('Failed to fetch messages:', error);
             },
-        }).then(
-            async (response) => {
-                if (response.messages && response.messages.length > 0) {
-                    $.ajax('/messages/private/readStatus', {
-                        method: 'PUT',
-                        datatype: 'json',
-                        data: { receiverId: response.messages[0].receiver_id },
-                        success: () => { },
-                        error: (error) => {
-                            console.error('Failed to update messages read status:', error);
-                        },
-                    });
-                }
+        }).then(async (response) => {
+            if (response.messages && response.messages.length > 0) {
+                $.ajax('/messages/private/readStatus', {
+                    method: 'PUT',
+                    datatype: 'json',
+                    data: { receiverId: response.messages[0].receiver_id },
+                    success: () => {},
+                    error: (error) => {
+                        console.error(
+                            'Failed to update messages read status:',
+                            error,
+                        );
+                    },
+                });
             }
-        );
-
-        
+        });
     });
-    
 });

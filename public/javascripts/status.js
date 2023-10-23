@@ -49,8 +49,6 @@ function sortAndDisplayUsers() {
 $(document).ready(() => {
     socket.on('userStatus', (data) => {
         const { username, status } = data;
-        console.log('In listening user status');
-        console.log(username + ' is ' + status);
         // Use a unique ID for each user's status element
         const statusElement = document.getElementById(
             `user-status-${username}`,

@@ -42,7 +42,14 @@ async function createMessage(req, res, next) {
         receiverId = req.body.receiverId;
     }
     let readStatus = 'UNREAD';
-    let message = new MessageModel(userId, receiverId, body, time, status, readStatus);
+    let message = new MessageModel(
+        userId,
+        receiverId,
+        body,
+        time,
+        status,
+        readStatus,
+    );
     await message.persist();
 
     if (receiverId == 0) {
@@ -53,14 +60,16 @@ async function createMessage(req, res, next) {
             body,
         });
     } else {
-        ioInstance.to(userSocketMapping[receiverId]).emit('create private message', {
-            username,
-            time,
-            status,
-            body,
-            userId,
-            receiverId,
-        });
+        ioInstance
+            .to(userSocketMapping[receiverId])
+            .emit('create private message', {
+                username,
+                time,
+                status,
+                body,
+                userId,
+                receiverId,
+            });
         ioInstance.to(userSocketMapping[receiverId]).emit('new message', {
             username,
             time,
@@ -69,15 +78,16 @@ async function createMessage(req, res, next) {
             userId,
             receiverId,
         });
-        ioInstance.to(userSocketMapping[userId]).emit('create private message', {
-            username,
-            time,
-            status,
-            body,
-            userId,
-            receiverId,
-        });
-
+        ioInstance
+            .to(userSocketMapping[userId])
+            .emit('create private message', {
+                username,
+                time,
+                status,
+                body,
+                userId,
+                receiverId,
+            });
     }
 
     return next();
@@ -108,9 +118,8 @@ async function getAllPrivateMessages(senderId, receiverId) {
 
 async function getAllNewPrivateMessages(receiverId) {
     try {
-        const messages = await MessageModel.getAllNewPrivateMessages(
-            receiverId,
-        );
+        const messages =
+            await MessageModel.getAllNewPrivateMessages(receiverId);
         return messages;
     } catch (err) {
         console.error(err);
@@ -120,10 +129,10 @@ async function getAllNewPrivateMessages(receiverId) {
 
 async function updatePrivateMessagesStatus(receiverId) {
     try {
-        await MessageModel.updatePrivateMessagesStatus(
-            receiverId,
-        );
-        ioInstance.to(userSocketMapping[receiverId]).emit('new messages viewed');
+        await MessageModel.updatePrivateMessagesStatus(receiverId);
+        ioInstance
+            .to(userSocketMapping[receiverId])
+            .emit('new messages viewed');
     } catch (err) {
         console.error(err);
     }
@@ -135,5 +144,5 @@ export {
     getAllPublicMessages,
     getAllPrivateMessages,
     getAllNewPrivateMessages,
-    updatePrivateMessagesStatus
+    updatePrivateMessagesStatus,
 };

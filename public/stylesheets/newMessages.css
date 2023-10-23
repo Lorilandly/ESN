@@ -128,3 +128,11 @@ body {
     display: flex;
     flex-direction: row;
 }
+
+.notification {
+    margin-right: 1.25em;
+}
+
+.reply-button {
+    margin-left: 1.25em;
+}

@@ -142,10 +142,9 @@ class MessageModel {
     }
 
     static async updatePrivateMessagesStatus(receiverId) {
-        await MessageModel.dbPoolInstance.query(
-            changeMessageReadStatus,
-            [receiverId],
-        );
+        await MessageModel.dbPoolInstance.query(changeMessageReadStatus, [
+            receiverId,
+        ]);
     }
 }
 

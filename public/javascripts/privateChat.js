@@ -99,9 +99,7 @@ $(document).ready(() => {
             'create private message',
             ({ username, time, status, body, userId, receiverId }) => {
                 // only render message if receiver is correct
-                if (
-                    currentId == receiverId && receiverIdFromPath != userId
-                ) {
+                if (currentId == receiverId && receiverIdFromPath != userId) {
                     return;
                 }
                 let messageList = $('#message-container');

@@ -76,7 +76,6 @@ function handleSocketConnections(io) {
             decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
             await UserModel.updateStatus(decodedUser.username, 'ONLINE');
             userId = await UserModel.findIdByName(decodedUser.username);
-            console.log('!!! ' + decodedUser.username + ' is ONLINE');
             userSocketMapping[userId] = socket.id;
         } catch (exception) {
             console.error(`failed to decode user from jwt, ${exception}`);
@@ -87,11 +86,14 @@ function handleSocketConnections(io) {
                 status: 'ONLINE',
             });
         }
-        
 
         socket.on('disconnect', () => {
             // Remove the user from the mapping on disconnect
-            delete userSocketMapping[Object.keys(userSocketMapping).find(key => userSocketMapping[key] === socket.id)];
+            delete userSocketMapping[
+                Object.keys(userSocketMapping).find(
+                    (key) => userSocketMapping[key] === socket.id,
+                )
+            ];
         });
 
         socket.on('window-close', async (reason) => {
@@ -101,11 +103,6 @@ function handleSocketConnections(io) {
                     await UserModel.updateStatus(
                         decodedUser.username,
                         'OFFLINE',
-                    );
-                    console.log(
-                        'Socket disconnect, ' +
-                            decodedUser.username +
-                            ' is OFFLINE',
                     );
                 }
             } catch (error) {
@@ -155,7 +152,6 @@ async function deauthenticateUser(req, res, next) {
         sameSite: 'Strict',
     });
     await UserModel.updateStatus(req.user.username, 'OFFLINE');
-    console.log('--- Deauthenticate ' + req.user.username + ' to offline');
     return next();
 }
 
@@ -165,7 +161,6 @@ async function setJwtCookie(req, res, next) {
         expiresIn: '1h',
     });
     await UserModel.updateStatus(username, 'ONLINE');
-    console.log('-- DB updated ' + username + ' to ONLINE');
     res.cookie('jwtToken', token, {
         httpOnly: true,
         secure: true,

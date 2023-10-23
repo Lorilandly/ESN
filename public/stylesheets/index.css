@@ -155,3 +155,8 @@ body {
 .alert-container.visible {
     height: 30px;
 }
+
+.notification {
+    margin-right: 1.25em;
+    padding: 0.5em 1em; 
+}

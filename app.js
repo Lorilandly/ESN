@@ -4,6 +4,8 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import logger from 'morgan';
 
+import normalOperationsChecker from './middlewares/normalOperationsChecker.js';
+
 import indexRouter from './routes/index.js';
 import messagesRouter from './routes/publicMessages.js';
 import joinRouter from './routes/join.js';
@@ -36,6 +38,8 @@ app.use(
         path.join(__dirname, '/node_modules/bootstrap-icons', 'font'),
     ),
 );
+
+app.use(normalOperationsChecker);
 
 app.use('/', indexRouter);
 app.use('/publicMessages', messagesRouter);

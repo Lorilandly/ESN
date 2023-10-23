@@ -68,13 +68,14 @@ class UserModel {
     }
 
     async persist() {
-        await UserModel.dbPoolInstance.query(insertUser, [
+        let res = await UserModel.dbPoolInstance.query(insertUser, [
             this.username,
             this.passwordHash,
             this.salt,
             this.status,
             this.privilege,
         ]);
+        return res.rows[0].id;
     }
 
     async nameExists(name) {

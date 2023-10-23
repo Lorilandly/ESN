@@ -1,44 +1,27 @@
-import MessageModel from '../models/message.js';
-import { initAndSetTestDB, initModels, deleteTestDBAndRestore } from '../db.js';
+import { initAndSetTestDB, deleteTestDBAndRestore } from '../db.js';
 
-let ioInstance = null;
+let testModeActive = false;
+let testAdminUsername = null;
+let testUserId = null;
 
-function initPerformanceTestController(io) {
-    ioInstance = io;
+async function startPerformanceTestMode(req, res) {
+    testAdminUsername = req.user.username;
+    testUserId = await initAndSetTestDB();
+    testModeActive = true;
+    res.status(201).json({ message: 'test mode active' });
 }
 
-async function startPerformanceTestMode(testDuration, requestInterval) {
-    let startTime = new Date();
-    console.log(
-        `startPerformanceTest called with duration ${testDuration} and requestInterval ${requestInterval}`,
-    );
-
-    // broadcast message to all connected users that performance test mode is starting
-    ioInstance.emit('performance-mode-start');
-
-    await initAndSetTestDB();
-
-    console.log('performance test mode active!!!');
-
-    let sender_id = 0;
-    let receiver_id = 1;
-    let body = 'This is a test message';
-    let time = new Date();
-    let status = 'ONLINE';
-    let message = new MessageModel(sender_id, receiver_id, body, time, status);
-    await message.persist();
-
-    console.log(
-        `End of performance test mode, time taken: ${new Date() - startTime}`,
-    );
-}
-
-async function endPerformanceTestMode() {
+async function endPerformanceTestMode(req, res) {
     await deleteTestDBAndRestore();
+    testModeActive = false;
+    testAdminUsername = null;
+    res.status(201).json({ message: 'testing stopped' });
 }
 
 export {
-    initPerformanceTestController,
     startPerformanceTestMode,
     endPerformanceTestMode,
+    testModeActive,
+    testAdminUsername,
+    testUserId,
 };

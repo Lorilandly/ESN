@@ -14,7 +14,6 @@ import {
     handleSocketConnections,
 } from '../controllers/auth.js';
 import { initIOInstanceForChat } from '../controllers/publicMessage.js';
-import { initPerformanceTestController } from '../controllers/performanceTest.js';
 import { Server } from 'socket.io';
 
 /**
@@ -55,7 +54,7 @@ const io = new Server(server);
 
 initIOInstanceForChat(io);
 handleSocketConnections(io);
-initPerformanceTestController(io);
+// initPerformanceTestController(io);
 
 /**
  * Listen on provided port, on all network interfaces.

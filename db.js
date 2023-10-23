@@ -52,7 +52,6 @@ async function initAndSetTestDB() {
     await MessageModel.initModel(testDBPool);
     await UserModel.initModel(testDBPool);
 
-    // -> create test user
     let testUser = new UserModel('testUser', 'testPass', '', 'ONLINE', 'ADMIN');
     testUserId = await testUser.persist();
 
@@ -68,9 +67,11 @@ const deleteTestDBQuery = `DROP DATABASE "sb2-project-performance";`;
  */
 async function deleteTestDBAndRestore() {
     // expects test db is active
+    if (testDBPool === null) {
+        return;
+    }
     await testDBPool.end();
-    await MessageModel.initModel(mainDBPool);
-    await UserModel.initModel(mainDBPool);
+    await initModels(mainDBPool);
     await mainDBPool.query(deleteTestDBQuery);
 }
 

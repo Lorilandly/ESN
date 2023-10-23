@@ -55,9 +55,11 @@ function initAuthController(config) {
             config.get('reservedUsernamesRegistry'),
             'utf8',
         );
-        data.split('\n').filter((line) => line.trim() !== '').forEach(username => {
-            reservedUsernames.add(username);
-        });
+        data.split('\n')
+            .filter((line) => line.trim() !== '')
+            .forEach((username) => {
+                reservedUsernames.add(username);
+            });
     } catch (error) {
         console.error('Failed to parse reserved usernames:', error);
     }

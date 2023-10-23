@@ -6,19 +6,19 @@ describe('Test username check', () => {
     });
     test('empty username string', () => {
         expect(validUsername('')).toBe(false);
-    })
+    });
     test('username too short', () => {
         expect(validUsername('lo')).toBe(false);
     });
     test('username in banned list', () => {
-        // set behavior of collaborator 
+        // set behavior of collaborator
         reservedUsernames.add('root');
-        expect(validUsername('root')).toBe(false);
+        expect(validUsername('ROOT')).toBe(false);
     });
-    test('username in banned list 2', () => {
-        // set behavior of collaborator 
+    test('username upper cased in banned list', () => {
+        // set behavior of collaborator
         reservedUsernames.add('javascript');
-        expect(validUsername('javascript')).toBe(false);
+        expect(validUsername('Javascript')).toBe(false);
     });
     test('username upper case', () => {
         expect(validUsername('UPPER')).toBe('upper');

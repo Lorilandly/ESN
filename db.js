@@ -38,7 +38,12 @@ const createTestDBQuery = `CREATE DATABASE "sb2-project-performance";`;
  */
 async function initAndSetTestDB() {
     // expects currentDBPool is Production DB Pool
-    await mainDBPool.query(createTestDBQuery);
+    try {
+        await mainDBPool.query(createTestDBQuery);
+    } catch (e) {
+        console.error(`failed to create test db: ${e}`);
+        return;
+    }
     testDBPool = createDBPool(
         testDBHost,
         testDBPort,

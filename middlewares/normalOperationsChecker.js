@@ -2,28 +2,21 @@ import {
     testAdminUsername,
     testModeActive,
 } from '../controllers/performanceTest.js';
-import jwt from 'jsonwebtoken';
+import passport from 'passport';
 
 function normalOperationsChecker(req, res, next) {
     if (!testModeActive) {
         return next();
     }
-    const token = req.cookies.jwtToken;
-    let username;
+    passport.authenticate('jwt', (err, user) => {
+        console.log(`username: ${user.username}`);
+        if (err) return res.status(500).json({});
 
-    if (!token) {
-        return res.status(401).json({});
-    }
-    try {
-        const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
-        username = decodedUser.username;
-    } catch (e) {
-        return res.status(401).json({});
-    }
-    if (username != testAdminUsername) {
-        return res.render('suspend');
-    }
-    return next();
+        if (user.username != testAdminUsername) {
+            return res.render('suspend');
+        }
+        return next();
+    })(req, res);
 }
 
 export default normalOperationsChecker;

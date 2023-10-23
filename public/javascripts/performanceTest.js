@@ -34,6 +34,10 @@ document.getElementById('startTest').addEventListener('click', async () => {
         }),
     })
         .then(async (res) => {
+            if (res.status != 201) {
+                console.log(`Failed to start performance test, doing nothing`);
+                return;
+            }
             document.getElementById('performance-setting').style =
                 'display: none';
             document.getElementById('performance-ongoing').style =

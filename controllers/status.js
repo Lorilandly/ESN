@@ -5,7 +5,7 @@ async function updateUserStatus(req, res, next) {
     try {
         await user.updateStatus(req.body.status);
     } catch (err) {
-        console.log(err);
+        console.log(`failed to update status: ${err}`);
         return res.sendStatus(500);
     }
     return next();

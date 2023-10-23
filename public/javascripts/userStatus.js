@@ -1,7 +1,7 @@
 $(document).ready(() => {
     $('#main-form').submit((event) => {
-        event.preventDefault(); // Prevent the default form submission
-        // get status
+        event.preventDefault();
+
         $.ajax({
             url: '/users/status',
             method: 'POST',

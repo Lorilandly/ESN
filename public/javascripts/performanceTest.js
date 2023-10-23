@@ -169,3 +169,17 @@ function showTestProgress(duration) {
         }
     }
 }
+
+const beforeUnloadListener = (event) => {
+    if (testInProgress) {
+        event.preventDefault();
+        event.returnValue = "";
+    }
+}
+window.addEventListener('beforeunload', beforeUnloadListener);
+
+window.addEventListener('unload', function() {
+    if (testInProgress) {
+        stopPerformanceTest();
+    }
+});

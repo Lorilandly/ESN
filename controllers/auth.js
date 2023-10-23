@@ -6,7 +6,7 @@ import LocalStrategy from 'passport-local';
 import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
 
-let reservedUsernames = null;
+let reservedUsernames = new Set();
 
 const opts = {
     secretOrKey: process.env.SECRET_KEY,
@@ -55,9 +55,11 @@ function initAuthController(config) {
             config.get('reservedUsernamesRegistry'),
             'utf8',
         );
-        reservedUsernames = new Set(
-            data.split('\n').filter((line) => line.trim() !== ''),
-        );
+        data.split('\n')
+            .filter((line) => line.trim() !== '')
+            .forEach((username) => {
+                reservedUsernames.add(username);
+            });
     } catch (error) {
         console.error('Failed to parse reserved usernames:', error);
     }
@@ -109,11 +111,14 @@ function handleSocketConnections(io) {
 }
 
 function validUsername(username) {
-    return !(username.length < 3 || reservedUsernames.has(username));
+    username = username.toLowerCase();
+    return username.length < 3 || reservedUsernames.has(username)
+        ? false
+        : username;
 }
 
 function validPassword(password) {
-    return !(password.length < 4);
+    return password.length < 4 ? false : password;
 }
 
 function checkPasswordForUser(user, rawPassword) {
@@ -183,13 +188,15 @@ async function create(req, res, next) {
 
 async function validateNewCredentials(req, res, next) {
     const { username, password, dryRun } = req.body;
-    if (!validUsername(username.toLowerCase())) {
+    const checkedUsername = validUsername(username);
+    const checkedPassword = validPassword(password);
+    if (!checkedUsername) {
         return res.status(403).json({ error: 'Illegal username' });
     }
-    if (!validPassword(password)) {
+    if (!checkedPassword) {
         return res.status(403).json({ error: 'Illegal password' });
     }
-    const user = await UserModel.findByName(username.toLowerCase());
+    const user = await UserModel.findByName(checkedUsername);
     if (user) {
         if (!checkPasswordForUser(user, password)) {
             return res.status(403).json({ error: 'Username is already taken' });
@@ -201,7 +208,7 @@ async function validateNewCredentials(req, res, next) {
     if (dryRun) {
         return res.status(200).json({});
     }
-    res.locals.data = { username, password };
+    res.locals.data = { checkedUsername, password };
     return next();
 }
 
@@ -221,5 +228,8 @@ export {
     deauthenticateUser,
     create,
     validateNewCredentials,
+    reservedUsernames,
     getAllUsers,
+    validPassword,
+    validUsername,
 };

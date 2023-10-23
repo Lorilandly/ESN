@@ -5,7 +5,7 @@ import MessageModel from './models/message.js';
 class DatabaseManager {
     static instance;
 
-    constructor(){
+    constructor() {
         this.mainDBPool = null;
         this.mainDBPort = null;
         this.mainDBName = null;
@@ -17,8 +17,8 @@ class DatabaseManager {
         this.testUserId = null;
     }
 
-    static getInstance(){
-        if(!DatabaseManager.instance) {
+    static getInstance() {
+        if (!DatabaseManager.instance) {
             DatabaseManager.instance = new DatabaseManager();
         }
         return DatabaseManager.instance;
@@ -53,7 +53,11 @@ class DatabaseManager {
     }
 
     async initAndSetMainDB() {
-        this.mainDBPool = this.createDBPool(this.mainDBHost, this.mainDBPort, this.mainDBName);
+        this.mainDBPool = this.createDBPool(
+            this.mainDBHost,
+            this.mainDBPort,
+            this.mainDBName,
+        );
         await this.initModels(this.mainDBPool);
     }
 
@@ -66,13 +70,21 @@ class DatabaseManager {
             console.error(`failed to create test db: ${e}`);
             return;
         }
-        this.testDBPool = this.createDBPool(this.testDBHost, this.testDBPort, this.testDBName);
+        this.testDBPool = this.createDBPool(
+            this.testDBHost,
+            this.testDBPort,
+            this.testDBName,
+        );
 
-        await this.initModels(this.testDBPool)
-        // await MessageModel.initModel(this.testDBPool);
-        // await UserModel.initModel(this.testDBPool);
+        await this.initModels(this.testDBPool);
 
-        let testUser = new UserModel('testUser', 'testPass', '', 'ONLINE', 'ADMIN');
+        let testUser = new UserModel(
+            'testUser',
+            'testPass',
+            '',
+            'ONLINE',
+            'ADMIN',
+        );
         this.testUserId = await testUser.persist();
 
         await UserModel.initModel(this.mainDBPool);

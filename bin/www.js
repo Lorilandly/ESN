@@ -31,7 +31,6 @@ initAuthController(config.get('auth'));
 /**
  * Get database configs and connect to database.
  */
-
 const dbManager = DatabaseManager.getInstance();
 
 const dbHost = config.get('db.host');
@@ -40,37 +39,26 @@ const dbName = config.get('db.name');
 dbManager.setMainDBConfigs(dbHost, dbPort, dbName);
 dbManager.initAndSetMainDB();
 
-// const dbPool = dbManager.createDBPool(dbHost, dbPort, dbName);
-
 const testDBHost = config.get('performance-test-db.host');
 const testDBPort = normalizePort(config.get('performance-test-db.port'));
 const testDBName = config.get('performance-test-db.name');
 dbManager.setTestDBConfigs(testDBHost, testDBPort, testDBName);
 
 /**
- * Use database connection to initialize our data models.
- */
-// await dbManager.initModels(dbPool);
-
-/**
  * Create HTTP server.
  */
-
 let server = http.createServer(app);
 const io = new Server(server);
 
 /**
  * Get test database configs for performance test controller configuration.
  */
-
 initIOInstanceForChat(io);
 handleSocketConnections(io);
-// initPerformanceTestController(io);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-
 server.listen(serverPort);
 server.on('error', onError);
 server.on('listening', onListening);
@@ -78,7 +66,6 @@ server.on('listening', onListening);
 /**
  * Normalize a port into a number, string, or false.
  */
-
 function normalizePort(val) {
     let port = parseInt(val, 10);
 
@@ -98,7 +85,6 @@ function normalizePort(val) {
 /**
  * Event listener for HTTP server "error" event.
  */
-
 function onError(error) {
     if (error.syscall !== 'listen') {
         throw error;
@@ -125,7 +111,6 @@ function onError(error) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-
 function onListening() {
     let addr = server.address();
     let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;

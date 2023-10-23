@@ -39,7 +39,7 @@ async function createMessage(req, res, next) {
     let status = 'STATUS';
     let receiverId = 0;
     if (req.body.receiverId) {
-        receiverId = req.body.receiverId;
+        receiverId = parseInt(req.body.receiverId);
     }
     let readStatus = 'UNREAD';
     let message = new MessageModel(
@@ -70,14 +70,6 @@ async function createMessage(req, res, next) {
                 userId,
                 receiverId,
             });
-        ioInstance.to(userSocketMapping[receiverId]).emit('new message', {
-            username,
-            time,
-            status,
-            body,
-            userId,
-            receiverId,
-        });
         ioInstance
             .to(userSocketMapping[userId])
             .emit('create private message', {

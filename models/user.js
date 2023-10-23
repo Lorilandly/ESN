@@ -65,6 +65,7 @@ WHERE username = $2;
  */
 class UserModel {
     constructor(username, passwordHash, salt, status, privilege) {
+        this.id = null;
         this.username = username;
         this.passwordHash = passwordHash;
         this.salt = salt;
@@ -118,6 +119,7 @@ class UserModel {
             return null;
         } else {
             let row = queryResponse.rows[0];
+            console.log(typeof(row.id));
             return row.id;
         }
     }
@@ -132,13 +134,16 @@ class UserModel {
                 return null;
             } else {
                 let row = queryResponse.rows[0];
-                return new UserModel(
+                let user = new UserModel(
                     row.username,
                     row.password_hash,
                     row.salt,
                     row.current_status,
                     row.privilege,
                 );
+                user.id = row.id;
+                console.log(row);
+                return user;
             }
         } catch (err) {
             return err;

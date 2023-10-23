@@ -34,7 +34,7 @@ $(document).ready(function () {
         });
     });
 
-    socket.on('new message', () => {
+    socket.on('create private message', () => {
         $('#alert-container').addClass('visible');
     });
 

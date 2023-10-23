@@ -21,9 +21,10 @@ router.post('/public', await createMessage, async (req, res) => {
 });
 
 router.get('/private', async (req, res) => {
+    let receiverId = req.user.id;
     const messages = await getAllPrivateMessages(
         req.query.senderId,
-        req.query.receiverId,
+        receiverId,
     );
     return res.status(200).json({ messages: messages });
 });

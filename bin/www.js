@@ -8,7 +8,7 @@ import app from '../app.js';
 import debug from 'debug';
 import http from 'http';
 import config from 'config';
-import dbManager from '../db.js';
+import DatabaseManager from '../db.js';
 import {
     initAuthController,
     handleSocketConnections,
@@ -31,10 +31,16 @@ initAuthController(config.get('auth'));
 /**
  * Get database configs and connect to database.
  */
+
+const dbManager = DatabaseManager.getInstance();
+
 const dbHost = config.get('db.host');
 const dbPort = normalizePort(config.get('db.port'));
 const dbName = config.get('db.name');
-const dbPool = dbManager.createDBPool(dbHost, dbPort, dbName);
+dbManager.setMainDBConfigs(dbHost, dbPort, dbName);
+dbManager.initAndSetMainDB();
+
+// const dbPool = dbManager.createDBPool(dbHost, dbPort, dbName);
 
 const testDBHost = config.get('performance-test-db.host');
 const testDBPort = normalizePort(config.get('performance-test-db.port'));
@@ -44,7 +50,7 @@ dbManager.setTestDBConfigs(testDBHost, testDBPort, testDBName);
 /**
  * Use database connection to initialize our data models.
  */
-await dbManager.initModels(dbPool);
+// await dbManager.initModels(dbPool);
 
 /**
  * Create HTTP server.

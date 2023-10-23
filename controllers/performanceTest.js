@@ -1,10 +1,11 @@
-import dbManager from '../db.js';
+import DatabaseManager from '../db.js';
 
 let testModeActive = false;
 let testAdminUsername = null;
 let testUserId = null;
 
 async function startPerformanceTestMode(req, res) {
+    const dbManager = DatabaseManager.getInstance();
     testAdminUsername = req.user.username;
     testUserId = await dbManager.initAndSetTestDB();
     testModeActive = true;
@@ -12,6 +13,7 @@ async function startPerformanceTestMode(req, res) {
 }
 
 async function endPerformanceTestMode(req, res) {
+    const dbManager = DatabaseManager.getInstance();
     await dbManager.deleteTestDBAndRestore();
     testModeActive = false;
     testAdminUsername = null;

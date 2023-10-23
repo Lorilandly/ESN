@@ -35,7 +35,7 @@ async function initModels(db) {
     await MessageModel.initModel(db);
 }
 
-const createTestDBQuery = `CREATE DATABASE "sb2-project-performance";`;
+const createTestDBQuery = `CREATE DATABASE "sb2ProjectPerformance";`;
 
 /**
  * Creates temporary test database and connects to it.
@@ -62,7 +62,7 @@ async function initAndSetTestDB() {
     return testUserId;
 }
 
-const deleteTestDBQuery = `DROP DATABASE "sb2-project-performance";`;
+const deleteTestDBQuery = `DROP DATABASE "sb2ProjectPerformance";`;
 
 /*
  * End the current connection to the test database and restore connection to the production database.

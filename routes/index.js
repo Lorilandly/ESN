@@ -1,16 +1,14 @@
 import express from 'express';
-import { checkUserAuthenticated, getAllUsers } from '../controllers/auth.js';
+import passport from 'passport';
 let router = express.Router();
 
-router.use(checkUserAuthenticated);
-
 /* GET home page. */
-router.get('/', (req, res) => {
-    if (!res.locals.isAuthenticated) {
-        return res.render('join');
-    } else {
+router.get(
+    '/',
+    passport.authenticate('jwt', { session: false, failureRedirect: '/join' }),
+    (req, res) => {
         return res.render('index');
-    }
-});
+    },
+);
 
 export default router;

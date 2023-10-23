@@ -1,19 +1,19 @@
-import { query } from 'express';
-
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username TEXT UNIQUE,
     password_hash BYTEA,
     salt BYTEA,
-    current_status TEXT,
+    login_status TEXT,
+    status TEXT,
+    status_time TIMESTAMP,
     privilege TEXT
 );
 `;
 
 const insertUser = `
-INSERT INTO users (username, password_hash, salt, current_status, privilege)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO users (username, password_hash, salt, login_status, status, status_time, privilege)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING id;
 `;
 
@@ -30,20 +30,26 @@ SELECT EXISTS(
 `;
 
 const getAllUserStatusesOrdered = `
-SELECT username, current_status
+SELECT username, login_status, status
 FROM users
 ORDER BY 
     CASE 
-        WHEN current_status = 'ONLINE' THEN 1
-        WHEN current_status = 'OFFLINE' THEN 2
+        WHEN login_status = 'ONLINE' THEN 1
+        WHEN login_status = 'OFFLINE' THEN 2
         ELSE 3
     END,
     username;
 `;
 
+const changeUserLoginStatus = `
+UPDATE users
+SET login_status = $1
+WHERE username = $2;
+`;
+
 const changeUserStatus = `
 UPDATE users
-SET current_status = $1
+SET status = $1
 WHERE username = $2;
 `;
 
@@ -52,11 +58,21 @@ WHERE username = $2;
  * TODO: have a Model interface
  */
 class UserModel {
-    constructor(username, passwordHash, salt, status, privilege) {
+    constructor(
+        username,
+        passwordHash,
+        salt,
+        loginStatus,
+        status,
+        statusTime,
+        privilege,
+    ) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.salt = salt;
-        this.currentStatus = status;
+        this.loginStatus = loginStatus;
+        this.status = status;
+        this.statusTime = statusTime;
         this.privilege = privilege;
     }
 
@@ -72,7 +88,9 @@ class UserModel {
             this.username,
             this.passwordHash,
             this.salt,
+            this.loginStatus,
             this.status,
+            this.statusTime,
             this.privilege,
         ]);
     }
@@ -84,8 +102,15 @@ class UserModel {
         return res.rows[0].exists;
     }
 
-    static async updateStatus(name, status) {
-        await this.dbPoolInstance.query(changeUserStatus, [status, name]);
+    async updateStatus(status) {
+        await UserModel.dbPoolInstance.query(changeUserStatus, [
+            status,
+            this.username,
+        ]);
+    }
+
+    static async updateLoginStatus(name, status) {
+        await this.dbPoolInstance.query(changeUserLoginStatus, [status, name]);
     }
 
     static async findIdByName(name) {
@@ -115,7 +140,9 @@ class UserModel {
                     row.username,
                     row.password_hash,
                     row.salt,
-                    row.current_status,
+                    row.login_status,
+                    row.status,
+                    row.status_time,
                     row.privilege,
                 );
             }

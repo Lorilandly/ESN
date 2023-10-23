@@ -11,7 +11,7 @@ name = "sb2project"
 [performance-test-db]
 host = "dpg-ckrdj962eoec73f7abng-a"               # the database hosting address
 port = 5432                      # the database port
-name = "sb2_project_performance"
+name = "sb2ProjectPerformance"
 
 [auth] # auth service config data
 reservedUsernamesRegistry = "config/reserved_usernames.txt"

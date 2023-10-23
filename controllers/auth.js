@@ -78,8 +78,8 @@ function handleSocketConnections(io) {
             return;
         }
 
-        let status = await UserModel.findByName(decodedUser.username);
-        status = status.status;
+        let user = await UserModel.findByName(decodedUser.username);
+        let status = user.status;
         io.emit('userStatus', {
             username: decodedUser.username,
             loginStatus: 'ONLINE',
@@ -173,7 +173,7 @@ async function create(req, res, next) {
         passwordHash,
         salt,
         'OFFLINE',
-        null,
+        'UNDEFINED',
         new Date(Date.now()).toLocaleString(),
         'SUPERDUPERADMIN',
     );

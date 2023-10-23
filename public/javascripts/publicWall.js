@@ -72,7 +72,7 @@ $(document).ready(() => {
         message.innerHTML = `
         <div class="message">
             <div class="message-title">
-                <span class="message-sender-name">${username}<i class="bi bi-circle-fill user-status-${message.status}"></i></span>
+                <span class="message-sender-name">${username}<i class="bi bi-circle-fill user-status-${status}"></i></span>
                 <span class="message-time">${time}</span>
             </div>
             <div class="message-body">

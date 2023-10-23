@@ -1,0 +1,30 @@
+@startuml
+
+skinparam ClassAttributeIconSize 0
+
+class SpeedTestBoundary <<Boundary>> {
+    + startSpeedTest()
+    + setTestOptions()
+    + stopSpeedTest()
+    + displaySpeedTestOptions()
+    + displaySpeedTestResults()
+    + displaySpeedTestError()
+}
+
+class SpeedTestController <<Controller>> {
+    + startSpeedTest()
+    + startPerformanceTestingMode()
+    + stopPerformanceTestingMode()
+    + stopSpeedTest()
+}
+
+class PerformanceTestResult <<Entity>> {
+    + recordTestRequest()
+    + getTestResults()
+    + removePerformanceTestData()
+}
+
+SpeedTestBoundary "1" -- "1" SpeedTestController
+SpeedTestController "1" -- "0..*" PerformanceTestResult
+
+@enduml

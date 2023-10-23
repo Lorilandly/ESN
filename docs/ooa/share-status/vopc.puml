@@ -1,0 +1,22 @@
+@startuml
+
+entity User {
+    void updateStatus(status, time)
+}
+class StatusBoundary {
+    void displayStatusOptions()
+    void changeStatus(user_id, status)
+}
+class StatusController {
+    void updateUserStatus(user_id, status)
+    void updateDirectory(user_id, status)
+}
+entity ESNDirectory {
+    void update(user_id, status)
+}
+
+User "0..*" -- "0..1" StatusController
+StatusBoundary "1" -- "1" StatusController
+StatusController "0..1" -- "0..1" ESNDirectory
+
+@enduml

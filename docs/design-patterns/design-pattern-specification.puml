@@ -1,0 +1,20 @@
+@startuml
+class Client
+class PerformanceTestModel
+class Pool
+PerformanceTestModel : saveResult()
+Pool : query(arg1, arg2...)
+
+note bottom of PerformanceTestModel
+Adapter
+end note
+
+note bottom of Pool
+Adaptee
+PostgreSQL Client Object (Connection "Pool")
+makes PostgreSQL specific queries
+end note
+
+Client -> PerformanceTestModel
+PerformanceTestModel -> Pool
+@enduml

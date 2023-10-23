@@ -102,10 +102,7 @@ $(document).ready(() => {
 
             // Create a new username element
             let newUserElement = document.createElement('div');
-            newUserElement.setAttribute(
-                'class',
-                'user-list-body-element-name',
-            );
+            newUserElement.setAttribute('class', 'user-list-body-element-name');
             let newUsernameElement = document.createElement('span');
             newUsernameElement.setAttribute(
                 'class',
@@ -114,7 +111,7 @@ $(document).ready(() => {
             newUsernameElement.textContent = username;
             let newUserStatusElement = document.createElement('span');
             let str;
-            switch(status) {
+            switch (status) {
                 case 'OK':
                     str = ' - 🟢';
                     break;

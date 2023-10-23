@@ -1,5 +1,3 @@
-import { query } from 'express';
-
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -49,12 +47,26 @@ SET login_status = $1
 WHERE username = $2;
 `;
 
+const changeUserStatus = `
+UPDATE users
+SET status = $1
+WHERE username = $2;
+`;
+
 /*
  * User Model - provides interface for inserting and reading users from the database.
  * TODO: have a Model interface
  */
 class UserModel {
-    constructor(username, passwordHash, salt, loginStatus, status, statusTime, privilege) {
+    constructor(
+        username,
+        passwordHash,
+        salt,
+        loginStatus,
+        status,
+        statusTime,
+        privilege,
+    ) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.salt = salt;
@@ -88,6 +100,13 @@ class UserModel {
             name,
         ]);
         return res.rows[0].exists;
+    }
+
+    async updateStatus(status) {
+        await UserModel.dbPoolInstance.query(changeUserStatus, [
+            status,
+            this.username,
+        ]);
     }
 
     static async updateLoginStatus(name, status) {

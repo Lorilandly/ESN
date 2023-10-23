@@ -144,3 +144,7 @@ body {
     background-color: inherit;
     border: none;
 }
+
+.header-button{
+    color: white;
+}

@@ -90,7 +90,10 @@ function handleSocketConnections(io) {
         socket.on('disconnect', async () => {
             // Update the user status in the database to 'OFFLINE'
             try {
-                await UserModel.updateLoginStatus(decodedUser.username, 'OFFLINE');
+                await UserModel.updateLoginStatus(
+                    decodedUser.username,
+                    'OFFLINE',
+                );
             } catch (error) {
                 console.error('Error updating user status:', error);
                 return;

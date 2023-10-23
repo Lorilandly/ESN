@@ -32,10 +32,11 @@ $(document).ready(() => {
                         let name = document.createElement('div');
                         name.className = 'user-list-body-element-name';
                         let username = document.createElement('span');
-                        username.className = 'user-list-body-element-name-username';
+                        username.className =
+                            'user-list-body-element-name-username';
                         username.innerHTML = user.username;
                         let status = document.createElement('span');
-                        switch(user.status) {
+                        switch (user.status) {
                             case 'OK':
                                 status.innerHTML += ' - 🟢';
                                 break;

@@ -144,3 +144,27 @@ body {
     background-color: inherit;
     border: none;
 }
+
+.header-button{
+    color: white;
+}
+
+.user-status-OK{
+    color: green;
+    margin-left: 10px;
+}
+
+.user-status-HELP{
+    color: yellow;
+    margin-left: 10px;
+}
+
+.user-status-EMERGENCY{
+    color: red;
+    margin-left: 10px;
+}
+
+.user-status-UNDEFINED {
+    display: none;
+    margin-left: 10px;
+}

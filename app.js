@@ -14,6 +14,7 @@ import welcomeRouter from './routes/welcome.js';
 import publicWallRouter from './routes/publicWall.js';
 import performanceTestRouter from './routes/performanceTest.js';
 
+import statusRouter from './routes/status.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -48,5 +49,6 @@ app.use('/users', usersRouter);
 app.use('/welcome', welcomeRouter);
 app.use('/publicWall', publicWallRouter);
 app.use('/performanceTest', performanceTestRouter);
+app.use('/status', statusRouter);
 
 export default app;

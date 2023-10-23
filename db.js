@@ -5,9 +5,16 @@ import MessageModel from './models/message.js';
 let mainDBPool = null;
 let testDBPool = null;
 
-let testDBHost = 'localhost';
-let testDBPort = 5432;
+let testDBHost = null;
+let testDBPort = null;
+let testDBName = null;
 let testUserId = null;
+
+function setTestDBConfgs(host, port, name) {
+    testDBHost = host;
+    testDBPort = port;
+    testDBName = name;
+}
 
 /* Connect to Postgres db and initalize a connection pool */
 function createDBPool(host, port, name) {
@@ -44,11 +51,7 @@ async function initAndSetTestDB() {
         console.error(`failed to create test db: ${e}`);
         return;
     }
-    testDBPool = createDBPool(
-        testDBHost,
-        testDBPort,
-        'sb2-project-performance',
-    );
+    testDBPool = createDBPool(testDBHost, testDBPort, testDBName);
     await MessageModel.initModel(testDBPool);
     await UserModel.initModel(testDBPool);
 
@@ -75,4 +78,10 @@ async function deleteTestDBAndRestore() {
     await mainDBPool.query(deleteTestDBQuery);
 }
 
-export { createDBPool, initAndSetTestDB, deleteTestDBAndRestore, initModels };
+export {
+    createDBPool,
+    initAndSetTestDB,
+    deleteTestDBAndRestore,
+    initModels,
+    setTestDBConfgs,
+};

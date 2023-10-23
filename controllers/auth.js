@@ -6,7 +6,7 @@ import LocalStrategy from 'passport-local';
 import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
 
-let reservedUsernames = null;
+let reservedUsernames = new Set();
 
 const opts = {
     secretOrKey: process.env.SECRET_KEY,
@@ -55,9 +55,9 @@ function initAuthController(config) {
             config.get('reservedUsernamesRegistry'),
             'utf8',
         );
-        reservedUsernames = new Set(
-            data.split('\n').filter((line) => line.trim() !== ''),
-        );
+        data.split('\n').filter((line) => line.trim() !== '').forEach(username => {
+            reservedUsernames.add(username);
+        });
     } catch (error) {
         console.error('Failed to parse reserved usernames:', error);
     }
@@ -233,6 +233,7 @@ export {
     checkUserAuthenticated,
     create,
     validateNewCredentials,
+    reservedUsernames,
     getAllUsers,
     validPassword,
     validUsername,

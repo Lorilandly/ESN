@@ -1,16 +1,23 @@
-import { validPassword, validUsername } from './auth.js';
+import { reservedUsernames, validPassword, validUsername } from './auth.js';
 
 describe('Test username check', () => {
     test('username valid', () => {
         expect(validUsername('lori')).toBe('lori');
     });
+    test('empty username string', () => {
+        expect(validUsername('')).toBe(false);
+    })
     test('username too short', () => {
         expect(validUsername('lo')).toBe(false);
     });
     test('username in banned list', () => {
+        // set behavior of collaborator 
+        reservedUsernames.add('root');
         expect(validUsername('root')).toBe(false);
     });
     test('username in banned list 2', () => {
+        // set behavior of collaborator 
+        reservedUsernames.add('javascript');
         expect(validUsername('javascript')).toBe(false);
     });
     test('username upper case', () => {

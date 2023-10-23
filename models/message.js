@@ -36,9 +36,9 @@ class MessageModel {
 
     static dbPoolInstance = null;
 
-    static initModel(dbPool) {
-        this.dbPoolInstance = dbPool;
-        this.dbPoolInstance.query(createMessagesTable);
+    static async initModel(dbPool) {
+        MessageModel.dbPoolInstance = dbPool;
+        await MessageModel.dbPoolInstance.query(createMessagesTable);
     }
 
     async persist() {
@@ -62,6 +62,10 @@ class MessageModel {
             );
             return queryResponse.rows;
         }
+    }
+
+    static async dropAllMessages() {
+        await MessageModel.dbPoolInstance.query(dropAllMessages);
     }
 }
 

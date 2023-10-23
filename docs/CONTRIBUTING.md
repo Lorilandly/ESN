@@ -63,6 +63,12 @@ You'll need to create a database for local development. Its name should match th
 createdb sb2-project
 ```
 
+> NOTE: the same steps should be followed to create the test database, e.g.
+
+```bash
+createdb sb2-project-performance
+```
+
 After this, try running the server (`npm start`). This should create some tables in the database if everything is configured correctly.
 To verify this, connect to the database via the `psql` command line tool:
 

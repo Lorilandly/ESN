@@ -3,7 +3,7 @@ var socket = io();
 $(document).ready(() => {
     // Capture form submission event
     $('#logout-form').submit((event) => {
-        event.preventDefault(); // Prevent the default form submission
+        event.preventDefault();
         $.ajax('/users/logout', {
             method: 'PUT',
             datatype: 'json',
@@ -59,7 +59,7 @@ $(document).ready(() => {
         $.ajax('/publicMessages', {
             method: 'POST',
             data: { message: messageBody },
-            dataType: 'json', // Specify the response data type
+            dataType: 'json',
             error: (error) => {
                 console.error('API Error:', error);
             },

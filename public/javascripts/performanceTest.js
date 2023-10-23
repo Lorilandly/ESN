@@ -74,7 +74,6 @@ document.getElementById('stopTest').addEventListener('click', async () => {
 
 async function startPerformanceTest(duration, interval) {
     testInProgress = true;
-    localStorage.setItem('testInProgress', 'true');
     let startTime = new Date().getTime();
     // POST Requests
     let numPOSTSent = 0;
@@ -139,7 +138,6 @@ function generateMessage(n) {
 
 function stopPerformanceTest() {
     testInProgress = false;
-    localStorage.setItem('testInProgress', 'false');
     let progress_bar = document.getElementById('progress-bar');
     progress_bar.style.width = '0%';
     clearInterval(intervalID);

@@ -7,7 +7,7 @@
         "start": "node ./bin/www",
         "dev": "nodemon ./bin/www",
         "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
-        "test": "jest"
+        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
     },
     "dependencies": {
         "bootstrap": "^5.3.1",

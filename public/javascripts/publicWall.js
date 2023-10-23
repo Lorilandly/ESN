@@ -26,27 +26,11 @@ $(document).ready(() => {
             if (messages && messages.length > 0) {
                 let messageHtml = '';
                 messages.forEach((message) => {
-                    let status;
-                    switch (message.status) {
-                        case 'OK':
-                            status = ' - 🟢';
-                            break;
-                        case 'HELP':
-                            status = ' - 🟡';
-                            break;
-                        case 'EMERGENCY':
-                            status = ' - 🔴';
-                            break;
-                        default:
-                            status = '';
-                            break;
-                    }
                     messageHtml += `
                         <div class="message">
                             <div class="message-title">
-                                <span class="message-sender-name">${message.username}${status}</span>
+                                <span class="message-sender-name">${message.username}<i class="bi bi-circle-fill user-status-${message.status}"></i></span>
                                 <span class="message-time">${message.time}</span>
-                                <!--<span class="message-status">${message.status}</span>-->
                             </div>
                             <div class="message-body">
                                 <p>${message.body}</p>
@@ -85,24 +69,10 @@ $(document).ready(() => {
     socket.on('create message', ({ username, time, status, body }) => {
         let messageList = $('#message-container');
         let message = document.createElement('div');
-        switch (status) {
-            case 'OK':
-                status = ' - 🟢';
-                break;
-            case 'HELP':
-                status = ' - 🟡';
-                break;
-            case 'EMERGENCY':
-                status = ' - 🔴';
-                break;
-            default:
-                status = '';
-                break;
-        }
         message.innerHTML = `
         <div class="message">
             <div class="message-title">
-                <span class="message-sender-name">${username}${status}</span>
+                <span class="message-sender-name">${username}<i class="bi bi-circle-fill user-status-${message.status}"></i></span>
                 <span class="message-time">${time}</span>
             </div>
             <div class="message-body">

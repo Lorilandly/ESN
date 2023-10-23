@@ -50,7 +50,7 @@ body {
     margin: 30px;
 }
 
-.main-container .footer{
+.main-container .footer {
     width: 100%;
     height: 60px;
     background-color: rgb(226, 225, 225);
@@ -58,7 +58,7 @@ body {
     flex-direction: row;
 }
 
-.main-container .footer-element{
+.main-container .footer-element {
     height: 60px;
     width: 25%;
     display: flex;
@@ -66,8 +66,28 @@ body {
     align-items: center;
 }
 
-.main-container .footer-element .action-button{
+.main-container .footer-element .action-button {
     outline: none;
     background-color: inherit;
     border: none;
+}
+
+.user-status-OK {
+    color: green;
+    margin-left: 10px;
+}
+
+.user-status-HELP {
+    color: yellow;
+    margin-left: 10px;
+}
+
+.user-status-EMERGENCY {
+    color: red;
+    margin-left: 10px;
+}
+
+.user-status-null {
+    display: none;
+    margin-left: 10px;
 }

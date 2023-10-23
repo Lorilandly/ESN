@@ -109,23 +109,11 @@ $(document).ready(() => {
                 'user-list-body-element-name-username',
             );
             newUsernameElement.textContent = username;
-            let newUserStatusElement = document.createElement('span');
-            let str;
-            switch (status) {
-                case 'OK':
-                    str = ' - 🟢';
-                    break;
-                case 'HELP':
-                    str = ' - 🟡';
-                    break;
-                case 'EMERGENCY':
-                    str = ' - 🔴';
-                    break;
-                default:
-                    str = '';
-                    break;
-            }
-            newUserStatusElement.textContent = str;
+            let newUserStatusElement = document.createElement('i');
+            newUserStatusElement.setAttribute(
+                'class',
+                'bi bi-circle-fill user-status-' + status,
+            );
 
             // Append the new username and status element to the user list element container
             newUserElement.appendChild(newUsernameElement);

@@ -35,21 +35,9 @@ $(document).ready(() => {
                         username.className =
                             'user-list-body-element-name-username';
                         username.innerHTML = user.username;
-                        let status = document.createElement('span');
-                        switch (user.status) {
-                            case 'OK':
-                                status.innerHTML += ' - 🟢';
-                                break;
-                            case 'HELP':
-                                status.innerHTML += ' - 🟡';
-                                break;
-                            case 'EMERGENCY':
-                                status.innerHTML += ' - 🔴';
-                                break;
-                            default:
-                                status.innerHTML += '';
-                                break;
-                        }
+                        let status = document.createElement('i');
+                        status.className =
+                            'bi bi-circle-fill user-status-' + user.status;
                         let loginStatus = document.createElement('div');
                         if (user.login_status == 'ONLINE') {
                             loginStatus.className =

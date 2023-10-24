@@ -12,7 +12,7 @@ client = ""
 [performance-test-db]
 host = "localhost"               # the database hosting address
 port = 5432                      # the database port
-name = "sb2ProjectPerformance"
+name = "sb2-project-performance"
 client = ""
 
 [auth] # auth service config data

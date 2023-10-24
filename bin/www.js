@@ -8,7 +8,7 @@ import app from '../app.js';
 import debug from 'debug';
 import http from 'http';
 import config from 'config';
-import { createDBPool, initModels, setTestDBConfgs } from '../db.js';
+import DatabaseManager from '../db.js';
 import {
     initAuthController,
     handleSocketConnections,
@@ -31,40 +31,34 @@ initAuthController(config.get('auth'));
 /**
  * Get database configs and connect to database.
  */
+const dbManager = DatabaseManager.getInstance();
+
 const dbHost = config.get('db.host');
 const dbPort = normalizePort(config.get('db.port'));
 const dbName = config.get('db.name');
-const dbPool = createDBPool(dbHost, dbPort, dbName);
+dbManager.configureDB(dbHost, dbPort, dbName);
+dbManager.activateDB();
 
 const testDBHost = config.get('performance-test-db.host');
 const testDBPort = normalizePort(config.get('performance-test-db.port'));
 const testDBName = config.get('performance-test-db.name');
-setTestDBConfgs(testDBHost, testDBPort, testDBName);
-
-/**
- * Use database connection to initialize our data models.
- */
-await initModels(dbPool);
+dbManager.configureTestDB(testDBHost, testDBPort, testDBName);
 
 /**
  * Create HTTP server.
  */
-
 let server = http.createServer(app);
 const io = new Server(server);
 
 /**
  * Get test database configs for performance test controller configuration.
  */
-
 initIOInstanceForChat(io);
 handleSocketConnections(io);
-// initPerformanceTestController(io);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-
 server.listen(serverPort);
 server.on('error', onError);
 server.on('listening', onListening);
@@ -72,7 +66,6 @@ server.on('listening', onListening);
 /**
  * Normalize a port into a number, string, or false.
  */
-
 function normalizePort(val) {
     let port = parseInt(val, 10);
 
@@ -92,7 +85,6 @@ function normalizePort(val) {
 /**
  * Event listener for HTTP server "error" event.
  */
-
 function onError(error) {
     if (error.syscall !== 'listen') {
         throw error;
@@ -119,7 +111,6 @@ function onError(error) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-
 function onListening() {
     let addr = server.address();
     let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;

@@ -32,6 +32,7 @@ router.post('/private', await createMessage, async (req, res) => {
 });
 
 router.get('/private/new', async (req, res) => {
+    console.log(req.user);
     const messages = await getAllNewPrivateMessages(req.user.id);
     return res.status(200).json({ messages: messages });
 });

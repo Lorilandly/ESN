@@ -47,10 +47,12 @@ $(document).ready(() => {
         dataType: 'json',
         success: (response) => {
             let messages = response.messages;
+            console.log(messages);
             if (messages){
                 let groupedMessages = {};
                 // store reciever id
                 let receiverId = messages[0].receiver_id;
+                let senderId = messages[0].sender_id;
                 $('#receiver_id').text(receiverId);
                 // Group messages by sender name
                 messages.forEach((message) => {
@@ -66,8 +68,8 @@ $(document).ready(() => {
                     groupedMessages[sender].forEach((message) => {
                         messageHtml += `
                         <div class="message">
-                            <form class = "message-form" action = '/privateChat/' + ${senderId} + method = 'GET'>
-                                <button type="submit" class="btn btn-primary">
+                            <form class = "message-form" action = '/privateChat/${senderId}' method = 'GET'>
+                                <button type="submit" class="btn btn-primary" onclick="clearMessage(this)">
                                     <div class="message-title">
                                         <span class="message-sender-name">${message.sender_name}</span>
                                         <span class="message-time">${message.time}</span>
@@ -100,7 +102,7 @@ $(document).ready(() => {
                 let messageHtml = `
                 <div class="message">
                     <form class = "message-form" action = '/privateChat/${senderId}' method = 'GET'>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" onclick="clearMessage(this)">
                             <div class="message-title">
                                 <span class="message-sender-name">${username}</span>
                                 <span class="message-time">${time}</span>
@@ -122,7 +124,12 @@ $(document).ready(() => {
     offcanvasElement.addEventListener('hidden.bs.offcanvas', function (event) {
         // remove all the messages
         $('#alert-container').empty();
+        changeReadStatus();
     });
 
 });
+
+function clearMessage(messageButotn){
+    changeReadStatus();
+}
 

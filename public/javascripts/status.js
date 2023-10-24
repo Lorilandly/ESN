@@ -54,7 +54,6 @@ $(document).ready(() => {
         const statusElement = document.getElementById(
             `user-status-${username}`,
         );
-
         // Change the status to real-time status
         // If the current user is somone already in the ESN directory
         if (statusElement) {
@@ -115,11 +114,15 @@ $(document).ready(() => {
                 'bi bi-circle-fill user-status-' + status,
             );
 
+            let chatHolder = document.createElement('div');
+            chatHolder.className = 'user-list-body-element-chat';
+
             // Append the new username and status element to the user list element container
             newUserElement.appendChild(newUsernameElement);
             newUserElement.appendChild(newUserStatusElement);
             newUserListElement.appendChild(newUserElement);
             newUserListElement.appendChild(newStatusElement);
+            newUserListElement.appendChild(chatHolder);
 
             // Append this new user list element to the entire user list
             userListContainer.appendChild(newUserListElement);

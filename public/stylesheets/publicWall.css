@@ -5,6 +5,7 @@
     height: calc(100% - 320px);
     overflow-y: auto;
     overflow-x: hidden;
+    align-items: center;
 }
 
 .message-container .message {
@@ -14,7 +15,8 @@
     background-color: #eeeeee;
     padding: 10px;
     margin-bottom: 5px;
-    width: 100%;
+    width: 95%;
+    border-radius: 5px;
 }
 
 .message-container .message .message-title {
@@ -78,24 +80,4 @@
 
 .notification {
     margin-right: 1.25em;
-}
-
-.user-status-OK{
-    color: green;
-    margin-left: 10px;
-}
-
-.user-status-HELP{
-    color: yellow;
-    margin-left: 10px;
-}
-
-.user-status-EMERGENCY{
-    color: red;
-    margin-left: 10px;
-}
-
-.user-status-UNDEFINED {
-    display: none;
-    margin-left: 10px;
 }

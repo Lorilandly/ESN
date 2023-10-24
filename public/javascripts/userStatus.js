@@ -1,7 +1,7 @@
 $(document).ready(() => {
-    $('#main-form').submit((event) => {
+    $('#status-form').submit((event) => {
         event.preventDefault();
-
+        console.log('status form submitted');
         $.ajax({
             url: '/users/status',
             method: 'POST',

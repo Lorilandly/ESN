@@ -69,8 +69,8 @@ $(document).ready(() => {
     socket.on('create public message', ({ username, time, status, body }) => {
         let messageList = $('#message-container');
         let message = document.createElement('div');
+        message.className = 'message';
         message.innerHTML = `
-        <div class="message">
             <div class="message-title">
                 <span class="message-sender-name">${username}<i class="bi bi-circle-fill user-status-${status}"></i></span>
                 <span class="message-time">${time}</span>
@@ -78,7 +78,6 @@ $(document).ready(() => {
             <div class="message-body">
                 <p>${body}</p>
             </div>
-        </div>
         `;
         messageList.append(message);
         messageList.scrollTop(messageList[0].scrollHeight);

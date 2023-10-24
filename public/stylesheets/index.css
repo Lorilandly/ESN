@@ -18,13 +18,19 @@
 
 .user-list .user-list-header .user-list-header-name{
     font-size: 20px;
-    width: 70%;
+    width: 55%;
     font-weight: bold;
     margin-left: 10px;
 }
 .user-list .user-list-header .user-list-header-status{
     font-size: 20px;
     width: 30%;
+    font-weight: bold;
+}
+
+.user-list .user-list-header .user-list-header-chat{
+    font-size: 20px;
+    width: 15%;
     font-weight: bold;
 }
 
@@ -51,7 +57,7 @@
     height: inherit;
     line-height: 60px;
     font-size: 20px;
-    width: 70%;
+    width: 55%;
     margin-left: 10px;
 }
 
@@ -71,6 +77,29 @@
     width: 30%;
 }
 
+.user-list .user-list-body .user-list-body-element .user-list-body-element-chat{
+    height: inherit;
+    line-height: 60px;
+    font-size: 20px;
+    width: 15%;
+}
+
+.user-list .user-list-body .user-list-body-element .user-list-body-element-chat .user-list-body-element-chat-form{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.user-list .user-list-body .user-list-body-element .user-list-body-element-chat .user-list-body-element-chat-form .chat-button{
+    height: 90%;
+    background-color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+
 .alert-container {
     height: 0;
     overflow: hidden;
@@ -88,24 +117,4 @@
 }
 .header-button{
     color: white;
-}
-
-.user-status-OK{
-    color: green;
-    margin-left: 10px;
-}
-
-.user-status-HELP{
-    color: yellow;
-    margin-left: 10px;
-}
-
-.user-status-EMERGENCY{
-    color: red;
-    margin-left: 10px;
-}
-
-.user-status-UNDEFINED {
-    display: none;
-    margin-left: 10px;
 }

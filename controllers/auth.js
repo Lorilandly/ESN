@@ -152,7 +152,7 @@ async function deauthenticateUser(req, res, next) {
 }
 
 async function setJwtCookie(req, res, next) {
-    const username = req.body.username;
+    const username = req.body.username.toLowerCase();
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
     });

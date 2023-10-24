@@ -13,7 +13,7 @@ import {
     initAuthController,
     handleSocketConnections,
 } from '../controllers/auth.js';
-import { initIOInstanceForChat } from '../controllers/publicMessage.js';
+import { initIOInstanceForChat } from '../controllers/message.js';
 import { Server } from 'socket.io';
 
 /**

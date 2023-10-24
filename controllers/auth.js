@@ -72,14 +72,14 @@ function handleSocketConnections(io) {
         let jwtIndex = cookie.indexOf('jwtToken');
         let jwtToken = cookie.substring(jwtIndex).split('=')[1];
 
-        let decodedUser;
+        let decodedUser, userId;
         try {
             decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
+            await UserModel.updateLoginStatus(decodedUser.username, 'ONLINE');
         } catch (exception) {
             console.error(`failed to decode user from jwt, ${exception}`);
             return;
         }
-
         let user = await UserModel.findByName(decodedUser.username);
         let status = user.status;
         io.emit('userStatus', {
@@ -88,14 +88,19 @@ function handleSocketConnections(io) {
             status,
         });
 
-        // Handle user disconnection for offline status
-        socket.on('disconnect', async () => {
+        socket.on('disconnect', () => {
+            // Remove the user from the mapping on disconnect
+        });
+
+        socket.on('window-close', async (reason) => {
             // Update the user status in the database to 'OFFLINE'
             try {
-                await UserModel.updateLoginStatus(
-                    decodedUser.username,
-                    'OFFLINE',
-                );
+                if (reason === 'INTENTIONAL_CLOSE') {
+                    await UserModel.updateLoginStatus(
+                        decodedUser.username,
+                        'OFFLINE',
+                    );
+                }
             } catch (error) {
                 console.error('Error updating user status:', error);
                 return;
@@ -165,6 +170,23 @@ async function setJwtCookie(req, res, next) {
     return next();
 }
 
+async function checkUserAuthenticated(req, res, next) {
+    const token = req.cookies.jwtToken;
+    if (!token) {
+        res.locals.isAuthenticated = false;
+        return next();
+    }
+    try {
+        const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
+        req.user = decodedUser;
+        res.locals.isAuthenticated = true;
+    } catch (error) {
+        // res.status(401).json({ message: 'Token expired or invalid' });
+        res.locals.isAuthenticated = false;
+    }
+    return next();
+}
+
 /*
  * Save user to db with generated hashedPassword and salt
  * TODO: This should go to User controller
@@ -221,15 +243,21 @@ async function getAllUsers() {
     }
 }
 
+async function getUserByName(username) {
+    return await UserModel.findByName(username);
+}
+
 export {
     initAuthController,
     setJwtCookie,
     handleSocketConnections,
     deauthenticateUser,
+    checkUserAuthenticated,
     create,
     validateNewCredentials,
     reservedUsernames,
     getAllUsers,
+    getUserByName,
     validPassword,
     validUsername,
 };

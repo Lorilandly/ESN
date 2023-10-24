@@ -50,14 +50,17 @@ document.getElementById('startTest').addEventListener('click', async () => {
             if (testInProgress) {
                 stopPerformanceTest();
                 // Display test results
+                let partDuration = duration / 2;
+                let postsPerSecond = testResult.postCompleted / partDuration;
+                let getsPerSecond = testResult.getCompleted / partDuration;
+
                 console.log(testResult);
 
                 document.getElementById('test-results').style = 'display: flex';
                 document.getElementById('post-result').innerHTML =
-                    'POST requests completed per second: ' +
-                    testResult.postRate;
+                    'POST requests completed per second: ' + postsPerSecond;
                 document.getElementById('get-result').innerHTML =
-                    'GET requests completed per second: ' + testResult.getRate;
+                    'GET requests completed per second: ' + getsPerSecond;
             }
         })
         .catch((error) => {
@@ -99,12 +102,6 @@ async function startPerformanceTest(duration, interval) {
         await new Promise((r) => setTimeout(r, interval));
     }
 
-    while (testInProgress && numPOSTCompleted < numPOSTSent) {
-        console.log(`waiting for posts to finish...`);
-    }
-
-    let postEndTime = new Date().getTime();
-
     // GET Requests
     let numGETCompleted = 0;
     while (testInProgress && !timeElapsed(duration, startTime)) {
@@ -120,21 +117,11 @@ async function startPerformanceTest(duration, interval) {
         });
         await new Promise((r) => setTimeout(r, interval));
     }
-
-    let actualPOSTDuration = postEndTime - startTime;
-    let actualGETDuration = new Date().getTime() - postEndTime;
-
-    let postRate = (numPOSTCompleted * 1000) / actualPOSTDuration;
-    let getRate = (numGETCompleted * 1000) / actualGETDuration;
-
-    console.log(`actual post rate: ${postRate}`);
-    console.log(`actual get rate: ${getRate}`);
-
     // testResult should contain the number of post and get requests
     // completed at the time that the test expires
     testResult = {
-        postRate: postRate,
-        getRate: getRate,
+        postCompleted: numPOSTCompleted,
+        getCompleted: numGETCompleted,
     };
     return testResult;
 }

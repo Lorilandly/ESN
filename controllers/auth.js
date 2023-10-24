@@ -152,7 +152,7 @@ async function deauthenticateUser(req, res, next) {
 }
 
 async function setJwtCookie(req, res, next) {
-    const username = req.body.username;
+    const username = req.body.username.toLowerCase();
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
     });
@@ -196,6 +196,7 @@ async function validateNewCredentials(req, res, next) {
     if (!checkedPassword) {
         return res.status(403).json({ error: 'Illegal password' });
     }
+    console.log(`why are we still here, just to suffer?`);
     const user = await UserModel.findByName(checkedUsername);
     if (user) {
         if (!checkPasswordForUser(user, password)) {

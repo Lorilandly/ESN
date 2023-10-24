@@ -186,18 +186,6 @@ async function checkUserAuthenticated(req, res, next) {
     return next();
 }
 
-async function validateUrlParam(req, res, next) {
-    let userId = await UserModel.findIdByName(req.user.username);
-    if (req.params.senderId != userId) {
-        return res.status(403).json({ error: 'Illegal sender Id' });
-    }
-    let receiverIdExists = await UserModel.idExists(req.params.receiverId);
-    if (!receiverIdExists) {
-        return res.status(403).json({ error: 'Illegal receiver Id' });
-    }
-    return next();
-}
-
 /*
  * Save user to db with generated hashedPassword and salt
  * TODO: This should go to User controller
@@ -262,7 +250,6 @@ export {
     handleSocketConnections,
     deauthenticateUser,
     checkUserAuthenticated,
-    validateUrlParam,
     create,
     validateNewCredentials,
     getAllUsers,

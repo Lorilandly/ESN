@@ -1,7 +1,7 @@
 function createPrivateChatButton(senderId, receiverId) {
     // Create the form element
     const form = document.createElement('form');
-    form.action = '/privateChat/' + senderId + '/' + receiverId;
+    form.action = '/privateChat/' + receiverId;
     form.method = 'get';
 
     // Create the button inside the form
@@ -32,7 +32,7 @@ function getCurrentUserId() {
 $(document).ready(() => {
     // Capture form submission event
     $('#logout-form').submit((event) => {
-        event.preventDefault(); // Prevent the default form submission
+        event.preventDefault();
         $.ajax('/users/logout', {
             method: 'PUT',
             datatype: 'json',
@@ -76,14 +76,11 @@ $(document).ready(() => {
                             status.innerHTML = user.current_status;
                             element.appendChild(name);
                             element.appendChild(status);
-                            // only show chat button next to other users
-                            if (currentId != user.id) {
-                                let button = createPrivateChatButton(
-                                    currentId,
-                                    user.id,
-                                );
-                                element.appendChild(button);
-                            }
+                            let button = createPrivateChatButton(
+                                currentId,
+                                user.id,
+                            );
+                            element.appendChild(button);
                             listbody.appendChild(element);
                         }
                     }

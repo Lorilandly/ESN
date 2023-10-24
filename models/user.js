@@ -119,7 +119,6 @@ class UserModel {
             return null;
         } else {
             let row = queryResponse.rows[0];
-            console.log(typeof(row.id));
             return row.id;
         }
     }
@@ -142,7 +141,6 @@ class UserModel {
                     row.privilege,
                 );
                 user.id = row.id;
-                console.log(row);
                 return user;
             }
         } catch (err) {

@@ -1,7 +1,5 @@
 import MessageModel from '../models/message.js';
-import UserModel from '../models/user.js';
 import { userSocketMapping } from './auth.js';
-import jwt from 'jsonwebtoken';
 
 let ioInstance = null;
 
@@ -10,28 +8,8 @@ function initIOInstanceForChat(io) {
 }
 
 async function createMessage(req, res, next) {
-    const token = req.cookies.jwtToken;
-    let userId, username;
-    if (!token) {
-        // handle case where user isn't authenticated
-        return res.status(401).json({});
-    }
-    try {
-        const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
-        // handle decodedUser (username) string
-        username = decodedUser.username;
-        userId = await UserModel.findIdByName(username);
-    } catch {
-        // handle failure to decode JWT
-        return res.status(401).json({});
-    }
-
-    if (!userId || !username) {
-        return res.status(401).json({});
-    }
-    if (!req.body.message) {
-        return res.status(400).json({ status: 'No messages provided' });
-    }
+    let username = req.user.username;
+    let userId = req.user.id;
 
     // Receiver Id 0 is for public chat
     let body = req.body.message;

@@ -5,30 +5,7 @@ function getSenderIdFromPath() {
     return parseInt(pathSegments[2]);
 }
 
-function getReceiverIdFromPath() {
-    const pathSegments = window.location.pathname.split('/');
-    return parseInt(pathSegments[3]);
-}
-
-let myId = getSenderIdFromPath();
-let otherId = getReceiverIdFromPath();
-
-
-// Logged in user
-function getCurrentUserId() {
-    return new Promise((resolve, reject) => {
-        $.ajax('/users/current', {
-            method: 'GET',
-            datatype: 'json',
-            success: (response) => {
-                resolve(response.userId);
-            },
-            error: (error) => {
-                reject(error);
-            },
-        });
-    });
-}
+let otherId = getSenderIdFromPath();
 
 $(document).ready(() => {
     // Capture form submission event
@@ -46,15 +23,12 @@ $(document).ready(() => {
         });
     });
 
-    let senderId = getSenderIdFromPath();
-    let receiverIdFromPath = getReceiverIdFromPath();
-
     // Fetch and render all messages
     $.ajax({
         url: '/messages/private',
         method: 'GET',
         dataType: 'json',
-        data: { senderId: senderId, receiverId: receiverIdFromPath },
+        data: { receiverId: otherId },
         success: (response) => {
             let messages = response.messages;
             if (messages && messages.length > 0) {
@@ -91,7 +65,7 @@ $(document).ready(() => {
 
         $.ajax('/messages/private', {
             method: 'POST',
-            data: { message: messageBody, receiverId: receiverIdFromPath },
+            data: { message: messageBody, receiverId: otherId },
             dataType: 'json',
             error: (error) => {
                 console.error('API Error:', error);
@@ -99,12 +73,11 @@ $(document).ready(() => {
         });
     });
 
-    // getCurrentUserId().then((currentId) => {
     socket.on(
         'create private message',
         ({ username, time, status, body, userId, receiverId }) => {
             let senderId = userId;
-            if (!(myId === senderId && otherId === receiverId) && !(myId === receiverId && otherId === senderId)) {
+            if (!(otherId === receiverId) && !(otherId === senderId)) {
                 return;
             }
 
@@ -127,5 +100,4 @@ $(document).ready(() => {
             $('#message').val('');
         },
     );
-    // });
 });

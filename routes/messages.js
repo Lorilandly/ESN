@@ -21,11 +21,9 @@ router.post('/public', await createMessage, async (req, res) => {
 });
 
 router.get('/private', async (req, res) => {
-    let receiverId = req.user.id;
-    const messages = await getAllPrivateMessages(
-        req.query.senderId,
-        receiverId,
-    );
+    const myId = req.user.id;
+    const otherId = req.query.receiverId;
+    const messages = await getAllPrivateMessages(myId, otherId);
     return res.status(200).json({ messages: messages });
 });
 
@@ -34,7 +32,7 @@ router.post('/private', await createMessage, async (req, res) => {
 });
 
 router.get('/private/new', async (req, res) => {
-    const messages = await getAllNewPrivateMessages(req.query.receiverId);
+    const messages = await getAllNewPrivateMessages(req.user.id);
     return res.status(200).json({ messages: messages });
 });
 

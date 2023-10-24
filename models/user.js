@@ -22,15 +22,27 @@ SELECT * FROM users
 WHERE username = $1;
 `;
 
-const checkUserExists = `
+const selectUserById = `
+SELECT * FROM users
+WHERE id = $1;
+`;
+
+const checkUserExistsWithName = `
 SELECT EXISTS(
     SELECT 1 FROM users
     WHERE username = $1
 );
 `;
 
+const checkUserExistsWithId = `
+SELECT EXISTS(
+    SELECT 1 FROM users
+    WHERE id = $1
+);
+`;
+
 const getAllUserStatusesOrdered = `
-SELECT username, login_status, status
+SELECT id, username, login_status, status
 FROM users
 ORDER BY 
     CASE 
@@ -96,10 +108,19 @@ class UserModel {
         return res.rows[0].id;
     }
 
-    async nameExists(name) {
-        const res = await UserModel.dbPoolInstance.query(checkUserExists, [
-            name,
-        ]);
+    static async nameExists(name) {
+        const res = await UserModel.dbPoolInstance.query(
+            checkUserExistsWithName,
+            [name],
+        );
+        return res.rows[0].exists;
+    }
+
+    static async idExists(id) {
+        const res = await UserModel.dbPoolInstance.query(
+            checkUserExistsWithId,
+            [id],
+        );
         return res.rows[0].exists;
     }
 
@@ -137,7 +158,7 @@ class UserModel {
                 return null;
             } else {
                 let row = queryResponse.rows[0];
-                return new UserModel(
+                let user = new UserModel(
                     row.username,
                     row.password_hash,
                     row.salt,
@@ -146,6 +167,8 @@ class UserModel {
                     row.status_time,
                     row.privilege,
                 );
+                user.id = row.id;
+                return user;
             }
         } catch (err) {
             return err;

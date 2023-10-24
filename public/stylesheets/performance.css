@@ -1,6 +1,6 @@
 .main-container .performance-holder{
     width: 100%;
-    height: calc(100% - 120px);
+    height: calc(100% - 140px);
     margin: 10px;
     display: flex;
     flex-direction: column;

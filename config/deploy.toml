@@ -4,16 +4,14 @@ description = "default configuration file that provides a good starting point"
 port = 3000 # the port used by the service
 
 [db]
-host = "localhost"   # the database hosting address
+host = "dpg-ckrdj962eoec73f7abng-a"   # the database hosting address
 port = 5432          # the database port
-name = "sb2-project"
-client = ""
+name = "sb2project"
 
 [performance-test-db]
-host = "localhost"               # the database hosting address
+host = "dpg-ckrdj962eoec73f7abng-a"               # the database hosting address
 port = 5432                      # the database port
 name = "sb2ProjectPerformance"
-client = ""
 
 [auth] # auth service config data
 reservedUsernamesRegistry = "config/reserved_usernames.txt"

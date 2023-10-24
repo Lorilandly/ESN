@@ -40,7 +40,6 @@ $(document).ready(() => {
         success: (response) => {
             let messages = response.messages;
             let groupedMessages = {};
-
             // Group messages by sender name
             messages.forEach((message) => {
                 if (!groupedMessages[message.sender_name]) {

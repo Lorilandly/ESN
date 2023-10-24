@@ -4,6 +4,8 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import logger from 'morgan';
 
+import normalOperationsChecker from './middlewares/normalOperationsChecker.js';
+
 import indexRouter from './routes/index.js';
 import messagesRouter from './routes/messages.js';
 import joinRouter from './routes/join.js';
@@ -12,6 +14,9 @@ import welcomeRouter from './routes/welcome.js';
 import publicWallRouter from './routes/publicWall.js';
 import privateChatRouter from './routes/privateChat.js';
 import newMessagesRouter from './routes/newMessages.js';
+import performanceTestRouter from './routes/performanceTest.js';
+
+import statusRouter from './routes/status.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -37,6 +42,8 @@ app.use(
     ),
 );
 
+app.use(normalOperationsChecker);
+
 app.use('/', indexRouter);
 app.use('/messages', messagesRouter);
 app.use('/join', joinRouter);
@@ -44,6 +51,8 @@ app.use('/users', usersRouter);
 app.use('/welcome', welcomeRouter);
 app.use('/publicWall', publicWallRouter);
 app.use('/privateChat', privateChatRouter);
+app.use('/performanceTest', performanceTestRouter);
+app.use('/status', statusRouter);
 app.use('/newMessages', newMessagesRouter);
 
 export default app;

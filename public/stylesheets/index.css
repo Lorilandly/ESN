@@ -133,7 +133,7 @@ body {
 
 .main-container .footer-element{
     height: 60px;
-    width: 25%;
+    width: 20%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -159,4 +159,27 @@ body {
 .notification {
     margin-right: 1.25em;
     padding: 0.5em 1em; 
+}
+.header-button{
+    color: white;
+}
+
+.user-status-OK{
+    color: green;
+    margin-left: 10px;
+}
+
+.user-status-HELP{
+    color: yellow;
+    margin-left: 10px;
+}
+
+.user-status-EMERGENCY{
+    color: red;
+    margin-left: 10px;
+}
+
+.user-status-UNDEFINED {
+    display: none;
+    margin-left: 10px;
 }

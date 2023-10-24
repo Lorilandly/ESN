@@ -1,4 +1,7 @@
 import MessageModel from '../models/message.js';
+import UserModel from '../models/user.js';
+import jwt from 'jsonwebtoken';
+import { testModeActive, testUserId } from './performanceTest.js';
 
 let ioInstance = null;
 
@@ -13,7 +16,9 @@ async function createMessage(req, res, next) {
     // Receiver Id 0 is for public chat
     let body = req.body.message;
     let time = new Date(Date.now()).toLocaleString();
-    let status = 'STATUS';
+    let user = req.user;
+    userId = testModeActive ? testUserId : userId;
+    let status = user.status;
     let receiverId = req.body.receiverId ? parseInt(req.body.receiverId) : 0;
     let readStatus = 'UNREAD';
     let message = new MessageModel(
@@ -72,8 +77,7 @@ async function getAllPrivateMessages(senderId, receiverId) {
 
 async function getAllNewPrivateMessages(receiverId) {
     try {
-        const messages =
-            await MessageModel.getAllNewPrivateMessages(receiverId);
+        const messages = await MessageModel.getAllNewPrivateMessages(receiverId);
         return messages;
     } catch (err) {
         console.error(err);

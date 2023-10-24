@@ -19,7 +19,7 @@ RETURNING id;
 `;
 
 const getAllPublicMessages = `
-SELECT users.username, sender_id, receiver_id, body, time, status, read_status
+SELECT users.username, sender_id, receiver_id, body, time, messages.status, read_status
 FROM messages
 JOIN users ON messages.sender_id = users.id
 WHERE receiver_id = 0
@@ -27,7 +27,7 @@ ORDER BY time ASC;
 `;
 
 const getAllPrivateMessages = `
-SELECT sender.username AS sender_name, receiver.username AS receiver_name, sender_id, receiver_id, body, time, status, read_status
+SELECT sender.username AS sender_name, receiver.username AS receiver_name, sender_id, receiver_id, body, time, messages.status, read_status
 FROM messages
 JOIN users AS sender ON messages.sender_id = sender.id
 JOIN users AS receiver ON messages.receiver_id = receiver.id
@@ -36,7 +36,7 @@ WHERE (messages.receiver_id = $1 AND messages.sender_id = $2)
 ORDER BY messages.time ASC;`;
 
 const getAllNewPrivateMessages = `
-SELECT users.username AS sender_name, sender_id, receiver_id, body, time, status, read_status
+SELECT users.username AS sender_name, sender_id, receiver_id, body, time, messages.status, read_status
 FROM messages
 JOIN users ON sender_id = users.id
 WHERE receiver_id = $1 AND read_status = 'UNREAD'
@@ -70,9 +70,9 @@ class MessageModel {
 
     static dbPoolInstance = null;
 
-    static initModel(dbPool) {
-        this.dbPoolInstance = dbPool;
-        this.dbPoolInstance.query(createMessagesTable);
+    static async initModel(dbPool) {
+        MessageModel.dbPoolInstance = dbPool;
+        await MessageModel.dbPoolInstance.query(createMessagesTable);
     }
 
     async persist() {

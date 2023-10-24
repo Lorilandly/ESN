@@ -37,7 +37,8 @@ $(document).ready(() => {
             let senderId = userId;
             let user = await getCurrentUser();
             let currentId = user.id;
-            if (currentId === receiverId) {
+            // Parsing issue so use == instead of ===, fix later!
+            if (currentId == receiverId) {
                 $('#alert-container').addClass('visible');
             }
         },

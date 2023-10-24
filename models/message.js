@@ -18,7 +18,7 @@ RETURNING id;
 `;
 
 const getAllPublicMessages = `
-SELECT users.username, sender_id, receiver_id, body, time, status
+SELECT users.username, sender_id, receiver_id, body, time, messages.status
 FROM messages
 JOIN users ON messages.sender_id = users.id
 WHERE receiver_id = 0
@@ -45,9 +45,9 @@ class MessageModel {
 
     static dbPoolInstance = null;
 
-    static initModel(dbPool) {
-        this.dbPoolInstance = dbPool;
-        this.dbPoolInstance.query(createMessagesTable);
+    static async initModel(dbPool) {
+        MessageModel.dbPoolInstance = dbPool;
+        await MessageModel.dbPoolInstance.query(createMessagesTable);
     }
 
     async persist() {

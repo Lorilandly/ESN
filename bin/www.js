@@ -8,7 +8,7 @@ import app from '../app.js';
 import debug from 'debug';
 import http from 'http';
 import config from 'config';
-import { createDBPool, initModels } from '../db.js';
+import { createDBPool, initModels, setTestDBConfgs } from '../db.js';
 import {
     initAuthController,
     handleSocketConnections,
@@ -36,10 +36,15 @@ const dbPort = normalizePort(config.get('db.port'));
 const dbName = config.get('db.name');
 const dbPool = createDBPool(dbHost, dbPort, dbName);
 
+const testDBHost = config.get('performance-test-db.host');
+const testDBPort = normalizePort(config.get('performance-test-db.port'));
+const testDBName = config.get('performance-test-db.name');
+setTestDBConfgs(testDBHost, testDBPort, testDBName);
+
 /**
  * Use database connection to initialize our data models.
  */
-initModels(dbPool);
+await initModels(dbPool);
 
 /**
  * Create HTTP server.
@@ -48,8 +53,13 @@ initModels(dbPool);
 let server = http.createServer(app);
 const io = new Server(server);
 
+/**
+ * Get test database configs for performance test controller configuration.
+ */
+
 initIOInstanceForChat(io);
 handleSocketConnections(io);
+// initPerformanceTestController(io);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -88,18 +98,19 @@ function onError(error) {
         throw error;
     }
 
-    let bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+    let bind =
+        typeof serverPort === 'string'
+            ? 'Pipe ' + serverPort
+            : 'Port ' + serverPort;
 
     // handle specific listen errors with friendly messages
     switch (error.code) {
         case 'EACCES':
             console.error(bind + ' requires elevated privileges');
             process.exit(1);
-            break;
         case 'EADDRINUSE':
             console.error(bind + ' is already in use');
             process.exit(1);
-            break;
         default:
             throw error;
     }

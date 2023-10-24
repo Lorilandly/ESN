@@ -6,8 +6,7 @@ import LocalStrategy from 'passport-local';
 import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
 
-let reservedUsernames = null;
-let userSocketMapping = {};
+let reservedUsernames = new Set();
 
 const opts = {
     secretOrKey: process.env.SECRET_KEY,
@@ -56,9 +55,11 @@ function initAuthController(config) {
             config.get('reservedUsernamesRegistry'),
             'utf8',
         );
-        reservedUsernames = new Set(
-            data.split('\n').filter((line) => line.trim() !== ''),
-        );
+        data.split('\n')
+            .filter((line) => line.trim() !== '')
+            .forEach((username) => {
+                reservedUsernames.add(username);
+            });
     } catch (error) {
         console.error('Failed to parse reserved usernames:', error);
     }
@@ -80,11 +81,15 @@ function handleSocketConnections(io) {
             userSocketMapping[userId] = socket.id;
         } catch (exception) {
             console.error(`failed to decode user from jwt, ${exception}`);
+            return;
         }
 
+        let user = await UserModel.findByName(decodedUser.username);
+        let status = user.status;
         io.emit('userStatus', {
             username: decodedUser.username,
-            status: 'ONLINE',
+            loginStatus: 'ONLINE',
+            status,
         });
 
         socket.on('disconnect', () => {
@@ -108,22 +113,27 @@ function handleSocketConnections(io) {
                 }
             } catch (error) {
                 console.error('Error updating user status:', error);
+                return;
             }
             // Emit 'userStatus' event to notify other clients
             io.emit('userStatus', {
                 username: decodedUser.username,
-                status: 'OFFLINE',
+                loginStatus: 'OFFLINE',
+                status,
             });
         });
     });
 }
 
 function validUsername(username) {
-    return !(username.length < 3 || reservedUsernames.has(username));
+    username = username.toLowerCase();
+    return username.length < 3 || reservedUsernames.has(username)
+        ? false
+        : username;
 }
 
 function validPassword(password) {
-    return !(password.length < 4);
+    return password.length < 4 ? false : password;
 }
 
 function checkPasswordForUser(user, rawPassword) {
@@ -152,18 +162,16 @@ async function deauthenticateUser(req, res, next) {
         secure: true,
         sameSite: 'Strict',
     });
-    await UserModel.updateStatus(req.user.username, 'OFFLINE');
-    console.log('--- Deauthenticate ' + req.user.username + ' to offline');
+    await UserModel.updateLoginStatus(req.user.username, 'OFFLINE');
     return next();
 }
 
 async function setJwtCookie(req, res, next) {
-    const username = req.body.username;
+    const username = req.body.username.toLowerCase();
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
     });
-    await UserModel.updateStatus(username, 'ONLINE');
-    console.log('-- DB updated ' + username + ' to ONLINE');
+    await UserModel.updateLoginStatus(username, 'ONLINE');
     res.cookie('jwtToken', token, {
         httpOnly: true,
         secure: true,
@@ -213,7 +221,9 @@ async function create(req, res, next) {
         username.toLowerCase(),
         passwordHash,
         salt,
-        'DEAD',
+        'OFFLINE',
+        'UNDEFINED',
+        new Date(Date.now()).toLocaleString(),
         'SUPERDUPERADMIN',
     );
     await user.persist();
@@ -222,13 +232,15 @@ async function create(req, res, next) {
 
 async function validateNewCredentials(req, res, next) {
     const { username, password, dryRun } = req.body;
-    if (!validUsername(username.toLowerCase())) {
+    const checkedUsername = validUsername(username);
+    const checkedPassword = validPassword(password);
+    if (!checkedUsername) {
         return res.status(403).json({ error: 'Illegal username' });
     }
-    if (!validPassword(password)) {
+    if (!checkedPassword) {
         return res.status(403).json({ error: 'Illegal password' });
     }
-    const user = await UserModel.findByName(username.toLowerCase());
+    const user = await UserModel.findByName(checkedUsername);
     if (user) {
         if (!checkPasswordForUser(user, password)) {
             return res.status(403).json({ error: 'Username is already taken' });
@@ -240,7 +252,7 @@ async function validateNewCredentials(req, res, next) {
     if (dryRun) {
         return res.status(200).json({});
     }
-    res.locals.data = { username, password };
+    res.locals.data = { checkedUsername, password };
     return next();
 }
 
@@ -268,6 +280,9 @@ export {
     validateUrlParam,
     create,
     validateNewCredentials,
+    reservedUsernames,
     getAllUsers,
     getCurrentUserId,
+    validPassword,
+    validUsername,
 };

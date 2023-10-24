@@ -46,46 +46,44 @@ $(document).ready(() => {
     });
 
     // Get user list from API
-    getCurrentUserId().then((currentId) => {
-        $.ajax('/users', {
-            method: 'GET',
-            datatype: 'json',
-            statusCode: {
-                200: (res) => {
-                    let listbody = document.getElementById('user-list-body');
-                    for (let i in res) {
-                        let user = res[i];
-                        let user_id = document.getElementById(
-                            `user-status-${user.username}`,
-                        );
-                        if (!user_id) {
-                            let element = document.createElement('div');
-                            element.className = 'user-list-body-element';
-                            let name = document.createElement('div');
-                            name.className = 'user-list-body-element-name';
-                            name.innerHTML = user.username;
-                            let status = document.createElement('div');
-                            if (user.current_status == 'ONLINE') {
-                                status.className =
-                                    'user-list-body-element-status-online';
-                            } else {
-                                status.className =
-                                    'user-list-body-element-status-offline';
-                            }
-                            status.id = `user-status-${user.username}`;
-                            status.innerHTML = user.current_status;
-                            element.appendChild(name);
-                            element.appendChild(status);
-                            // only show chat button next to other users
-                            if (currentId != user.id) {
-                                let button = createPrivateChatButton(
-                                    currentId,
-                                    user.id,
-                                );
-                                element.appendChild(button);
-                            }
-                            listbody.appendChild(element);
+    $.ajax('/users', {
+        method: 'GET',
+        datatype: 'json',
+        statusCode: {
+            200: (res) => {
+                let listbody = document.getElementById('user-list-body');
+                for (let i in res) {
+                    let user = res[i];
+                    let user_id = document.getElementById(
+                        `user-status-${user.username}`,
+                    );
+                    if (!user_id) {
+                        let element = document.createElement('div');
+                        element.className = 'user-list-body-element';
+                        let name = document.createElement('div');
+                        name.className = 'user-list-body-element-name';
+                        let username = document.createElement('span');
+                        username.className =
+                            'user-list-body-element-name-username';
+                        username.innerHTML = user.username;
+                        let status = document.createElement('i');
+                        status.className =
+                            'bi bi-circle-fill user-status-' + user.status;
+                        let loginStatus = document.createElement('div');
+                        if (user.login_status == 'ONLINE') {
+                            loginStatus.className =
+                                'user-list-body-element-status-online';
+                        } else {
+                            loginStatus.className =
+                                'user-list-body-element-status-offline';
                         }
+                        loginStatus.id = `user-status-${user.username}`;
+                        loginStatus.innerHTML = user.login_status;
+                        element.appendChild(name);
+                        element.appendChild(loginStatus);
+                        name.appendChild(username);
+                        name.appendChild(status);
+                        listbody.appendChild(element);
                     }
                 },
             },

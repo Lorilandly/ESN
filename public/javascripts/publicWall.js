@@ -3,14 +3,14 @@ var socket = io();
 $(document).ready(() => {
     // Capture form submission event
     $('#logout-form').submit((event) => {
-        event.preventDefault(); // Prevent the default form submission
+        event.preventDefault();
         $.ajax('/users/logout', {
             method: 'PUT',
             datatype: 'json',
             success: () => {
                 location.href = '/';
             },
-            error: (_) => {
+            error: (res) => {
                 console.error('Login error:', res);
             },
         });
@@ -29,9 +29,8 @@ $(document).ready(() => {
                     messageHtml += `
                         <div class="message">
                             <div class="message-title">
-                                <span class="message-sender-name">${message.username}</span>
+                                <span class="message-sender-name">${message.username}<i class="bi bi-circle-fill user-status-${message.status}"></i></span>
                                 <span class="message-time">${message.time}</span>
-                                <span class="message-status">${message.status}</span>
                             </div>
                             <div class="message-body">
                                 <p>${message.body}</p>
@@ -60,7 +59,7 @@ $(document).ready(() => {
         $.ajax('/messages/public', {
             method: 'POST',
             data: { message: messageBody },
-            dataType: 'json', // Specify the response data type
+            dataType: 'json',
             error: (error) => {
                 console.error('API Error:', error);
             },
@@ -73,9 +72,8 @@ $(document).ready(() => {
         message.innerHTML = `
         <div class="message">
             <div class="message-title">
-                <span class="message-sender-name">${username}</span>
+                <span class="message-sender-name">${username}<i class="bi bi-circle-fill user-status-${status}"></i></span>
                 <span class="message-time">${time}</span>
-                <span class="message-status">${status}</span>
             </div>
             <div class="message-body">
                 <p>${body}</p>

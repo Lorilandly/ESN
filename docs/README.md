@@ -6,7 +6,7 @@ This directory is intended to house diagrams, technical decisions and tradeoffs,
 
 ### Required Technologies
 
--   Runtime: Node.js (_REQUIRED_)
+-   Runtime: Node.js (Recommended 20.5.1) (_REQUIRED_)
 -   Framework: Express (_REQUIRED_)
 -   HTML _(REQUIRED)_
 -   CSS _(REQUIRED)_

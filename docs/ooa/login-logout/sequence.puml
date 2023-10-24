@@ -3,7 +3,7 @@
 actor Citizen as c
 boundary WebPageInterface as w
 control AuthController as a
-participant UserModel as u
+entity UserModel as u
 boundary DBInterface as db
 actor RemoteDB as rdb
 

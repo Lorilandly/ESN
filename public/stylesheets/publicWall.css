@@ -81,3 +81,7 @@
 .notification {
     margin-right: 1.25em;
 }
+
+form{
+    margin: 0;
+}

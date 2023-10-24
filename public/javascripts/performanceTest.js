@@ -1,74 +1,63 @@
+var socket = io();
 var testInProgress = false;
 
-$(document).ready(() => {
-    $('#logout-form').submit((event) => {
-        event.preventDefault();
-        $.ajax('/users/logout', {
-            method: 'PUT',
-            datatype: 'json',
-            success: () => {
-                location.href = '/';
+document.addEventListener('DOMContentLoaded', (event) => {
+
+    document.getElementById('startPerformanceTest').addEventListener('click', async () => {
+        let interval = document.getElementById('interval').value;
+        let duration = document.getElementById('duration').value;
+        if (interval == '' || duration == '') {
+            alert('Please enter a value for both interval and duration');
+            return;
+        }
+        fetch('/performanceTest/start', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
-            error: (res) => {
-                console.error('Login error:', res);
-            },
-        });
+            body: JSON.stringify({
+                interval: interval,
+                duration: duration,
+            }),
+        })
+            .then(async (res) => {
+                if (res.status != 201) {
+                    console.error(
+                        `Failed to start performance test, doing nothing`,
+                    );
+                    return;
+                }
+                document.getElementById('performance-setting').style =
+                    'display: none';
+                document.getElementById('performance-ongoing').style =
+                    'display: flex';
+                document.getElementById('test-results').style = 'display: none';
+                showTestProgress(duration);
+                let testResult = await startPerformanceTest(duration, interval);
+                if (testInProgress) {
+                    stopPerformanceTest();
+                    // Display test results
+                    let partDuration = duration / 2;
+                    let postsPerSecond = testResult.postCompleted / partDuration;
+                    let getsPerSecond = testResult.getCompleted / partDuration;
+
+                    document.getElementById('test-results').style = 'display: flex';
+                    document.getElementById('post-result').innerHTML =
+                        'POST requests completed per second: ' + postsPerSecond;
+                    document.getElementById('get-result').innerHTML =
+                        'GET requests completed per second: ' + getsPerSecond;
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+
+    document.getElementById('stopTest').addEventListener('click', async () => {
+        stopPerformanceTest();
     });
 });
 
-document.getElementById('startTest').addEventListener('click', async () => {
-    let interval = document.getElementById('interval').value;
-    let duration = document.getElementById('duration').value;
-    if (interval == '' || duration == '') {
-        alert('Please enter a value for both interval and duration');
-        return;
-    }
-    fetch('/performanceTest/start', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            interval: interval,
-            duration: duration,
-        }),
-    })
-        .then(async (res) => {
-            if (res.status != 201) {
-                console.error(
-                    `Failed to start performance test, doing nothing`,
-                );
-                return;
-            }
-            document.getElementById('performance-setting').style =
-                'display: none';
-            document.getElementById('performance-ongoing').style =
-                'display: flex';
-            document.getElementById('test-results').style = 'display: none';
-            showTestProgress(duration);
-            let testResult = await startPerformanceTest(duration, interval);
-            if (testInProgress) {
-                stopPerformanceTest();
-                // Display test results
-                let partDuration = duration / 2;
-                let postsPerSecond = testResult.postCompleted / partDuration;
-                let getsPerSecond = testResult.getCompleted / partDuration;
-
-                document.getElementById('test-results').style = 'display: flex';
-                document.getElementById('post-result').innerHTML =
-                    'POST requests completed per second: ' + postsPerSecond;
-                document.getElementById('get-result').innerHTML =
-                    'GET requests completed per second: ' + getsPerSecond;
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-});
-
-document.getElementById('stopTest').addEventListener('click', async () => {
-    stopPerformanceTest();
-});
 
 async function startPerformanceTest(duration, interval) {
     testInProgress = true;

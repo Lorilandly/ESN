@@ -99,8 +99,8 @@ $(document).ready(() => {
             }
             let messageList = $('#message-container');
             let message = document.createElement('div');
+            message.classList.add('message');
             message.innerHTML = `
-                <div class="message">
                     <div class="message-title">
                         <span class="message-sender-name">${username}</span>
                         <span class="message-time">${time}</span>
@@ -109,7 +109,6 @@ $(document).ready(() => {
                     <div class="message-body">
                         <p>${body}</p>
                     </div>
-                </div>
                 `;
             messageList.append(message);
             messageList.scrollTop(messageList[0].scrollHeight);

@@ -8,7 +8,7 @@ import {
     validateNewCredentials,
     deauthenticateUser,
     getAllUsers,
-    getCurrentUserId,
+    getUserByName,
     checkUserAuthenticated,
 } from '../controllers/auth.js';
 
@@ -56,8 +56,8 @@ router.put(
 );
 
 router.get('/current', checkUserAuthenticated, async (req, res) => {
-    const userId = await getCurrentUserId(req);
-    return res.status(200).json({ userId: userId });
+    const user = await getUserByName(req.user.username);
+    return res.status(200).json(user);
 });
 
 export default router;

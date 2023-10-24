@@ -7,7 +7,6 @@ import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
 
 let reservedUsernames = null;
-let userSocketMapping = {};
 
 const opts = {
     secretOrKey: process.env.SECRET_KEY,
@@ -75,8 +74,6 @@ function handleSocketConnections(io) {
         try {
             decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
             await UserModel.updateStatus(decodedUser.username, 'ONLINE');
-            userId = await UserModel.findIdByName(decodedUser.username);
-            userSocketMapping[userId] = socket.id;
         } catch (exception) {
             console.error(`failed to decode user from jwt, ${exception}`);
         }
@@ -86,15 +83,6 @@ function handleSocketConnections(io) {
                 status: 'ONLINE',
             });
         }
-
-        socket.on('disconnect', () => {
-            // Remove the user from the mapping on disconnect
-            delete userSocketMapping[
-                Object.keys(userSocketMapping).find(
-                    (key) => userSocketMapping[key] === socket.id,
-                )
-            ];
-        });
 
         socket.on('window-close', async (reason) => {
             // Update the user status in the database to 'OFFLINE'
@@ -238,13 +226,11 @@ async function getAllUsers() {
     }
 }
 
-async function getCurrentUserId(req) {
-    let userId = await UserModel.findIdByName(req.user.username);
-    return userId;
+async function getUserByName(username) {
+    return await UserModel.findByName(username);
 }
 
 export {
-    userSocketMapping,
     initAuthController,
     setJwtCookie,
     handleSocketConnections,
@@ -253,5 +239,5 @@ export {
     create,
     validateNewCredentials,
     getAllUsers,
-    getCurrentUserId,
+    getUserByName,
 };

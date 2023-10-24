@@ -1,11 +1,26 @@
 var socket = io();
 
-function getSenderIdFromPath() {
+function getReceiverIdFromPath() {
     const pathSegments = window.location.pathname.split('/');
     return parseInt(pathSegments[2]);
 }
 
-let otherId = getSenderIdFromPath();
+let otherId = getReceiverIdFromPath();
+
+function getCurrentUser() {
+    return new Promise((resolve, reject) => {
+        $.ajax('/users/current', {
+            method: 'GET',
+            datatype: 'json',
+            success: (response) => {
+                resolve(response);
+            },
+            error: (error) => {
+                reject(error);
+            },
+        });
+    });
+}
 
 $(document).ready(() => {
     // Capture form submission event
@@ -17,7 +32,7 @@ $(document).ready(() => {
             success: () => {
                 location.href = '/';
             },
-            error: (_) => {
+            error: (res) => {
                 console.error('Login error:', res);
             },
         });
@@ -58,7 +73,7 @@ $(document).ready(() => {
     });
 
     // Capture form submission event
-    $('#messageForm').submit((event) => {
+    $('#messageForm').submit(async (event) => {
         event.preventDefault();
 
         let messageBody = $('#message').val();
@@ -75,12 +90,13 @@ $(document).ready(() => {
 
     socket.on(
         'create private message',
-        ({ username, time, status, body, userId, receiverId }) => {
+        async ({ username, time, status, body, userId, receiverId }) => {
             let senderId = userId;
-            if (!(otherId === receiverId) && !(otherId === senderId)) {
+            let user = await getCurrentUser();
+            let currentId = user.id;
+            if (!(currentId === receiverId || currentId === senderId)) {
                 return;
             }
-
             let messageList = $('#message-container');
             let message = document.createElement('div');
             message.innerHTML = `

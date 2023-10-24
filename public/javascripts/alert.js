@@ -1,6 +1,21 @@
 var socket = io();
 
-$(document).ready(function () {
+function getCurrentUser() {
+    return new Promise((resolve, reject) => {
+        $.ajax('/users/current', {
+            method: 'GET',
+            datatype: 'json',
+            success: (response) => {
+                resolve(response);
+            },
+            error: (error) => {
+                reject(error);
+            },
+        });
+    });
+}
+
+$(document).ready(() => {
     $.ajax({
         url: '/messages/private/new',
         method: 'GET',
@@ -16,11 +31,15 @@ $(document).ready(function () {
         },
     });
 
-    socket.on('create private message', () => {
-        $('#alert-container').addClass('visible');
-    });
-
-    socket.on('new messages viewed', () => {
-        $('#alert-container').removeClass('visible');
-    });
+    socket.on(
+        'create private message',
+        async ({ username, time, status, body, userId, receiverId }) => {
+            let senderId = userId;
+            let user = await getCurrentUser();
+            let currentId = user.id;
+            if (currentId === receiverId) {
+                $('#alert-container').addClass('visible');
+            }
+        },
+    );
 });

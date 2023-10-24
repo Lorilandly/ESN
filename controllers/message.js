@@ -1,5 +1,4 @@
 import MessageModel from '../models/message.js';
-import { userSocketMapping } from './auth.js';
 
 let ioInstance = null;
 
@@ -15,10 +14,7 @@ async function createMessage(req, res, next) {
     let body = req.body.message;
     let time = new Date(Date.now()).toLocaleString();
     let status = 'STATUS';
-    let receiverId = 0;
-    if (req.body.receiverId) {
-        receiverId = parseInt(req.body.receiverId);
-    }
+    let receiverId = req.body.receiverId ? parseInt(req.body.receiverId) : 0;
     let readStatus = 'UNREAD';
     let message = new MessageModel(
         userId,
@@ -38,26 +34,14 @@ async function createMessage(req, res, next) {
             body,
         });
     } else {
-        ioInstance
-            .to(userSocketMapping[receiverId])
-            .emit('create private message', {
-                username,
-                time,
-                status,
-                body,
-                userId,
-                receiverId,
-            });
-        ioInstance
-            .to(userSocketMapping[userId])
-            .emit('create private message', {
-                username,
-                time,
-                status,
-                body,
-                userId,
-                receiverId,
-            });
+        ioInstance.emit('create private message', {
+            username,
+            time,
+            status,
+            body,
+            userId,
+            receiverId,
+        });
     }
 
     return next();
@@ -100,9 +84,6 @@ async function getAllNewPrivateMessages(receiverId) {
 async function updatePrivateMessagesStatus(receiverId) {
     try {
         await MessageModel.updatePrivateMessagesStatus(receiverId);
-        ioInstance
-            .to(userSocketMapping[receiverId])
-            .emit('new messages viewed');
     } catch (err) {
         console.error(err);
     }

@@ -14,13 +14,13 @@ function createPrivateChatButton(senderId, receiverId) {
     return form;
 }
 
-function getCurrentUserId() {
+function getCurrentUser() {
     return new Promise((resolve, reject) => {
         $.ajax('/users/current', {
             method: 'GET',
             datatype: 'json',
             success: (response) => {
-                resolve(response.userId);
+                resolve(response);
             },
             error: (error) => {
                 reject(error);
@@ -46,49 +46,43 @@ $(document).ready(() => {
     });
 
     // Get user list from API
-    getCurrentUserId().then((currentId) => {
-        $.ajax('/users', {
-            method: 'GET',
-            datatype: 'json',
-            statusCode: {
-                200: (res) => {
-                    let listbody = document.getElementById('user-list-body');
-                    for (let i in res) {
-                        let user = res[i];
-                        let user_id = document.getElementById(
-                            `user-status-${user.username}`,
-                        );
-                        if (!user_id) {
-                            let element = document.createElement('div');
-                            element.className = 'user-list-body-element';
-                            let name = document.createElement('div');
-                            name.className = 'user-list-body-element-name';
-                            name.innerHTML = user.username;
-                            let status = document.createElement('div');
-                            if (user.current_status == 'ONLINE') {
-                                status.className =
-                                    'user-list-body-element-status-online';
-                            } else {
-                                status.className =
-                                    'user-list-body-element-status-offline';
-                            }
-                            status.id = `user-status-${user.username}`;
-                            status.innerHTML = user.current_status;
-                            element.appendChild(name);
-                            element.appendChild(status);
-                            let button = createPrivateChatButton(
-                                currentId,
-                                user.id,
-                            );
-                            element.appendChild(button);
-                            listbody.appendChild(element);
-                        }
+    $.ajax('/users', {
+        method: 'GET',
+        datatype: 'json',
+        success: async (res) => {
+            let currentUser = getCurrentUser();
+            let listbody = document.getElementById('user-list-body');
+            for (let i in res) {
+                let user = res[i];
+                let user_id = document.getElementById(
+                    `user-status-${user.username}`,
+                );
+                if (!user_id) {
+                    let element = document.createElement('div');
+                    element.className = 'user-list-body-element';
+                    let name = document.createElement('div');
+                    name.className = 'user-list-body-element-name';
+                    name.innerHTML = user.username;
+                    let status = document.createElement('div');
+                    if (user.current_status == 'ONLINE') {
+                        status.className =
+                            'user-list-body-element-status-online';
+                    } else {
+                        status.className =
+                            'user-list-body-element-status-offline';
                     }
-                },
-            },
-            error: (res) => {
-                console.error('Error:', res);
-            },
-        });
+                    status.id = `user-status-${user.username}`;
+                    status.innerHTML = user.current_status;
+                    element.appendChild(name);
+                    element.appendChild(status);
+                    let button = createPrivateChatButton(currentUser, user.id);
+                    element.appendChild(button);
+                    listbody.appendChild(element);
+                }
+            }
+        },
+        error: (res) => {
+            console.error('Error:', res);
+        },
     });
 });

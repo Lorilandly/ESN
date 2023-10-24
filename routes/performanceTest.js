@@ -3,6 +3,7 @@ import passport from 'passport';
 import {
     startPerformanceTestMode,
     endPerformanceTestMode,
+    testModeActive,
 } from '../controllers/performanceTest.js';
 let router = express.Router();
 
@@ -15,5 +16,9 @@ router.get('/', (req, res) => {
 router.post('/start', startPerformanceTestMode);
 
 router.post('/stop', endPerformanceTestMode);
+
+router.get('/testStatus', (req, res) => {
+    return res.json({ testModeActive: testModeActive });
+});
 
 export default router;

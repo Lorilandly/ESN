@@ -1,3 +1,4 @@
+var intervalID = null;
 var socket = io();
 var testInProgress = false;
 
@@ -125,6 +126,9 @@ function generateMessage(n) {
 
 function stopPerformanceTest() {
     testInProgress = false;
+    let progress_bar = document.getElementById('progress-bar');
+    progress_bar.style.width = '0%';
+    clearInterval(intervalID);
     fetch('/performanceTest/stop', {
         method: 'POST',
         headers: {
@@ -144,15 +148,38 @@ function stopPerformanceTest() {
 
 function showTestProgress(duration) {
     let progress_bar = document.getElementById('progress-bar');
-    progress_bar.style.width = '0%';
     let width = 1;
-    let id = setInterval(frame, duration * 10);
+    intervalID = setInterval(frame, duration * 10);
     function frame() {
         if (width >= 100) {
-            clearInterval(id);
+            clearInterval(intervalID);
         } else {
             width++;
             progress_bar.style.width = width + '%';
         }
     }
 }
+
+async function getTestMode(){
+    let response = await fetch('/performanceTest/testStatus', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    let json = await response.json();
+    testInProgress = json.testModeActive;
+    return json.testModeActive;
+}
+
+window.onload = async function() {
+    if (await getTestMode()){
+        stopPerformanceTest();
+    }
+}
+
+window.addEventListener('visibilitychange', async function() {
+    if (testInProgress){
+        stopPerformanceTest();
+    }
+});

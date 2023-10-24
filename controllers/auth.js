@@ -196,7 +196,6 @@ async function validateNewCredentials(req, res, next) {
     if (!checkedPassword) {
         return res.status(403).json({ error: 'Illegal password' });
     }
-    console.log(`why are we still here, just to suffer?`);
     const user = await UserModel.findByName(checkedUsername);
     if (user) {
         if (!checkPasswordForUser(user, password)) {

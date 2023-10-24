@@ -103,7 +103,7 @@ class DatabaseManager {
 
     async deactivateTestDB() {
         // expects test db is active
-        if (this.activeDB != 'test') {
+        if (this.activeDB !== 'test') {
             return;
         }
         const deleteTestDBQuery = `DROP DATABASE "${this.testDBName}";`;

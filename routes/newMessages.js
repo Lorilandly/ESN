@@ -6,8 +6,8 @@ let router = express.Router();
 
 router.use(passport.authenticate('jwt', { session: false }));
 
-router.get('/:receiverId', checkUserAuthenticated, (req, res) => {
-    return res.render('privateChat');
+router.get('/', checkUserAuthenticated, (req, res) => {
+    return res.render('newMessages');
 });
 
 export default router;

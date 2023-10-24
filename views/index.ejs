@@ -22,51 +22,63 @@
                     </form>
                 </div>
             </div>
-            <!-- Show this when authenticated -->
-            <!-- Display locals.users -->
-            <div class="user-list">
-                <div class="user-list-header">
-                    <div class="user-list-header-name">Name</div>
-                    <div class="user-list-header-status">Status</div>
+                <!-- Show this when authenticated -->
+                <!-- Display locals.users -->
+                <div class="alert-container" id="alert-container">
+                    <span class="notification">You received new messages!</span>
+                    <form action="/newMessages" class="new-message-button" method="GET">
+                        <button class="form-button">View</button>
+                    </form>
+                </div>
+                <div class="user-list">
+                    <div class="user-list-header">
+                        <div class="user-list-header-name">Name</div>
+                        <div class="user-list-header-status">Status</div>
+                    </div>
+                    <script src="/socket.io/socket.io.js"></script>
+                    <script src="/javascripts/status.js"></script>
+                    <div class="user-list-body" id="user-list-body">
+                    </div>
                 </div>
                 <script src="/socket.io/socket.io.js"></script>
                 <script src="/javascripts/status.js"></script>
                 <div class="user-list-body" id="user-list-body">
                 </div>
+                <div class="footer">
+                    <div class="footer-element">
+                        <button class="action-button">
+                            <i class="bi bi-people text-primary"></i>
+                        </button>
+                    </div>
+                    <div class="footer-element">
+                        <form action="/publicWall" method="GET">
+                            <button class="action-button">
+                                <i class="bi bi-chat-dots"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="footer-element">
+                        <button class="action-button">
+                            <i class="bi bi-chat-heart"></i>
+                        </button>
+                    </div>
+                    <div class="footer-element">
+                        <form action="/performanceTest">
+                            <button class="action-button">
+                                <i class="bi bi-speedometer2"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="footer-element">
+                        <form class="main-form" id="logout-form">
+                            <button class="action-button">
+                                <i class="bi bi-box-arrow-right"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="footer">
-                <div class="footer-element">
-                    <button class="action-button">
-                        <i class="bi bi-people text-primary"></i>
-                    </button>
-                </div>
-                <div class="footer-element">
-                    <form action="/publicWall" method="GET">
-                        <button class="action-button">
-                            <i class="bi bi-chat-dots"></i>
-                        </button>
-                    </form>
-                </div>
-                <div class="footer-element">
-                    <button class="action-button">
-                        <i class="bi bi-chat-heart"></i>
-                    </button>
-                </div>
-                <div class="footer-element">
-                    <form action="/performanceTest">
-                        <button class="action-button">
-                            <i class="bi bi-speedometer2"></i>
-                        </button>
-                    </form>
-                </div>
-                <div class="footer-element">
-                    <form class="main-form" id="logout-form">
-                        <button class="action-button">
-                            <i class="bi bi-box-arrow-right"></i>
-                        </button>
-                    </form>
-                </div>
             </div>
-        </div>
+        <script src="/javascripts/alert.js"></script>
     </body>
 </html>

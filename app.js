@@ -13,6 +13,7 @@ import usersRouter from './routes/users.js';
 import welcomeRouter from './routes/welcome.js';
 import publicWallRouter from './routes/publicWall.js';
 import privateChatRouter from './routes/privateChat.js';
+import newMessagesRouter from './routes/newMessages.js';
 import performanceTestRouter from './routes/performanceTest.js';
 
 import statusRouter from './routes/status.js';
@@ -52,5 +53,6 @@ app.use('/publicWall', publicWallRouter);
 app.use('/privateChat', privateChatRouter);
 app.use('/performanceTest', performanceTestRouter);
 app.use('/status', statusRouter);
+app.use('/newMessages', newMessagesRouter);
 
 export default app;

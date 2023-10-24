@@ -54,8 +54,6 @@ document.getElementById('startTest').addEventListener('click', async () => {
                 let postsPerSecond = testResult.postCompleted / partDuration;
                 let getsPerSecond = testResult.getCompleted / partDuration;
 
-                console.log(testResult);
-
                 document.getElementById('test-results').style = 'display: flex';
                 document.getElementById('post-result').innerHTML =
                     'POST requests completed per second: ' + postsPerSecond;

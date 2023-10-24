@@ -145,6 +145,21 @@ body {
     border: none;
 }
 
+.alert-container {
+    height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+}
+
+.alert-container.visible {
+    height: 30px;
+}
+
+.notification {
+    margin-right: 1.25em;
+    padding: 0.5em 1em; 
+}
 .header-button{
     color: white;
 }

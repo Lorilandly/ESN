@@ -75,7 +75,6 @@ function handleSocketConnections(io) {
         let decodedUser, userId;
         try {
             decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
-            console.log(`Decoded User: ${decodedUser.username}`);
             await UserModel.updateLoginStatus(decodedUser.username, 'ONLINE');
         } catch (exception) {
             console.error(`failed to decode user from jwt, ${exception}`);
@@ -100,11 +99,6 @@ function handleSocketConnections(io) {
                     await UserModel.updateLoginStatus(
                         decodedUser.username,
                         'OFFLINE',
-                    );
-                    console.log(
-                        'Socket disconnect, ' +
-                            decodedUser.username +
-                            ' is OFFLINE',
                     );
                 }
             } catch (error) {
@@ -193,18 +187,6 @@ async function checkUserAuthenticated(req, res, next) {
     return next();
 }
 
-async function validateUrlParam(req, res, next) {
-    let userId = await UserModel.findIdByName(req.user.username);
-    if (req.params.senderId != userId) {
-        return res.status(403).json({ error: 'Illegal sender Id' });
-    }
-    let receiverIdExists = await UserModel.idExists(req.params.receiverId);
-    if (!receiverIdExists) {
-        return res.status(403).json({ error: 'Illegal receiver Id' });
-    }
-    return next();
-}
-
 /*
  * Save user to db with generated hashedPassword and salt
  * TODO: This should go to User controller
@@ -261,9 +243,8 @@ async function getAllUsers() {
     }
 }
 
-async function getCurrentUserId(req) {
-    let userId = await UserModel.findIdByName(req.user.username);
-    return userId;
+async function getUserByName(username) {
+    return await UserModel.findByName(username);
 }
 
 export {
@@ -272,12 +253,11 @@ export {
     handleSocketConnections,
     deauthenticateUser,
     checkUserAuthenticated,
-    validateUrlParam,
     create,
     validateNewCredentials,
     reservedUsernames,
     getAllUsers,
-    getCurrentUserId,
+    getUserByName,
     validPassword,
     validUsername,
 };

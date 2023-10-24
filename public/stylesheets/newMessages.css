@@ -87,7 +87,7 @@ body {
     font-weight: bold;
 }
 
-.main-chat-container .footer{
+.main-chat-container .footer {
     width: 100%;
     height: 60px;
     background-color: rgb(226, 225, 225);
@@ -95,7 +95,7 @@ body {
     flex-direction: row;
 }
 
-.main-chat-container .footer .footer-element{
+.main-chat-container .footer .footer-element {
     height: 60px;
     width: 25%;
     display: flex;
@@ -103,7 +103,7 @@ body {
     align-items: center;
 }
 
-.main-chat-container .footer .footer-element .action-button{
+.main-chat-container .footer .footer-element .action-button {
     outline: none;
     background-color: inherit;
     border: none;
@@ -124,26 +124,15 @@ body {
     height: 30px;
 }
 
+.sender {
+    display: flex;
+    flex-direction: row;
+}
+
 .notification {
     margin-right: 1.25em;
 }
 
-.user-status-OK{
-    color: green;
-    margin-left: 10px;
-}
-
-.user-status-HELP{
-    color: yellow;
-    margin-left: 10px;
-}
-
-.user-status-EMERGENCY{
-    color: red;
-    margin-left: 10px;
-}
-
-.user-status-UNDEFINED {
-    display: none;
-    margin-left: 10px;
+.reply-button {
+    margin-left: 1.25em;
 }

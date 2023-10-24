@@ -158,7 +158,7 @@ class UserModel {
                 return null;
             } else {
                 let row = queryResponse.rows[0];
-                return new UserModel(
+                let user = new UserModel(
                     row.username,
                     row.password_hash,
                     row.salt,
@@ -167,6 +167,8 @@ class UserModel {
                     row.status_time,
                     row.privilege,
                 );
+                user.id = row.id;
+                return user;
             }
         } catch (err) {
             return err;

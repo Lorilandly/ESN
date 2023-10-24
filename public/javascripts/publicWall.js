@@ -23,7 +23,6 @@ $(document).ready(() => {
         dataType: 'json',
         success: (response) => {
             let messages = response.messages;
-            console.log('messages ', messages);
             if (messages && messages.length > 0) {
                 let messageHtml = '';
                 messages.forEach((message) => {

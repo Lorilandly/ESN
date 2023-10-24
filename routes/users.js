@@ -9,7 +9,8 @@ import {
     validateNewCredentials,
     deauthenticateUser,
     getAllUsers,
-    getCurrentUserId,
+    getUserByName,
+    checkUserAuthenticated,
 } from '../controllers/auth.js';
 
 /* GET all users */
@@ -73,13 +74,9 @@ router.put(
     },
 );
 
-router.get(
-    '/current',
-    passport.authenticate('jwt', { session: false }),
-    async (req, res) => {
-        const userId = await getCurrentUserId(req);
-        return res.status(200).json({ userId: userId });
-    },
-);
+router.get('/current', checkUserAuthenticated, async (req, res) => {
+    const user = await getUserByName(req.user.username);
+    return res.status(200).json(user);
+});
 
 export default router;

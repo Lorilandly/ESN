@@ -26,11 +26,13 @@ class DatabaseManager {
         return DatabaseManager.instance;
     }
 
+    /* Initialize all data models */
     static async initModels(db) {
         await UserModel.initModel(db);
         await MessageModel.initModel(db);
     }
 
+    /* Connect to Postgres db and initalize a connection pool */
     static createDBPool(host, port, name) {
         let pool = new pg.Pool({
             host: host,
@@ -67,6 +69,12 @@ class DatabaseManager {
         await DatabaseManager.initModels(this.DBPool);
     }
 
+    /**
+     * Creates temporary test database and connects to it.
+     * The test database is set as the server's active DB connection.
+     * The previous database connection is saved so that it can be restored later.
+     * EXTRA: explain that this creates a test user and returns the ID
+     */
     async activateTestDB() {
         // expects currentDBPool is not test DB Pool
         if (this.activeDB === 'test') {
@@ -101,6 +109,10 @@ class DatabaseManager {
         return testUserId;
     }
 
+    /*
+     * End the current connection to the test database and restore connection to the production database.
+     * Init all the models using the saved database connection and delete the test database.
+     */
     async deactivateTestDB() {
         // expects test db is active
         if (this.activeDB !== 'test') {

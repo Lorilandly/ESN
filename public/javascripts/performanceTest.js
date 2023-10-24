@@ -87,7 +87,7 @@ async function startPerformanceTest(duration, interval) {
             return;
         }
         messageBody = generateMessage(numPOSTSent);
-        $.ajax('/publicMessages', {
+        $.ajax('/messages/public', {
             method: 'POST',
             data: { message: messageBody },
             dataType: 'json',
@@ -105,7 +105,7 @@ async function startPerformanceTest(duration, interval) {
     // GET Requests
     let numGETCompleted = 0;
     while (testInProgress && !timeElapsed(duration, startTime)) {
-        $.ajax('/publicMessages', {
+        $.ajax('/messages/public', {
             method: 'GET',
             dataType: 'json',
             success: () => {

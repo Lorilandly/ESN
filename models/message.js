@@ -61,8 +61,10 @@ class MessageModel {
     }
 
     static async getAllPublicMessages() {
+        console.log(getAllPublicMessages);
         const queryResponse =
             await MessageModel.dbPoolInstance.query(getAllPublicMessages);
+        console.log(queryResponse);
         if (queryResponse.rowCount == 0) {
             return null;
         } else {

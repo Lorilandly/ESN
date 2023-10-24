@@ -75,15 +75,12 @@ function handleSocketConnections(io) {
         let decodedUser, userId;
         try {
             decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
-            await UserModel.updateStatus(decodedUser.username, 'ONLINE');
-            userId = await UserModel.findIdByName(decodedUser.username);
-            console.log('!!! ' + decodedUser.username + ' is ONLINE');
-            userSocketMapping[userId] = socket.id;
+            console.log(`Decoded User: ${decodedUser.username}`);
+            await UserModel.updateLoginStatus(decodedUser.username, 'ONLINE');
         } catch (exception) {
             console.error(`failed to decode user from jwt, ${exception}`);
             return;
         }
-
         let user = await UserModel.findByName(decodedUser.username);
         let status = user.status;
         io.emit('userStatus', {
@@ -94,14 +91,13 @@ function handleSocketConnections(io) {
 
         socket.on('disconnect', () => {
             // Remove the user from the mapping on disconnect
-            delete userSocketMapping[Object.keys(userSocketMapping).find(key => userSocketMapping[key] === socket.id)];
         });
 
         socket.on('window-close', async (reason) => {
             // Update the user status in the database to 'OFFLINE'
             try {
                 if (reason === 'INTENTIONAL_CLOSE') {
-                    await UserModel.updateStatus(
+                    await UserModel.updateLoginStatus(
                         decodedUser.username,
                         'OFFLINE',
                     );
@@ -271,7 +267,6 @@ async function getCurrentUserId(req) {
 }
 
 export {
-    userSocketMapping,
     initAuthController,
     setJwtCookie,
     handleSocketConnections,

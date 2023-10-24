@@ -85,11 +85,11 @@ $(document).ready(() => {
                         name.appendChild(status);
                         listbody.appendChild(element);
                     }
-                },
+                }
             },
             error: (res) => {
                 console.error('Error:', res);
             },
-        });
+        }
     });
 });

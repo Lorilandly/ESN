@@ -11,6 +11,7 @@ router.use(passport.authenticate('jwt', { session: false }));
 
 router.get('/public', async (req, res) => {
     const messages = await getAllPublicMessages();
+    console.log(messages);
     return res.status(200).json({ messages: messages });
 });
 

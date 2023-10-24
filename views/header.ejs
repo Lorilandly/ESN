@@ -1,7 +1,17 @@
 <div class="header">
     <div class="header-text">ESN</div>
-    <div id="notification" class="notification">
+    <button id="notification" class="notification" data-bs-toggle="offcanvas" href="#offcanvasAlert" role="button" aria-controls="offcanvasAlert" onclick="changeReadStatus()">
         <i id="notification-icon" class="bi bi-app-indicator text-light"></i>
+    </button>
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAlert" aria-labelledby="offcanvasAlertLabel">
+    <div class="offcanvas-body">
+        <div class="alert-container" id="alert-container">
+            <p id="receiver-id" style="display: none;"></p>
+            <div class="message">
+            </div>
+        </div>
     </div>
 </div>
 

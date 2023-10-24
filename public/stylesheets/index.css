@@ -93,7 +93,7 @@
 
 .user-list .user-list-body .user-list-body-element .user-list-body-element-chat .user-list-body-element-chat-form .chat-button{
     height: 90%;
-    background-color: white;
+    background-color: rgba(0, 0, 0, 0);
     border: none;
     outline: none;
     cursor: pointer;

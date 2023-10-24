@@ -36,6 +36,8 @@ body {
     right: 0;
     position: absolute;
     margin-right: 10px;
+    border: none;
+    background-color: inherit;
 }
 
 
@@ -76,6 +78,18 @@ body {
 
 .offcanvas-body{
     padding: 10px;
+}
+
+.offcanvas-body .alert-container{
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    height: 100%;
+}
+
+.offcanvas-body .alert-container .message{
+    display: flex;
+    flex-direction: column;
 }
 
 .offcanvas-body .offcanvas-option{

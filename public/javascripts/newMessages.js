@@ -33,7 +33,7 @@ $(document).ready(() => {
     });
 
     // Fetch and render all unread messages
-    return $.ajax({
+    $.ajax({
         url: '/messages/private/new',
         method: 'GET',
         dataType: 'json',
@@ -58,7 +58,6 @@ $(document).ready(() => {
                 senderDiv.append(senderText);
                 senderDiv.append(button);
                 $('#message-container').append(senderDiv);
-
                 let messageHtml = '';
                 groupedMessages[sender].forEach((message) => {
                     messageHtml += `
@@ -96,4 +95,17 @@ $(document).ready(() => {
             });
         }
     });
+
+    socket.on(
+        'create private message',
+        async ({ username, time, status, body, userId, receiverId }) => {
+            let senderId = userId;
+            let user = await getCurrentUser();
+            let currentId = user.id;
+            // Parsing issue so use == instead of ===, fix later!
+            if (currentId == receiverId) {
+                $('#alert-container').css('display', 'flex');
+            }
+        },
+    );
 });

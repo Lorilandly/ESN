@@ -50,7 +50,7 @@ $(document).ready(() => {
         method: 'GET',
         datatype: 'json',
         success: async (res) => {
-            let currentUser = getCurrentUser();
+            let currentUser = await getCurrentUser();
             let listbody = document.getElementById('user-list-body');
             for (let i in res) {
                 let user = res[i];
@@ -81,7 +81,10 @@ $(document).ready(() => {
                     loginStatus.innerHTML = user.login_status;
                     element.appendChild(name);
                     element.appendChild(loginStatus);
-                    element.appendChild(createPrivateChatButton(currentUser, user.id));
+                    if(user.username != currentUser.username){
+                        element.appendChild(createPrivateChatButton(currentUser, user.id));
+                    }
+                    // element.appendChild(createPrivateChatButton(currentUser, user.id));
                     name.appendChild(username);
                     name.appendChild(status);
                     listbody.appendChild(element);

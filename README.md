@@ -1,6 +1,6 @@
 # ESN
 
-ESN Application we are great
+ESN Application (we are AWESOME)
 
 ## Contents
 

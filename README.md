@@ -1,7 +1,6 @@
 # ESN
 
-ESN Application we are great
-
+ESN Application
 ## Contents
 
 -   [Setup](#setup)

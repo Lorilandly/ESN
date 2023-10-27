@@ -1,5 +1,5 @@
 /* global io */
-var socket = io();
+const socket = io();
 
 $(document).ready(() => {
     // Capture form submission event

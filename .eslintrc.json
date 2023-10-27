@@ -13,10 +13,14 @@
         "sourceType": "module"
     },
     "rules": {
-        "indent": ["error", 4],
+        "indent": ["error", 4, { "SwitchCase": 1 }],
         "semi": ["error", "always"],
-        "comma-dangle": ["error", "always-multiline"],
+        "comma-dangle": ["warn", "always-multiline"],
         "space-unary-ops": "off",
-        "no-console": ["error", { "allow": ["warn", "error"] }]
+        "space-before-function-paren": [
+            "warn",
+            { "anonymous": "always", "named": "never", "asyncArrow": "always" }
+        ],
+        "no-console": ["warn", { "allow": ["warn", "error"] }]
     }
 }

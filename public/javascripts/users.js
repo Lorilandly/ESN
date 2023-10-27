@@ -1,4 +1,4 @@
-function createPrivateChatButton (senderId, receiverId) {
+function createPrivateChatButton(senderId, receiverId) {
     // Create the form element
     const form = document.createElement('form');
     form.className = 'user-list-body-element-chat-form';
@@ -20,7 +20,7 @@ function createPrivateChatButton (senderId, receiverId) {
     return form;
 }
 
-function getCurrentUser () {
+function getCurrentUser() {
     return new Promise((resolve, reject) => {
         $.ajax('/users/current', {
             method: 'GET',
@@ -69,8 +69,7 @@ $(document).ready(() => {
                     const name = document.createElement('div');
                     name.className = 'user-list-body-element-name';
                     const username = document.createElement('span');
-                    username.className =
-                        'user-list-body-element-name-username';
+                    username.className = 'user-list-body-element-name-username';
                     username.innerHTML = user.username;
                     const status = document.createElement('i');
                     status.className =
@@ -93,7 +92,9 @@ $(document).ready(() => {
                     element.appendChild(loginStatus);
 
                     if (user.username !== currentUser.username) {
-                        chatHolder.appendChild(createPrivateChatButton(currentUser, user.id));
+                        chatHolder.appendChild(
+                            createPrivateChatButton(currentUser, user.id),
+                        );
                     }
                     // chatHolder.appendChild(createPrivateChatButton(currentUser, user.id));
                     element.appendChild(chatHolder);

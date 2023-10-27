@@ -1,7 +1,7 @@
 /* global io */
-var socket = io();
+const socket = io();
 
-function getCurrentUser () {
+function getCurrentUser() {
     return new Promise((resolve, reject) => {
         $.ajax('/users/current', {
             method: 'GET',

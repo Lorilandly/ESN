@@ -1,4 +1,4 @@
-function getCurrentUser () {
+function getCurrentUser() {
     return new Promise((resolve, reject) => {
         $.ajax('/users/current', {
             method: 'GET',

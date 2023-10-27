@@ -1,8 +1,8 @@
 /* global io */
-var socket = io();
+const socket = io();
 
 // Function to sort and display users based on status and username
-function sortAndDisplayUsers () {
+function sortAndDisplayUsers() {
     const userElements = Array.from(
         document.querySelectorAll('.user-list-body-element'),
     );
@@ -71,7 +71,8 @@ $(document).ready(() => {
                     'user-list-body-element-status-offline',
                 );
             }
-        } else { // If the current user is a first-time user just joined
+        } else {
+            // If the current user is a first-time user just joined
             // Select the user list body class, which will append the new user list body element
             const userListContainer = document.querySelector('.user-list-body');
 

@@ -4,7 +4,7 @@ import {
 } from '../controllers/performanceTest.js';
 import passport from 'passport';
 
-function normalOperationsChecker (req, res, next) {
+function normalOperationsChecker(req, res, next) {
     if (!testModeActive) {
         return next();
     }

@@ -1,7 +1,7 @@
 /* global io */
-var socket = io();
+const socket = io();
 
-function shakeIndicator () {
+function shakeIndicator() {
     const indicator = document.getElementById('notification');
     indicator.style.animation = 'shake 0.1s';
     indicator.style.animationIterationCount = '5';
@@ -10,7 +10,7 @@ function shakeIndicator () {
         indicator.style.animation = '';
     });
 }
-function getCurrentUser () {
+function getCurrentUser() {
     return new Promise((resolve, reject) => {
         $.ajax('/users/current', {
             method: 'GET',
@@ -25,7 +25,7 @@ function getCurrentUser () {
     });
 }
 
-async function changeReadStatus () {
+async function changeReadStatus() {
     //
     const receiverId = await getCurrentUser();
     $.ajax('/messages/private/readStatus', {
@@ -34,10 +34,7 @@ async function changeReadStatus () {
         data: { receiverId: receiverId.id },
         success: () => {},
         error: (error) => {
-            console.error(
-                'Failed to update messages read status:',
-                error,
-            );
+            console.error('Failed to update messages read status:', error);
         },
     });
 }

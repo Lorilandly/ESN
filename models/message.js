@@ -59,7 +59,7 @@ WHERE receiver_id = $1 AND read_status = 'UNREAD';
 `;
 
 class MessageModel {
-    constructor (senderId, receiverId, body, time, status, readStatus) {
+    constructor(senderId, receiverId, body, time, status, readStatus) {
         this.sender_id = senderId;
         this.receiver_id = receiverId;
         this.body = body;
@@ -70,12 +70,12 @@ class MessageModel {
 
     static dbPoolInstance = null;
 
-    static async initModel (dbPool) {
+    static async initModel(dbPool) {
         MessageModel.dbPoolInstance = dbPool;
         await MessageModel.dbPoolInstance.query(createMessagesTable);
     }
 
-    async persist () {
+    async persist() {
         await MessageModel.dbPoolInstance.query(insertMessage, [
             this.sender_id,
             this.receiver_id,
@@ -86,7 +86,7 @@ class MessageModel {
         ]);
     }
 
-    static async getAllPublicMessages () {
+    static async getAllPublicMessages() {
         const queryResponse =
             await MessageModel.dbPoolInstance.query(getAllPublicMessages);
         if (queryResponse.rowCount === 0) {
@@ -99,7 +99,7 @@ class MessageModel {
         }
     }
 
-    static async getAllPrivateMessages (senderId, receiverId) {
+    static async getAllPrivateMessages(senderId, receiverId) {
         const queryResponse = await MessageModel.dbPoolInstance.query(
             getAllPrivateMessages,
             [senderId, receiverId],
@@ -114,7 +114,7 @@ class MessageModel {
         }
     }
 
-    static async getAllNewPrivateMessages (receiverId) {
+    static async getAllNewPrivateMessages(receiverId) {
         const queryResponse = await MessageModel.dbPoolInstance.query(
             getAllNewPrivateMessages,
             [receiverId],
@@ -129,7 +129,7 @@ class MessageModel {
         }
     }
 
-    static async getLastMessageReadStatus (senderId, receiverId) {
+    static async getLastMessageReadStatus(senderId, receiverId) {
         const queryResponse = await MessageModel.dbPoolInstance.query(
             getLastMessageReadStatus,
             [senderId, receiverId],
@@ -141,7 +141,7 @@ class MessageModel {
         }
     }
 
-    static async updatePrivateMessagesStatus (receiverId) {
+    static async updatePrivateMessagesStatus(receiverId) {
         await MessageModel.dbPoolInstance.query(changeMessageReadStatus, [
             receiverId,
         ]);

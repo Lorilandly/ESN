@@ -12,4 +12,4 @@ For iteration 2, we have chosen to implement the Singleton design pattern to add
 
 By employing the Singleton pattern, we create a single, globally accessible instance that encapsulates database handling, ensuring the integrity of the data, simplifying management, and maintaining a uniform and secure approach to database connections. This approach aligns with our project's goals of efficiency, data reliability, and code maintainability.
 
-- [Diagram](https://viewer.diagrams.net/?page-id=AntsNvd8vDp8DYpDSpO6&highlight=0000ff&edit=_blank&layers=1&nav=1&page-id=AntsNvd8vDp8DYpDSpO6#G17hR_xSGP90rC-pllEnbJ8A7NLXeNjATB) (see Design Pattern Tab)
+-   [Diagram](https://viewer.diagrams.net/?page-id=AntsNvd8vDp8DYpDSpO6&highlight=0000ff&edit=_blank&layers=1&nav=1&page-id=AntsNvd8vDp8DYpDSpO6#G17hR_xSGP90rC-pllEnbJ8A7NLXeNjATB) (see Design Pattern Tab)

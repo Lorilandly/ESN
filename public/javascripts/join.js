@@ -1,4 +1,4 @@
-function queryUserApi (dryRun) {
+function queryUserApi(dryRun) {
     // Get the message body from the input field
     const username = $('#username').val();
     const password = $('#password').val();

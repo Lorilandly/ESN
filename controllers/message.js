@@ -3,11 +3,11 @@ import { testModeActive, testUserId } from './performanceTest.js';
 
 let ioInstance = null;
 
-function initIOInstanceForChat (io) {
+function initIOInstanceForChat(io) {
     ioInstance = io;
 }
 
-async function createMessage (req, res, next) {
+async function createMessage(req, res, next) {
     const username = req.user.username;
     let userId = req.user.id;
 
@@ -50,7 +50,7 @@ async function createMessage (req, res, next) {
     return next();
 }
 
-async function getAllPublicMessages () {
+async function getAllPublicMessages() {
     try {
         const messages = await MessageModel.getAllPublicMessages();
         return messages;
@@ -60,7 +60,7 @@ async function getAllPublicMessages () {
     }
 }
 
-async function getAllPrivateMessages (senderId, receiverId) {
+async function getAllPrivateMessages(senderId, receiverId) {
     try {
         const messages = await MessageModel.getAllPrivateMessages(
             senderId,
@@ -73,9 +73,10 @@ async function getAllPrivateMessages (senderId, receiverId) {
     }
 }
 
-async function getAllNewPrivateMessages (receiverId) {
+async function getAllNewPrivateMessages(receiverId) {
     try {
-        const messages = await MessageModel.getAllNewPrivateMessages(receiverId);
+        const messages =
+            await MessageModel.getAllNewPrivateMessages(receiverId);
         return messages;
     } catch (err) {
         console.error(err);
@@ -83,7 +84,7 @@ async function getAllNewPrivateMessages (receiverId) {
     }
 }
 
-async function updatePrivateMessagesStatus (receiverId) {
+async function updatePrivateMessagesStatus(receiverId) {
     try {
         await MessageModel.updatePrivateMessagesStatus(receiverId);
     } catch (err) {

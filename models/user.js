@@ -65,7 +65,7 @@ WHERE username = $2;
  * TODO: have a Model interface
  */
 class UserModel {
-    constructor (
+    constructor(
         username,
         passwordHash,
         salt,
@@ -85,12 +85,12 @@ class UserModel {
 
     static dbPoolInstance = null;
 
-    static async initModel (dbPool) {
+    static async initModel(dbPool) {
         UserModel.dbPoolInstance = dbPool;
         await UserModel.dbPoolInstance.query(createUsersTable);
     }
 
-    async persist () {
+    async persist() {
         const res = await UserModel.dbPoolInstance.query(insertUser, [
             this.username,
             this.passwordHash,
@@ -103,7 +103,7 @@ class UserModel {
         return res.rows[0].id;
     }
 
-    static async nameExists (name) {
+    static async nameExists(name) {
         const res = await UserModel.dbPoolInstance.query(
             checkUserExistsWithName,
             [name],
@@ -111,7 +111,7 @@ class UserModel {
         return res.rows[0].exists;
     }
 
-    static async idExists (id) {
+    static async idExists(id) {
         const res = await UserModel.dbPoolInstance.query(
             checkUserExistsWithId,
             [id],
@@ -119,18 +119,18 @@ class UserModel {
         return res.rows[0].exists;
     }
 
-    async updateStatus (status) {
+    async updateStatus(status) {
         await UserModel.dbPoolInstance.query(changeUserStatus, [
             status,
             this.username,
         ]);
     }
 
-    static async updateLoginStatus (name, status) {
+    static async updateLoginStatus(name, status) {
         await this.dbPoolInstance.query(changeUserLoginStatus, [status, name]);
     }
 
-    static async findIdByName (name) {
+    static async findIdByName(name) {
         const queryResponse = await UserModel.dbPoolInstance.query(
             selectUserByName,
             [name],
@@ -143,7 +143,7 @@ class UserModel {
         }
     }
 
-    static async findByName (name) {
+    static async findByName(name) {
         try {
             const queryResponse = await UserModel.dbPoolInstance.query(
                 selectUserByName,
@@ -170,7 +170,7 @@ class UserModel {
         }
     }
 
-    static async getAllStatuses () {
+    static async getAllStatuses() {
         const queryResponse = await UserModel.dbPoolInstance.query(
             getAllUserStatusesOrdered,
         );

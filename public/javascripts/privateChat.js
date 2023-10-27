@@ -1,14 +1,14 @@
 /* global io */
-var socket = io();
+const socket = io();
 
-function getReceiverIdFromPath () {
+function getReceiverIdFromPath() {
     const pathSegments = window.location.pathname.split('/');
     return parseInt(pathSegments[2]);
 }
 
 const otherId = getReceiverIdFromPath();
 
-function getCurrentUser () {
+function getCurrentUser() {
     return new Promise((resolve, reject) => {
         $.ajax('/users/current', {
             method: 'GET',

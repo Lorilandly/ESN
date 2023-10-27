@@ -1,7 +1,7 @@
 /* global io */
-var socket = io();
+const socket = io();
 
-function createReplyButton (senderId, receiverId) {
+function createReplyButton(senderId, receiverId) {
     // Create the form element
     const form = document.createElement('form');
     form.action = '/privateChat/' + receiverId;

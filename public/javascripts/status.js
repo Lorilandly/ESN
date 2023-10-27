@@ -1,7 +1,8 @@
+/* global io */
 var socket = io();
 
 // Function to sort and display users based on status and username
-function sortAndDisplayUsers() {
+function sortAndDisplayUsers () {
     const userElements = Array.from(
         document.querySelectorAll('.user-list-body-element'),
     );
@@ -70,9 +71,7 @@ $(document).ready(() => {
                     'user-list-body-element-status-offline',
                 );
             }
-        }
-        // If the current user is a first-time user just joined
-        else {
+        } else { // If the current user is a first-time user just joined
             // Select the user list body class, which will append the new user list body element
             const userListContainer = document.querySelector('.user-list-body');
 
@@ -100,21 +99,21 @@ $(document).ready(() => {
             newStatusElement.textContent = loginStatus;
 
             // Create a new username element
-            let newUserElement = document.createElement('div');
+            const newUserElement = document.createElement('div');
             newUserElement.setAttribute('class', 'user-list-body-element-name');
-            let newUsernameElement = document.createElement('span');
+            const newUsernameElement = document.createElement('span');
             newUsernameElement.setAttribute(
                 'class',
                 'user-list-body-element-name-username',
             );
             newUsernameElement.textContent = username;
-            let newUserStatusElement = document.createElement('i');
+            const newUserStatusElement = document.createElement('i');
             newUserStatusElement.setAttribute(
                 'class',
                 'bi bi-circle-fill user-status-' + status,
             );
 
-            let chatHolder = document.createElement('div');
+            const chatHolder = document.createElement('div');
             chatHolder.className = 'user-list-body-element-chat';
 
             // Append the new username and status element to the user list element container

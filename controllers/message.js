@@ -1,27 +1,25 @@
 import MessageModel from '../models/message.js';
-import UserModel from '../models/user.js';
-import jwt from 'jsonwebtoken';
 import { testModeActive, testUserId } from './performanceTest.js';
 
 let ioInstance = null;
 
-function initIOInstanceForChat(io) {
+function initIOInstanceForChat (io) {
     ioInstance = io;
 }
 
-async function createMessage(req, res, next) {
-    let username = req.user.username;
+async function createMessage (req, res, next) {
+    const username = req.user.username;
     let userId = req.user.id;
 
     // Receiver Id 0 is for public chat
-    let body = req.body.message;
-    let time = new Date(Date.now()).toLocaleString();
-    let user = req.user;
+    const body = req.body.message;
+    const time = new Date(Date.now()).toLocaleString();
+    const user = req.user;
     userId = testModeActive ? testUserId : userId;
-    let status = user.status;
-    let receiverId = req.body.receiverId ? parseInt(req.body.receiverId) : 0;
-    let readStatus = 'UNREAD';
-    let message = new MessageModel(
+    const status = user.status;
+    const receiverId = req.body.receiverId ? parseInt(req.body.receiverId) : 0;
+    const readStatus = 'UNREAD';
+    const message = new MessageModel(
         userId,
         receiverId,
         body,
@@ -31,7 +29,7 @@ async function createMessage(req, res, next) {
     );
     await message.persist();
 
-    if (receiverId == 0) {
+    if (receiverId === 0) {
         ioInstance.emit('create public message', {
             username,
             time,
@@ -52,7 +50,7 @@ async function createMessage(req, res, next) {
     return next();
 }
 
-async function getAllPublicMessages() {
+async function getAllPublicMessages () {
     try {
         const messages = await MessageModel.getAllPublicMessages();
         return messages;
@@ -62,7 +60,7 @@ async function getAllPublicMessages() {
     }
 }
 
-async function getAllPrivateMessages(senderId, receiverId) {
+async function getAllPrivateMessages (senderId, receiverId) {
     try {
         const messages = await MessageModel.getAllPrivateMessages(
             senderId,
@@ -75,7 +73,7 @@ async function getAllPrivateMessages(senderId, receiverId) {
     }
 }
 
-async function getAllNewPrivateMessages(receiverId) {
+async function getAllNewPrivateMessages (receiverId) {
     try {
         const messages = await MessageModel.getAllNewPrivateMessages(receiverId);
         return messages;
@@ -85,7 +83,7 @@ async function getAllNewPrivateMessages(receiverId) {
     }
 }
 
-async function updatePrivateMessagesStatus(receiverId) {
+async function updatePrivateMessagesStatus (receiverId) {
     try {
         await MessageModel.updatePrivateMessagesStatus(receiverId);
     } catch (err) {

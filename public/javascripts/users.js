@@ -1,4 +1,4 @@
-function createPrivateChatButton(senderId, receiverId) {
+function createPrivateChatButton (senderId, receiverId) {
     // Create the form element
     const form = document.createElement('form');
     form.className = 'user-list-body-element-chat-form';
@@ -15,13 +15,12 @@ function createPrivateChatButton(senderId, receiverId) {
     chatIcon.setAttribute('class', 'bi bi-chat-left-text');
     chatButton.appendChild(chatIcon);
 
-
     // Append the button to the form
     form.appendChild(chatButton);
     return form;
 }
 
-function getCurrentUser() {
+function getCurrentUser () {
     return new Promise((resolve, reject) => {
         $.ajax('/users/current', {
             method: 'GET',
@@ -46,7 +45,7 @@ $(document).ready(() => {
             success: () => {
                 location.href = '/';
             },
-            error: (_) => {
+            error: (res) => {
                 console.error('Login error:', res);
             },
         });
@@ -57,30 +56,30 @@ $(document).ready(() => {
         method: 'GET',
         datatype: 'json',
         success: async (res) => {
-            let currentUser = await getCurrentUser();
-            let listbody = document.getElementById('user-list-body');
-            for (let i in res) {
-                let user = res[i];
-                let user_id = document.getElementById(
+            const currentUser = await getCurrentUser();
+            const listbody = document.getElementById('user-list-body');
+            for (const i in res) {
+                const user = res[i];
+                const userId = document.getElementById(
                     `user-status-${user.username}`,
                 );
-                if (!user_id) {
-                    let element = document.createElement('div');
+                if (!userId) {
+                    const element = document.createElement('div');
                     element.className = 'user-list-body-element';
-                    let name = document.createElement('div');
+                    const name = document.createElement('div');
                     name.className = 'user-list-body-element-name';
-                    let username = document.createElement('span');
+                    const username = document.createElement('span');
                     username.className =
                         'user-list-body-element-name-username';
                     username.innerHTML = user.username;
-                    let status = document.createElement('i');
+                    const status = document.createElement('i');
                     status.className =
                         'bi bi-circle-fill user-status-' + user.status;
-                    let loginStatus = document.createElement('div');
-                    let chatHolder = document.createElement('div');
+                    const loginStatus = document.createElement('div');
+                    const chatHolder = document.createElement('div');
                     chatHolder.className = 'user-list-body-element-chat';
-                    
-                    if (user.login_status == 'ONLINE') {
+
+                    if (user.login_status === 'ONLINE') {
                         loginStatus.className =
                             'user-list-body-element-status-online';
                     } else {
@@ -89,14 +88,14 @@ $(document).ready(() => {
                     }
                     loginStatus.id = `user-status-${user.username}`;
                     loginStatus.innerHTML = user.login_status;
-                    
+
                     element.appendChild(name);
                     element.appendChild(loginStatus);
-                    
-                    if(user.username != currentUser.username){
+
+                    if (user.username !== currentUser.username) {
                         chatHolder.appendChild(createPrivateChatButton(currentUser, user.id));
                     }
-                    //chatHolder.appendChild(createPrivateChatButton(currentUser, user.id));
+                    // chatHolder.appendChild(createPrivateChatButton(currentUser, user.id));
                     element.appendChild(chatHolder);
                     // element.appendChild(createPrivateChatButton(currentUser, user.id));
                     name.appendChild(username);

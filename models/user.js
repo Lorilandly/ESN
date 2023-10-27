@@ -22,11 +22,6 @@ SELECT * FROM users
 WHERE username = $1;
 `;
 
-const selectUserById = `
-SELECT * FROM users
-WHERE id = $1;
-`;
-
 const checkUserExistsWithName = `
 SELECT EXISTS(
     SELECT 1 FROM users
@@ -70,7 +65,7 @@ WHERE username = $2;
  * TODO: have a Model interface
  */
 class UserModel {
-    constructor(
+    constructor (
         username,
         passwordHash,
         salt,
@@ -90,13 +85,13 @@ class UserModel {
 
     static dbPoolInstance = null;
 
-    static async initModel(dbPool) {
+    static async initModel (dbPool) {
         UserModel.dbPoolInstance = dbPool;
         await UserModel.dbPoolInstance.query(createUsersTable);
     }
 
-    async persist() {
-        let res = await UserModel.dbPoolInstance.query(insertUser, [
+    async persist () {
+        const res = await UserModel.dbPoolInstance.query(insertUser, [
             this.username,
             this.passwordHash,
             this.salt,
@@ -108,7 +103,7 @@ class UserModel {
         return res.rows[0].id;
     }
 
-    static async nameExists(name) {
+    static async nameExists (name) {
         const res = await UserModel.dbPoolInstance.query(
             checkUserExistsWithName,
             [name],
@@ -116,7 +111,7 @@ class UserModel {
         return res.rows[0].exists;
     }
 
-    static async idExists(id) {
+    static async idExists (id) {
         const res = await UserModel.dbPoolInstance.query(
             checkUserExistsWithId,
             [id],
@@ -124,41 +119,41 @@ class UserModel {
         return res.rows[0].exists;
     }
 
-    async updateStatus(status) {
+    async updateStatus (status) {
         await UserModel.dbPoolInstance.query(changeUserStatus, [
             status,
             this.username,
         ]);
     }
 
-    static async updateLoginStatus(name, status) {
+    static async updateLoginStatus (name, status) {
         await this.dbPoolInstance.query(changeUserLoginStatus, [status, name]);
     }
 
-    static async findIdByName(name) {
+    static async findIdByName (name) {
         const queryResponse = await UserModel.dbPoolInstance.query(
             selectUserByName,
             [name],
         );
-        if (queryResponse.rowCount == 0) {
+        if (queryResponse.rowCount === 0) {
             return null;
         } else {
-            let row = queryResponse.rows[0];
+            const row = queryResponse.rows[0];
             return row.id;
         }
     }
 
-    static async findByName(name) {
+    static async findByName (name) {
         try {
             const queryResponse = await UserModel.dbPoolInstance.query(
                 selectUserByName,
                 [name],
             );
-            if (queryResponse.rowCount == 0) {
+            if (queryResponse.rowCount === 0) {
                 return null;
             } else {
-                let row = queryResponse.rows[0];
-                let user = new UserModel(
+                const row = queryResponse.rows[0];
+                const user = new UserModel(
                     row.username,
                     row.password_hash,
                     row.salt,
@@ -175,11 +170,11 @@ class UserModel {
         }
     }
 
-    static async getAllStatuses() {
+    static async getAllStatuses () {
         const queryResponse = await UserModel.dbPoolInstance.query(
             getAllUserStatusesOrdered,
         );
-        if (queryResponse.rowCount == 0) {
+        if (queryResponse.rowCount === 0) {
             return null;
         } else {
             return queryResponse.rows;

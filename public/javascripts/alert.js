@@ -1,6 +1,7 @@
+/* global io */
 var socket = io();
 
-function getCurrentUser() {
+function getCurrentUser () {
     return new Promise((resolve, reject) => {
         $.ajax('/users/current', {
             method: 'GET',
@@ -21,7 +22,7 @@ $(document).ready(() => {
         method: 'GET',
         dataType: 'json',
         success: (response) => {
-            let messages = response.messages;
+            const messages = response.messages;
             if (messages && messages.length > 0) {
                 $('#alert-container').addClass('visible');
             }
@@ -34,9 +35,8 @@ $(document).ready(() => {
     socket.on(
         'create private message',
         async ({ username, time, status, body, userId, receiverId }) => {
-            let senderId = userId;
-            let user = await getCurrentUser();
-            let currentId = user.id;
+            const user = await getCurrentUser();
+            const currentId = user.id;
             // Parsing issue so use == instead of ===, fix later!
             if (currentId == receiverId) {
                 $('#alert-container').addClass('visible');

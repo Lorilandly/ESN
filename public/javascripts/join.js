@@ -1,7 +1,7 @@
-function queryUserApi(dryRun) {
+function queryUserApi (dryRun) {
     // Get the message body from the input field
-    let username = $('#username').val();
-    let password = $('#password').val();
+    const username = $('#username').val();
+    const password = $('#password').val();
 
     // Make request to create new user
     $.ajax('/users', {
@@ -20,7 +20,7 @@ function queryUserApi(dryRun) {
         },
         error: (res) => {
             // handled error
-            let reason = res.responseJSON.error;
+            const reason = res.responseJSON.error;
             if (reason == 'User exists') {
                 // login with the credential
                 $.ajax('/users/login', {

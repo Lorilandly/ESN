@@ -59,23 +59,23 @@ WHERE receiver_id = $1 AND read_status = 'UNREAD';
 `;
 
 class MessageModel {
-    constructor(sender_id, receiver_id, body, time, status, read_status) {
-        this.sender_id = sender_id;
-        this.receiver_id = receiver_id;
+    constructor (senderId, receiverId, body, time, status, readStatus) {
+        this.sender_id = senderId;
+        this.receiver_id = receiverId;
         this.body = body;
         this.time = time;
         this.status = status;
-        this.read_status = read_status;
+        this.read_status = readStatus;
     }
 
     static dbPoolInstance = null;
 
-    static async initModel(dbPool) {
+    static async initModel (dbPool) {
         MessageModel.dbPoolInstance = dbPool;
         await MessageModel.dbPoolInstance.query(createMessagesTable);
     }
 
-    async persist() {
+    async persist () {
         await MessageModel.dbPoolInstance.query(insertMessage, [
             this.sender_id,
             this.receiver_id,
@@ -86,62 +86,62 @@ class MessageModel {
         ]);
     }
 
-    static async getAllPublicMessages() {
+    static async getAllPublicMessages () {
         const queryResponse =
             await MessageModel.dbPoolInstance.query(getAllPublicMessages);
-        if (queryResponse.rowCount == 0) {
+        if (queryResponse.rowCount === 0) {
             return null;
         } else {
             queryResponse.rows.forEach(
-                (row) => (row['time'] = row['time'].toLocaleString()),
+                (row) => (row.time = row.time.toLocaleString()),
             );
             return queryResponse.rows;
         }
     }
 
-    static async getAllPrivateMessages(senderId, receiverId) {
+    static async getAllPrivateMessages (senderId, receiverId) {
         const queryResponse = await MessageModel.dbPoolInstance.query(
             getAllPrivateMessages,
             [senderId, receiverId],
         );
-        if (queryResponse.rowCount == 0) {
+        if (queryResponse.rowCount === 0) {
             return null;
         } else {
             queryResponse.rows.forEach(
-                (row) => (row['time'] = row['time'].toLocaleString()),
+                (row) => (row.time = row.time.toLocaleString()),
             );
             return queryResponse.rows;
         }
     }
 
-    static async getAllNewPrivateMessages(receiverId) {
+    static async getAllNewPrivateMessages (receiverId) {
         const queryResponse = await MessageModel.dbPoolInstance.query(
             getAllNewPrivateMessages,
             [receiverId],
         );
-        if (queryResponse.rowCount == 0) {
+        if (queryResponse.rowCount === 0) {
             return null;
         } else {
             queryResponse.rows.forEach(
-                (row) => (row['time'] = row['time'].toLocaleString()),
+                (row) => (row.time = row.time.toLocaleString()),
             );
             return queryResponse.rows;
         }
     }
 
-    static async getLastMessageReadStatus(senderId, receiverId) {
+    static async getLastMessageReadStatus (senderId, receiverId) {
         const queryResponse = await MessageModel.dbPoolInstance.query(
             getLastMessageReadStatus,
             [senderId, receiverId],
         );
-        if (queryResponse.rowCount == 0) {
+        if (queryResponse.rowCount === 0) {
             return null;
         } else {
             return queryResponse.rows[0].read_status;
         }
     }
 
-    static async updatePrivateMessagesStatus(receiverId) {
+    static async updatePrivateMessagesStatus (receiverId) {
         await MessageModel.dbPoolInstance.query(changeMessageReadStatus, [
             receiverId,
         ]);

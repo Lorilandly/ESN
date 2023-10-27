@@ -5,7 +5,7 @@ import MessageModel from './models/message.js';
 class DatabaseManager {
     static instance;
 
-    constructor() {
+    constructor () {
         this.activeDB = null;
 
         this.DBPool = null;
@@ -19,7 +19,7 @@ class DatabaseManager {
         this.testDBName = null;
     }
 
-    static getInstance() {
+    static getInstance () {
         if (!DatabaseManager.instance) {
             DatabaseManager.instance = new DatabaseManager();
         }
@@ -27,16 +27,16 @@ class DatabaseManager {
     }
 
     /* Initialize all data models */
-    static async initModels(db) {
+    static async initModels (db) {
         await UserModel.initModel(db);
         await MessageModel.initModel(db);
     }
 
     /* Connect to Postgres db and initalize a connection pool */
-    static createDBPool(host, port, name) {
-        let pool = new pg.Pool({
-            host: host,
-            port: port,
+    static createDBPool (host, port, name) {
+        const pool = new pg.Pool({
+            host,
+            port,
             database: name,
             user: process.env.POSTGRES_DB_USER,
             password: process.env.POSTGRES_DB_PASSWORD,
@@ -44,7 +44,7 @@ class DatabaseManager {
         return pool;
     }
 
-    configureDB(host, port, name) {
+    configureDB (host, port, name) {
         this.DBHost = host;
         this.DBPort = port;
         this.DBName = name;
@@ -55,13 +55,13 @@ class DatabaseManager {
         );
     }
 
-    configureTestDB(host, port, name) {
+    configureTestDB (host, port, name) {
         this.testDBHost = host;
         this.testDBPort = port;
         this.testDBName = name;
     }
 
-    async activateDB() {
+    async activateDB () {
         if (this.activeDB === 'main') {
             return;
         }
@@ -75,7 +75,7 @@ class DatabaseManager {
      * The previous database connection is saved so that it can be restored later.
      * EXTRA: explain that this creates a test user and returns the ID
      */
-    async activateTestDB() {
+    async activateTestDB () {
         // expects currentDBPool is not test DB Pool
         if (this.activeDB === 'test') {
             return;
@@ -96,14 +96,14 @@ class DatabaseManager {
 
         await DatabaseManager.initModels(this.testDBPool);
 
-        let testUser = new UserModel(
+        const testUser = new UserModel(
             'testUser',
             'hash',
             'salt',
             'ONLINE',
             'UNDEFINED',
         );
-        let testUserId = await testUser.persist();
+        const testUserId = await testUser.persist();
 
         await UserModel.initModel(this.DBPool);
         return testUserId;
@@ -113,7 +113,7 @@ class DatabaseManager {
      * End the current connection to the test database and restore connection to the production database.
      * Init all the models using the saved database connection and delete the test database.
      */
-    async deactivateTestDB() {
+    async deactivateTestDB () {
         // expects test db is active
         if (this.activeDB !== 'test') {
             return;

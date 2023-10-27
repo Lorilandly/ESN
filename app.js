@@ -1,7 +1,7 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 
-import path from 'path';
+import path, { dirname } from 'path';
 import logger from 'morgan';
 
 import normalOperationsChecker from './middlewares/normalOperationsChecker.js';
@@ -18,12 +18,11 @@ import performanceTestRouter from './routes/performanceTest.js';
 
 import statusRouter from './routes/status.js';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-let app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

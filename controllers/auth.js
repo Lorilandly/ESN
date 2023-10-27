@@ -6,14 +6,14 @@ import LocalStrategy from 'passport-local';
 import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
 
-let reservedUsernames = new Set();
+const reservedUsernames = new Set();
 
 const opts = {
     secretOrKey: process.env.SECRET_KEY,
     jwtFromRequest: (req) => {
         let token = null;
         if (req && req.cookies) {
-            token = req.cookies['jwtToken'];
+            token = req.cookies.jwtToken;
         }
         return token;
     },
@@ -49,7 +49,7 @@ passport.use(
     }),
 );
 
-function initAuthController(config) {
+function initAuthController (config) {
     try {
         const data = readFileSync(
             config.get('reservedUsernamesRegistry'),
@@ -66,13 +66,13 @@ function initAuthController(config) {
 }
 
 // Function to handle Socket.IO connections and user status updates
-function handleSocketConnections(io) {
+function handleSocketConnections (io) {
     io.on('connection', async (socket) => {
-        let cookie = socket.request.headers.cookie;
-        let jwtIndex = cookie.indexOf('jwtToken');
-        let jwtToken = cookie.substring(jwtIndex).split('=')[1];
+        const cookie = socket.request.headers.cookie;
+        const jwtIndex = cookie.indexOf('jwtToken');
+        const jwtToken = cookie.substring(jwtIndex).split('=')[1];
 
-        let decodedUser, userId;
+        let decodedUser;
         try {
             decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
             await UserModel.updateLoginStatus(decodedUser.username, 'ONLINE');
@@ -80,8 +80,8 @@ function handleSocketConnections(io) {
             console.error(`failed to decode user from jwt, ${exception}`);
             return;
         }
-        let user = await UserModel.findByName(decodedUser.username);
-        let status = user.status;
+        const user = await UserModel.findByName(decodedUser.username);
+        const status = user.status;
         io.emit('userStatus', {
             username: decodedUser.username,
             loginStatus: 'ONLINE',
@@ -115,18 +115,18 @@ function handleSocketConnections(io) {
     });
 }
 
-function validUsername(username) {
+function validUsername (username) {
     username = username.toLowerCase();
     return username.length < 3 || reservedUsernames.has(username)
         ? false
         : username;
 }
 
-function validPassword(password) {
+function validPassword (password) {
     return password.length < 4 ? false : password;
 }
 
-function checkPasswordForUser(user, rawPassword) {
+function checkPasswordForUser (user, rawPassword) {
     if (!user) {
         return false;
     }
@@ -140,7 +140,7 @@ function checkPasswordForUser(user, rawPassword) {
     return Buffer.compare(newHashedPasswd, user.passwordHash) === 0;
 }
 
-async function deauthenticateUser(req, res, next) {
+async function deauthenticateUser (req, res, next) {
     const token = req.cookies.jwtToken;
     const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
     req.user = decodedUser;
@@ -156,7 +156,7 @@ async function deauthenticateUser(req, res, next) {
     return next();
 }
 
-async function setJwtCookie(req, res, next) {
+async function setJwtCookie (req, res, next) {
     const username = req.body.username.toLowerCase();
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
@@ -170,7 +170,7 @@ async function setJwtCookie(req, res, next) {
     return next();
 }
 
-async function checkUserAuthenticated(req, res, next) {
+async function checkUserAuthenticated (req, res, next) {
     const token = req.cookies.jwtToken;
     if (!token) {
         res.locals.isAuthenticated = false;
@@ -191,11 +191,11 @@ async function checkUserAuthenticated(req, res, next) {
  * Save user to db with generated hashedPassword and salt
  * TODO: This should go to User controller
  */
-async function create(req, res, next) {
+async function create (req, res, next) {
     const { username, password } = req.body;
-    let salt = crypto.randomBytes(16);
-    let passwordHash = crypto.pbkdf2Sync(password, salt, 310000, 32, 'sha256');
-    let user = new UserModel(
+    const salt = crypto.randomBytes(16);
+    const passwordHash = crypto.pbkdf2Sync(password, salt, 310000, 32, 'sha256');
+    const user = new UserModel(
         username.toLowerCase(),
         passwordHash,
         salt,
@@ -208,7 +208,7 @@ async function create(req, res, next) {
     return next();
 }
 
-async function validateNewCredentials(req, res, next) {
+async function validateNewCredentials (req, res, next) {
     const { username, password, dryRun } = req.body;
     const checkedUsername = validUsername(username);
     const checkedPassword = validPassword(password);
@@ -234,7 +234,7 @@ async function validateNewCredentials(req, res, next) {
     return next();
 }
 
-async function getAllUsers() {
+async function getAllUsers () {
     try {
         const users = await UserModel.getAllStatuses();
         return users;
@@ -243,7 +243,7 @@ async function getAllUsers() {
     }
 }
 
-async function getUserByName(username) {
+async function getUserByName (username) {
     return await UserModel.findByName(username);
 }
 

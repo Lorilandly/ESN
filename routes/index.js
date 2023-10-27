@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from 'passport';
-let router = express.Router();
+const router = express.Router();
 
 /* GET home page. */
 router.get(

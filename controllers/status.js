@@ -1,6 +1,6 @@
 // get userid，update status by id
-async function updateUserStatus(req, res, next) {
-    let user = req.user;
+async function updateUserStatus (req, res, next) {
+    const user = req.user;
     try {
         await user.updateStatus(req.body.status);
     } catch (err) {

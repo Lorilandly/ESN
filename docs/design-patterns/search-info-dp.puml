@@ -1,0 +1,41 @@
+@startuml
+!define RECTANGLE class
+
+RECTANGLE SearchContextFactory {
+    +getSearchContext(contextType : String) : SearchContext
+}
+
+package "SearchContext Factory" {
+
+    interface SearchContext {
+        +search(criteria : SearchCriteria) : SearchResult
+    }
+
+    RECTANGLE CitizenSearchContext {
+        +search(criteria : SearchCriteria) : SearchResult
+    }
+
+    RECTANGLE PublicAnnouncementSearchContext {
+        +search(criteria : SearchCriteria) : SearchResult
+    }
+
+    RECTANGLE PublicMessagesSearchContext {
+        +search(criteria : SearchCriteria) : SearchResult
+    }
+
+    RECTANGLE PrivateMessagesSearchContext {
+        +search(criteria : SearchCriteria) : SearchResult
+    }
+
+    SearchContext <|-- CitizenSearchContext
+    SearchContext <|-- PublicAnnouncementSearchContext
+    SearchContext <|-- PublicMessagesSearchContext
+    SearchContext <|-- PrivateMessagesSearchContext
+
+
+}
+
+SearchContextFactory ..> SearchContext : <<creates>>
+
+
+@enduml

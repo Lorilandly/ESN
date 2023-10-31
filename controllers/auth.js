@@ -5,7 +5,7 @@ import { Strategy } from 'passport-jwt';
 import LocalStrategy from 'passport-local';
 import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
-import { emit } from 'process';
+import { decode } from 'punycode';
 
 let reservedUsernames = new Set();
 
@@ -91,7 +91,11 @@ function handleSocketConnections(io) {
 
         socket.on('disconnect', () => {
             // Remove the user from the mapping on disconnect
-            emitUserStatus(io, decodedUser.username, 'OFFLINE', status);
+            io.emit('userStatus', 
+            {   username: decodedUser.username, 
+                loginStatus: 'OFFLINE', 
+                status,
+            });
         });
 
         socket.on('window-close', async (reason) => {
@@ -108,11 +112,16 @@ function handleSocketConnections(io) {
                 return;
             }
             // Emit 'userStatus' event to notify other clients
-            emitUserStatus(io, decodedUser.username, 'OFFLINE', status);
+            io.emit('userStatus', 
+            {   username: decodedUser.username, 
+                loginStatus: 'OFFLINE', 
+                status,
+            });
         });
     });
 }
 
+<<<<<<< Updated upstream
 function emitUserStatus(io, username, loginStatus, status) {
     io.emit('userStatus', 
     { username: username, 
@@ -121,6 +130,8 @@ function emitUserStatus(io, username, loginStatus, status) {
     });
 }
 
+=======
+>>>>>>> Stashed changes
 function validUsername(username) {
     username = username.toLowerCase();
     return username.length < 3 || reservedUsernames.has(username)

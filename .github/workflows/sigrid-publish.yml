@@ -5,6 +5,7 @@ on:
             - "main"
 jobs:
     sigridci:
+<<<<<<< Updated upstream
       runs-on: ubuntu-latest
       steps:
         - name: Check out repository
@@ -15,3 +16,15 @@ jobs:
           env:
             SIGRID_CI_TOKEN: "${{ secrets.SIGRID_CI_TOKEN }}"
             run: "./sigridci/sigridci/sigridci.py --customer cmusvfse --system 18652-fse-f23-group-project-sb-2 --source . --publish"
+=======
+        runs-on: ubuntu-latest
+        steps:
+        - name: Check out repository
+            uses: actions/checkout@v3
+        - name: Download Sigrid CI
+            run: "git clone https://github.com/Software-Improvement-Group/sigridci.git sigridci"
+        - name: "Run Sigrid CI" 
+            env:
+            SIGRID_CI_TOKEN: "${{ secrets.SIGRID_CI_TOKEN }}"
+            run: "./sigridci/sigridci/sigridci.py --customer cmusvfse --system 18652-fse-f23-group-project-sb-2 --source . --publish"
+>>>>>>> Stashed changes

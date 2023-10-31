@@ -22,11 +22,6 @@ SELECT * FROM users
 WHERE username = $1;
 `;
 
-const selectUserById = `
-SELECT * FROM users
-WHERE id = $1;
-`;
-
 const checkUserExistsWithName = `
 SELECT EXISTS(
     SELECT 1 FROM users
@@ -96,7 +91,7 @@ class UserModel {
     }
 
     async persist() {
-        let res = await UserModel.dbPoolInstance.query(insertUser, [
+        const res = await UserModel.dbPoolInstance.query(insertUser, [
             this.username,
             this.passwordHash,
             this.salt,
@@ -140,10 +135,10 @@ class UserModel {
             selectUserByName,
             [name],
         );
-        if (queryResponse.rowCount == 0) {
+        if (queryResponse.rowCount === 0) {
             return null;
         } else {
-            let row = queryResponse.rows[0];
+            const row = queryResponse.rows[0];
             return row.id;
         }
     }
@@ -154,11 +149,11 @@ class UserModel {
                 selectUserByName,
                 [name],
             );
-            if (queryResponse.rowCount == 0) {
+            if (queryResponse.rowCount === 0) {
                 return null;
             } else {
-                let row = queryResponse.rows[0];
-                let user = new UserModel(
+                const row = queryResponse.rows[0];
+                const user = new UserModel(
                     row.username,
                     row.password_hash,
                     row.salt,
@@ -179,7 +174,7 @@ class UserModel {
         const queryResponse = await UserModel.dbPoolInstance.query(
             getAllUserStatusesOrdered,
         );
-        if (queryResponse.rowCount == 0) {
+        if (queryResponse.rowCount === 0) {
             return null;
         } else {
             return queryResponse.rows;

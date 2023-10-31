@@ -1,7 +1,6 @@
 import express from 'express';
 import passport from 'passport';
 import updateUserStatus from '../controllers/status.js';
-let router = express.Router();
 
 import {
     setJwtCookie,
@@ -12,6 +11,7 @@ import {
     getUserByName,
     checkUserAuthenticated,
 } from '../controllers/auth.js';
+const router = express.Router();
 
 /* GET all users */
 router.get(

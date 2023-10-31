@@ -1,7 +1,7 @@
 import express from 'express';
 import passport from 'passport';
 
-let router = express.Router();
+const router = express.Router();
 
 router.use(passport.authenticate('jwt', { session: false }));
 

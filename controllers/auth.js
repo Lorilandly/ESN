@@ -7,14 +7,14 @@ import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
 import { decode } from 'punycode';
 
-let reservedUsernames = new Set();
+const reservedUsernames = new Set();
 
 const opts = {
     secretOrKey: process.env.SECRET_KEY,
     jwtFromRequest: (req) => {
         let token = null;
         if (req && req.cookies) {
-            token = req.cookies['jwtToken'];
+            token = req.cookies.jwtToken;
         }
         return token;
     },
@@ -69,9 +69,9 @@ function initAuthController(config) {
 // Function to handle Socket.IO connections and user status updates
 function handleSocketConnections(io) {
     io.on('connection', async (socket) => {
-        let cookie = socket.request.headers.cookie;
-        let jwtIndex = cookie.indexOf('jwtToken');
-        let jwtToken = cookie.substring(jwtIndex).split('=')[1];
+        const cookie = socket.request.headers.cookie;
+        const jwtIndex = cookie.indexOf('jwtToken');
+        const jwtToken = cookie.substring(jwtIndex).split('=')[1];
 
         let decodedUser;
         try {
@@ -81,8 +81,8 @@ function handleSocketConnections(io) {
             console.error(`failed to decode user from jwt, ${exception}`);
             return;
         }
-        let user = await UserModel.findByName(decodedUser.username);
-        let status = user.status;
+        const user = await UserModel.findByName(decodedUser.username);
+        const status = user.status;
         io.emit('userStatus', {
             username: decodedUser.username,
             loginStatus: 'ONLINE',
@@ -199,9 +199,15 @@ async function checkUserAuthenticated(req, res, next) {
  */
 async function create(req, res, next) {
     const { username, password } = req.body;
-    let salt = crypto.randomBytes(16);
-    let passwordHash = crypto.pbkdf2Sync(password, salt, 310000, 32, 'sha256');
-    let user = new UserModel(
+    const salt = crypto.randomBytes(16);
+    const passwordHash = crypto.pbkdf2Sync(
+        password,
+        salt,
+        310000,
+        32,
+        'sha256',
+    );
+    const user = new UserModel(
         username.toLowerCase(),
         passwordHash,
         salt,

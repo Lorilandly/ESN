@@ -59,13 +59,13 @@ WHERE receiver_id = $1 AND read_status = 'UNREAD';
 `;
 
 class MessageModel {
-    constructor(sender_id, receiver_id, body, time, status, read_status) {
-        this.sender_id = sender_id;
-        this.receiver_id = receiver_id;
+    constructor(senderId, receiverId, body, time, status, readStatus) {
+        this.sender_id = senderId;
+        this.receiver_id = receiverId;
         this.body = body;
         this.time = time;
         this.status = status;
-        this.read_status = read_status;
+        this.read_status = readStatus;
     }
 
     static dbPoolInstance = null;
@@ -89,11 +89,11 @@ class MessageModel {
     static async getAllPublicMessages() {
         const queryResponse =
             await MessageModel.dbPoolInstance.query(getAllPublicMessages);
-        if (queryResponse.rowCount == 0) {
+        if (queryResponse.rowCount === 0) {
             return null;
         } else {
             queryResponse.rows.forEach(
-                (row) => (row['time'] = row['time'].toLocaleString()),
+                (row) => (row.time = row.time.toLocaleString()),
             );
             return queryResponse.rows;
         }
@@ -104,11 +104,11 @@ class MessageModel {
             getAllPrivateMessages,
             [senderId, receiverId],
         );
-        if (queryResponse.rowCount == 0) {
+        if (queryResponse.rowCount === 0) {
             return null;
         } else {
             queryResponse.rows.forEach(
-                (row) => (row['time'] = row['time'].toLocaleString()),
+                (row) => (row.time = row.time.toLocaleString()),
             );
             return queryResponse.rows;
         }
@@ -119,11 +119,11 @@ class MessageModel {
             getAllNewPrivateMessages,
             [receiverId],
         );
-        if (queryResponse.rowCount == 0) {
+        if (queryResponse.rowCount === 0) {
             return null;
         } else {
             queryResponse.rows.forEach(
-                (row) => (row['time'] = row['time'].toLocaleString()),
+                (row) => (row.time = row.time.toLocaleString()),
             );
             return queryResponse.rows;
         }
@@ -134,7 +134,7 @@ class MessageModel {
             getLastMessageReadStatus,
             [senderId, receiverId],
         );
-        if (queryResponse.rowCount == 0) {
+        if (queryResponse.rowCount === 0) {
             return null;
         } else {
             return queryResponse.rows[0].read_status;

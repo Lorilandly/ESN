@@ -13,10 +13,10 @@ function getCurrentUser() {
     });
 }
 
-$(document).ready(async function() {
+$(document).ready(async function () {
     // find the offcanvas-username element
-    let username = document.getElementById('offcanvas-username');
+    const username = document.getElementById('offcanvas-username');
     // set the username to the username element
-    let currentUser = await getCurrentUser();
+    const currentUser = await getCurrentUser();
     username.innerHTML = currentUser.username;
-})
+});

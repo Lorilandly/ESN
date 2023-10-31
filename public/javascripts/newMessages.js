@@ -1,4 +1,5 @@
-var socket = io();
+/* global io */
+var socket = io(); // eslint-disable-line
 
 function createReplyButton(senderId, receiverId) {
     // Create the form element
@@ -26,7 +27,7 @@ $(document).ready(() => {
             success: () => {
                 location.href = '/';
             },
-            error: (_) => {
+            error: (res) => {
                 console.error('Login error:', res);
             },
         });
@@ -38,8 +39,8 @@ $(document).ready(() => {
         method: 'GET',
         dataType: 'json',
         success: (response) => {
-            let messages = response.messages;
-            let groupedMessages = {};
+            const messages = response.messages;
+            const groupedMessages = {};
             // Group messages by sender name
             messages.forEach((message) => {
                 if (!groupedMessages[message.sender_name]) {
@@ -49,12 +50,12 @@ $(document).ready(() => {
             });
 
             // Render messages grouped by sender name
-            for (let sender in groupedMessages) {
-                let senderId = groupedMessages[sender][0].sender_id;
-                let receiverId = groupedMessages[sender][0].receiver_id;
-                let button = createReplyButton(receiverId, senderId);
-                let senderDiv = $('<div>').addClass('sender');
-                let senderText = $('<span>').text(sender);
+            for (const sender in groupedMessages) {
+                const senderId = groupedMessages[sender][0].sender_id;
+                const receiverId = groupedMessages[sender][0].receiver_id;
+                const button = createReplyButton(receiverId, senderId);
+                const senderDiv = $('<div>').addClass('sender');
+                const senderText = $('<span>').text(sender);
                 senderDiv.append(senderText);
                 senderDiv.append(button);
                 $('#message-container').append(senderDiv);
@@ -99,11 +100,10 @@ $(document).ready(() => {
     socket.on(
         'create private message',
         async ({ username, time, status, body, userId, receiverId }) => {
-            let senderId = userId;
-            let user = await getCurrentUser();
-            let currentId = user.id;
+            const user = await getCurrentUser();
+            const currentId = user.id;
             // Parsing issue so use == instead of ===, fix later!
-            if (currentId == receiverId) {
+            if (currentId === receiverId) {
                 $('#alert-container').css('display', 'flex');
             }
         },

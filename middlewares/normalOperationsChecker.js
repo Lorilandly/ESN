@@ -11,7 +11,7 @@ function normalOperationsChecker(req, res, next) {
     passport.authenticate('jwt', (err, user) => {
         if (err) return res.status(500).json({});
 
-        if (user.username != testAdminUsername) {
+        if (user.username !== testAdminUsername) {
             return res.render('suspend');
         }
         return next();

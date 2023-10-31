@@ -34,9 +34,9 @@ class DatabaseManager {
 
     /* Connect to Postgres db and initalize a connection pool */
     static createDBPool(host, port, name) {
-        let pool = new pg.Pool({
-            host: host,
-            port: port,
+        const pool = new pg.Pool({
+            host,
+            port,
             database: name,
             user: process.env.POSTGRES_DB_USER,
             password: process.env.POSTGRES_DB_PASSWORD,
@@ -96,14 +96,14 @@ class DatabaseManager {
 
         await DatabaseManager.initModels(this.testDBPool);
 
-        let testUser = new UserModel(
+        const testUser = new UserModel(
             'testUser',
             'hash',
             'salt',
             'ONLINE',
             'UNDEFINED',
         );
-        let testUserId = await testUser.persist();
+        const testUserId = await testUser.persist();
 
         await UserModel.initModel(this.DBPool);
         return testUserId;

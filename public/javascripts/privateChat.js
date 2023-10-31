@@ -1,11 +1,12 @@
-var socket = io();
+/* global io */
+var socket = io(); // eslint-disable-line
 
 function getReceiverIdFromPath() {
     const pathSegments = window.location.pathname.split('/');
     return parseInt(pathSegments[2]);
 }
 
-let otherId = getReceiverIdFromPath();
+const otherId = getReceiverIdFromPath();
 
 function getCurrentUser() {
     return new Promise((resolve, reject) => {
@@ -45,7 +46,7 @@ $(document).ready(() => {
         dataType: 'json',
         data: { receiverId: otherId },
         success: (response) => {
-            let messages = response.messages;
+            const messages = response.messages;
             if (messages && messages.length > 0) {
                 let messageHtml = '';
                 messages.forEach((message) => {
@@ -76,7 +77,7 @@ $(document).ready(() => {
     $('#messageForm').submit(async (event) => {
         event.preventDefault();
 
-        let messageBody = $('#message').val();
+        const messageBody = $('#message').val();
 
         $.ajax('/messages/private', {
             method: 'POST',
@@ -91,14 +92,14 @@ $(document).ready(() => {
     socket.on(
         'create private message',
         async ({ username, time, status, body, userId, receiverId }) => {
-            let senderId = userId;
-            let user = await getCurrentUser();
-            let currentId = user.id;
+            const senderId = userId;
+            const user = await getCurrentUser();
+            const currentId = user.id;
             if (!(currentId === receiverId || currentId === senderId)) {
                 return;
             }
-            let messageList = $('#message-container');
-            let message = document.createElement('div');
+            const messageList = $('#message-container');
+            const message = document.createElement('div');
             message.classList.add('message');
             message.innerHTML = `
                     <div class="message-title">

@@ -5,7 +5,7 @@ import {
     endPerformanceTestMode,
     testModeActive,
 } from '../controllers/performanceTest.js';
-let router = express.Router();
+const router = express.Router();
 
 router.use(passport.authenticate('jwt', { session: false }));
 
@@ -18,7 +18,7 @@ router.post('/start', startPerformanceTestMode);
 router.post('/stop', endPerformanceTestMode);
 
 router.get('/testStatus', (req, res) => {
-    return res.json({ testModeActive: testModeActive });
+    return res.json({ testModeActive });
 });
 
 export default router;

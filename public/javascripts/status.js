@@ -1,4 +1,5 @@
-var socket = io();
+/* global io */
+var socket = io(); // eslint-disable-line
 
 // Function to sort and display users based on status and username
 function sortAndDisplayUsers() {
@@ -122,11 +123,11 @@ $(document).ready(() => {
                     'user-list-body-element-status-offline',
                 );
             }
-        }
-        // If the current user is a first-time user just joined
-        else {
+        } else {
+            // If the current user is a first-time user just joined
             // Select the user list body class, which will append the new user list body element
             const userListContainer = document.querySelector('.user-list-body');
+
             // Append this new user list element to the entire user list
             const newUserListElement = createUserElement(username, loginStatus, status);
             userListContainer.appendChild(newUserListElement);

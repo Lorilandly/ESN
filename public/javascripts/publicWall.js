@@ -1,4 +1,5 @@
-var socket = io();
+/* global io */
+var socket = io(); // eslint-disable-line
 
 $(document).ready(() => {
     // Capture form submission event
@@ -22,7 +23,7 @@ $(document).ready(() => {
         method: 'GET',
         dataType: 'json',
         success: (response) => {
-            let messages = response.messages;
+            const messages = response.messages;
             if (messages && messages.length > 0) {
                 let messageHtml = '';
                 messages.forEach((message) => {
@@ -53,7 +54,7 @@ $(document).ready(() => {
         event.preventDefault();
 
         // Get the message body from the input field
-        let messageBody = $('#message').val();
+        const messageBody = $('#message').val();
 
         // Create message by calling API
         $.ajax('/messages/public', {
@@ -67,8 +68,8 @@ $(document).ready(() => {
     });
 
     socket.on('create public message', ({ username, time, status, body }) => {
-        let messageList = $('#message-container');
-        let message = document.createElement('div');
+        const messageList = $('#message-container');
+        const message = document.createElement('div');
         message.className = 'message';
         message.innerHTML = `
             <div class="message-title">

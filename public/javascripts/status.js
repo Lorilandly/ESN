@@ -45,6 +45,58 @@ function sortAndDisplayUsers() {
     });
 }
 
+function createUserElement(username, loginStatus, status) {
+    // Create a new new user list body element
+    const newUserListElement = document.createElement('div');
+    newUserListElement.setAttribute('class', 'user-list-body-element');
+
+    // Create a new status element
+    const newStatusElement = document.createElement('div');
+    newStatusElement.setAttribute('id', `user-status-${username}`);
+
+    // Set the status for current user
+    if (loginStatus === 'ONLINE') {
+        newStatusElement.setAttribute(
+            'class',
+            'user-list-body-element-status-online',
+        );
+    } else {
+        newStatusElement.setAttribute(
+            'class',
+            'user-list-body-element-status-offline',
+        );
+    }
+
+    newStatusElement.textContent = loginStatus;
+
+    // Create a new username element
+    let newUserElement = document.createElement('div');
+    newUserElement.setAttribute('class', 'user-list-body-element-name');
+    let newUsernameElement = document.createElement('span');
+    newUsernameElement.setAttribute(
+        'class',
+        'user-list-body-element-name-username',
+    );
+    newUsernameElement.textContent = username;
+    let newUserStatusElement = document.createElement('i');
+    newUserStatusElement.setAttribute(
+        'class',
+        'bi bi-circle-fill user-status-' + status,
+    );
+
+    let chatHolder = document.createElement('div');
+    chatHolder.className = 'user-list-body-element-chat';
+
+    // Append the new username and status element to the user list element container
+    newUserElement.appendChild(newUsernameElement);
+    newUserElement.appendChild(newUserStatusElement);
+    newUserListElement.appendChild(newUserElement);
+    newUserListElement.appendChild(newStatusElement);
+    newUserListElement.appendChild(chatHolder);
+
+    return newUserListElement;
+}
+
 // Listen for 'userStatus'
 // Notice all other clients if someone else's status changes
 $(document).ready(() => {
@@ -76,55 +128,8 @@ $(document).ready(() => {
             // Select the user list body class, which will append the new user list body element
             const userListContainer = document.querySelector('.user-list-body');
 
-            // Create a new new user list body element
-            const newUserListElement = document.createElement('div');
-            newUserListElement.setAttribute('class', 'user-list-body-element');
-
-            // Create a new status element
-            const newStatusElement = document.createElement('div');
-            newStatusElement.setAttribute('id', `user-status-${username}`);
-
-            // Set the status for current user
-            if (loginStatus === 'ONLINE') {
-                newStatusElement.setAttribute(
-                    'class',
-                    'user-list-body-element-status-online',
-                );
-            } else {
-                newStatusElement.setAttribute(
-                    'class',
-                    'user-list-body-element-status-offline',
-                );
-            }
-
-            newStatusElement.textContent = loginStatus;
-
-            // Create a new username element
-            const newUserElement = document.createElement('div');
-            newUserElement.setAttribute('class', 'user-list-body-element-name');
-            const newUsernameElement = document.createElement('span');
-            newUsernameElement.setAttribute(
-                'class',
-                'user-list-body-element-name-username',
-            );
-            newUsernameElement.textContent = username;
-            const newUserStatusElement = document.createElement('i');
-            newUserStatusElement.setAttribute(
-                'class',
-                'bi bi-circle-fill user-status-' + status,
-            );
-
-            const chatHolder = document.createElement('div');
-            chatHolder.className = 'user-list-body-element-chat';
-
-            // Append the new username and status element to the user list element container
-            newUserElement.appendChild(newUsernameElement);
-            newUserElement.appendChild(newUserStatusElement);
-            newUserListElement.appendChild(newUserElement);
-            newUserListElement.appendChild(newStatusElement);
-            newUserListElement.appendChild(chatHolder);
-
             // Append this new user list element to the entire user list
+            const newUserListElement = createUserElement(username, loginStatus, status);
             userListContainer.appendChild(newUserListElement);
         }
 

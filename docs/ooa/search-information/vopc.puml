@@ -1,0 +1,24 @@
+@startuml
+
+skinparam ClassAttributeIconSize 0
+
+class SearchBoundary <<Boundary>> {
+    + startSearching()
+    + displaySearchOptions()
+    + provideSearchCriteria()
+    + getContextFromPage()
+    + displaySearchResults()
+}
+
+class SearchController <<Controller>> {
+    + searchWithContextAndCriteria()
+}
+
+class SystemInformation <<Entity>> {
+    + queryInformation()
+}
+
+SearchBoundary "0..1" -- "1" SearchController 
+SearchController "1" -- "1" SystemInformation 
+
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+
+actor Citizen as c
+boundary SearchBoundary as sb
+control SearchController as sc
+entity ":SystemInformation" as msg
+
+c -> sb: 1: startSearching()
+activate sb
+sb -> sb: 2: displaySearchOptions()
+activate sb
+deactivate sb
+c -> sb: 3: provideSearchCriteria()
+sb -> sb: 4.1: getContextFromPage()
+activate sb
+deactivate sb
+sb -> sc: 4.2: searchWithContextAndCriteria
+activate sc
+sc -> msg: 4.3: queryInformation()
+activate msg
+msg --> sc: Search Results
+deactivate msg
+sc --> sb: Search Results
+deactivate sc
+sb -> sb: 5: displaySearchResults()
+activate sb
+deactivate sb
+deactivate sb
+
+@enduml

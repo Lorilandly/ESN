@@ -1,5 +1,5 @@
 /* global io */
-const socket = io();
+var socket = io(); // eslint-disable-line
 
 function getReceiverIdFromPath() {
     const pathSegments = window.location.pathname.split('/');

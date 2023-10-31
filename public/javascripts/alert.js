@@ -1,5 +1,5 @@
 /* global io */
-const socket = io();
+var socket = io(); // eslint-disable-line
 
 function getCurrentUser() {
     return new Promise((resolve, reject) => {
@@ -38,7 +38,7 @@ $(document).ready(() => {
             const user = await getCurrentUser();
             const currentId = user.id;
             // Parsing issue so use == instead of ===, fix later!
-            if (currentId == receiverId) {
+            if (currentId === receiverId) {
                 $('#alert-container').addClass('visible');
             }
         },

@@ -1,5 +1,5 @@
 /* global io */
-const socket = io();
+var socket = io(); // eslint-disable-line
 
 // Function to sort and display users based on status and username
 function sortAndDisplayUsers() {

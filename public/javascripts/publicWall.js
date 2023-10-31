@@ -1,5 +1,5 @@
 /* global io */
-const socket = io();
+var socket = io(); // eslint-disable-line
 
 $(document).ready(() => {
     // Capture form submission event

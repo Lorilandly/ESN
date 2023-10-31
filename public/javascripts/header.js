@@ -1,5 +1,5 @@
 /* global io */
-const socket = io();
+var socket = io(); // eslint-disable-line
 
 function shakeIndicator() {
     const indicator = document.getElementById('notification');
@@ -92,7 +92,7 @@ $(document).ready(() => {
             const user = await getCurrentUser();
             const currentId = user.id;
             // Parsing issue so use == instead of ===, fix later!
-            if (currentId == receiverId) {
+            if (currentId === receiverId) {
                 shakeIndicator();
                 // append message to alert container
                 const messageHtml = `

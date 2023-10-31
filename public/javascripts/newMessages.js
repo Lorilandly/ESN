@@ -1,5 +1,5 @@
 /* global io */
-const socket = io();
+var socket = io(); // eslint-disable-line
 
 function createReplyButton(senderId, receiverId) {
     // Create the form element
@@ -103,7 +103,7 @@ $(document).ready(() => {
             const user = await getCurrentUser();
             const currentId = user.id;
             // Parsing issue so use == instead of ===, fix later!
-            if (currentId == receiverId) {
+            if (currentId === receiverId) {
                 $('#alert-container').css('display', 'flex');
             }
         },

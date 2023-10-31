@@ -21,7 +21,7 @@ function queryUserApi(dryRun) {
         error: (res) => {
             // handled error
             const reason = res.responseJSON.error;
-            if (reason == 'User exists') {
+            if (reason === 'User exists') {
                 // login with the credential
                 $.ajax('/users/login', {
                     method: 'PUT',

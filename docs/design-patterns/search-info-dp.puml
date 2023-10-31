@@ -1,11 +1,11 @@
 @startuml
 !define RECTANGLE class
 
-RECTANGLE SearchFactory {
+RECTANGLE SearchContextFactory {
     +getSearchContext(contextType : String) : SearchContext
 }
 
-package "Search Factory Package" {
+package "SearchContext Factory" {
 
     interface SearchContext {
         +search(criteria : SearchCriteria) : SearchResult
@@ -35,7 +35,7 @@ package "Search Factory Package" {
 
 }
 
-SearchFactory ..> SearchContext : <<creates>>
+SearchContextFactory ..> SearchContext : <<creates>>
 
 
 @enduml

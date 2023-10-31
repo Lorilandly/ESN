@@ -113,7 +113,7 @@ function handleSocketConnections(io) {
     });
 }
 
-function emitUserStatus(io, name, lStatus, status) {
+function emitUserStatus(io, username, loginStatus, status) {
     io.emit('userStatus', 
     { username: username, 
       loginStatus: loginStatus, 

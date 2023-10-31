@@ -5,6 +5,7 @@ import { Strategy } from 'passport-jwt';
 import LocalStrategy from 'passport-local';
 import { readFileSync } from 'fs';
 import UserModel from '../models/user.js';
+import { decode } from 'punycode';
 
 let reservedUsernames = new Set();
 
@@ -72,7 +73,7 @@ function handleSocketConnections(io) {
         let jwtIndex = cookie.indexOf('jwtToken');
         let jwtToken = cookie.substring(jwtIndex).split('=')[1];
 
-        let decodedUser, userId;
+        let decodedUser;
         try {
             decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
             await UserModel.updateLoginStatus(decodedUser.username, 'ONLINE');
@@ -90,6 +91,11 @@ function handleSocketConnections(io) {
 
         socket.on('disconnect', () => {
             // Remove the user from the mapping on disconnect
+            io.emit('userStatus', 
+            {   username: decodedUser.username, 
+                loginStatus: 'OFFLINE', 
+                status,
+            });
         });
 
         socket.on('window-close', async (reason) => {
@@ -106,9 +112,9 @@ function handleSocketConnections(io) {
                 return;
             }
             // Emit 'userStatus' event to notify other clients
-            io.emit('userStatus', {
-                username: decodedUser.username,
-                loginStatus: 'OFFLINE',
+            io.emit('userStatus', 
+            {   username: decodedUser.username, 
+                loginStatus: 'OFFLINE', 
                 status,
             });
         });

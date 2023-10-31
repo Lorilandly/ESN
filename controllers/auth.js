@@ -121,17 +121,6 @@ function handleSocketConnections(io) {
     });
 }
 
-<<<<<<< Updated upstream
-function emitUserStatus(io, username, loginStatus, status) {
-    io.emit('userStatus', 
-    { username: username, 
-      loginStatus: loginStatus, 
-      status 
-    });
-}
-
-=======
->>>>>>> Stashed changes
 function validUsername(username) {
     username = username.toLowerCase();
     return username.length < 3 || reservedUsernames.has(username)

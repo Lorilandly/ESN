@@ -39,6 +39,10 @@ $(document).ready(() => {
         });
     });
 
+    // Set Search Bar Title to Search Private Messages
+    $('#searchModalLabel').html('Search Private Messages');
+    setSearchType('private');
+
     // Fetch and render all messages
     $.ajax({
         url: '/messages/private',

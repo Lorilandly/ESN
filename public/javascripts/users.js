@@ -51,6 +51,28 @@ $(document).ready(() => {
         });
     });
 
+    // Set Search Bar Title to Search Citizens
+    $('#searchModalLabel').html('Search Citizens');
+    setSearchType('citizen');
+    const searchInput = document.createElement('input');
+    searchInput.setAttribute('type', 'text');
+    searchInput.setAttribute('id', 'search-input');
+    searchInput.setAttribute('class', 'form-control');
+    searchInput.setAttribute('placeholder', 'Search Citizens');
+    const searchSelect = document.createElement('select');
+    searchSelect.setAttribute('id', 'citizen-search-type');
+    searchSelect.setAttribute('class', 'form-select');
+    const searchOption1 = document.createElement('option');
+    searchOption1.setAttribute('value', 'username');
+    searchOption1.innerHTML = 'Name';
+    const searchOption2 = document.createElement('option');
+    searchOption2.setAttribute('value', 'status');
+    searchOption2.innerHTML = 'Status';
+    searchSelect.appendChild(searchOption1);
+    searchSelect.appendChild(searchOption2);
+    document.getElementById('search-modal-body').appendChild(searchInput);
+    document.getElementById('search-modal-body').appendChild(searchSelect);
+
     // Get user list from API
     $.ajax('/users', {
         method: 'GET',

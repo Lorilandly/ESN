@@ -39,6 +39,10 @@ async function changeReadStatus() {
     });
 }
 
+function setSearchType(type) {
+    localStorage.setItem('searchType', type);
+}
+
 $(document).ready(() => {
     $.ajax({
         url: '/messages/private/new',
@@ -123,3 +127,34 @@ $(document).ready(() => {
         changeReadStatus();
     });
 });
+
+function searchInformation() {
+    const searchType = localStorage.getItem('searchType');
+    const searchInput = document.getElementById('search-input').value;
+    let searchCriteria = null;
+    try {
+        searchCriteria = document.getElementById('citizen-search-type').value;
+    } catch (err) {
+        searchCriteria = null;
+    }
+    console.log(searchType);
+    console.log(searchInput);
+    console.log(searchCriteria);
+    $.ajax({
+        url: '/search',
+        method: 'GET',
+        dataType: 'json',
+        data: {
+            searchType,
+            searchInput,
+            searchCriteria,
+        },
+        success: (response) => {
+            // Close searchModal
+            $('#searchModal').modal('hide');
+        },
+        error: (error) => {
+            console.error('Failed to fetch messages:', error);
+        },
+    });
+}

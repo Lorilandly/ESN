@@ -105,7 +105,7 @@ class DatabaseManager {
         );
         const testUserId = await testUser.persist();
 
-        await UserModel.initModel(this.DBPool);
+        // await UserModel.initModel(this.DBPool);
         return testUserId;
     }
 

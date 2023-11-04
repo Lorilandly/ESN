@@ -148,8 +148,8 @@ class UserModel {
     static queryToModel(queryRow) {
         return new UserModel(
             queryRow.username,
-            0, // use a placeholder for security reason.
-            0,
+            null, // use a placeholder for security reason.
+            null,
             queryRow.login_status,
             queryRow.status,
             queryRow.status_time,

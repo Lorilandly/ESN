@@ -54,10 +54,12 @@ class PublicWallSearchContext extends SearchContext {
 }
 
 class PrivateChatSearchContext extends SearchContext {
-    async search(input) {
-        return MessageModel.searchPrivate(input).then((response) => ({
-            messages: response,
-        }));
+    async search(input, userId0, userId1) {
+        return MessageModel.searchPrivate(input, userId0, userId1).then(
+            (response) => ({
+                messages: response,
+            }),
+        );
     }
 }
 

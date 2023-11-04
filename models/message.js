@@ -61,7 +61,16 @@ WHERE receiver_id = $1 AND read_status = 'UNREAD';
 const searchPublicSQL = `
 SELECT * FROM messages
 WHERE receiver_id = 0
-AND body ILIKE '%' || $1 || '%';
+AND body ILIKE '%' || $1 || '%'
+ORDER BY time ASC;
+`;
+
+const searchPrivateSQL = `
+SELECT * FROM messages
+WHERE (receiver_id = $3 AND sender_id = $2)
+   OR (receiver_id = $2 AND sender_id = $3)
+AND body ILIKE '%' || $1 || '%'
+ORDER BY time ASC;
 `;
 
 class MessageModel {
@@ -146,6 +155,17 @@ class MessageModel {
     static async searchPublic(query) {
         return MessageModel.dbPoolInstance
             .query(searchPublicSQL, [query])
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => MessageModel.queryToModel(row)),
+            );
+    }
+
+    static async searchPrivate(query, userId0, userId1) {
+        if (!(userId0 && userId1)) {
+            throw new Error('User ID not supplied!');
+        }
+        return MessageModel.dbPoolInstance
+            .query(searchPrivateSQL, [query, userId0, userId1])
             .then((queryResponse) =>
                 queryResponse.rows.map((row) => MessageModel.queryToModel(row)),
             );

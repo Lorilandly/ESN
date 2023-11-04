@@ -70,21 +70,21 @@ function createUserElement(username, loginStatus, status) {
     newStatusElement.textContent = loginStatus;
 
     // Create a new username element
-    let newUserElement = document.createElement('div');
+    const newUserElement = document.createElement('div');
     newUserElement.setAttribute('class', 'user-list-body-element-name');
-    let newUsernameElement = document.createElement('span');
+    const newUsernameElement = document.createElement('span');
     newUsernameElement.setAttribute(
         'class',
         'user-list-body-element-name-username',
     );
     newUsernameElement.textContent = username;
-    let newUserStatusElement = document.createElement('i');
+    const newUserStatusElement = document.createElement('i');
     newUserStatusElement.setAttribute(
         'class',
         'bi bi-circle-fill user-status-' + status,
     );
 
-    let chatHolder = document.createElement('div');
+    const chatHolder = document.createElement('div');
     chatHolder.className = 'user-list-body-element-chat';
 
     // Append the new username and status element to the user list element container

@@ -1,5 +1,5 @@
 import DatabaseManager from '../db.js';
-import UserModel from '../models/user.js'; 
+import UserModel from '../models/user.js';
 
 let testModeActive = false;
 let testAdminUsername = null;
@@ -7,8 +7,8 @@ let testAdminUsername = null;
 async function startPerformanceTestMode(req, res) {
     const dbManager = DatabaseManager.getInstance();
     testAdminUsername = req.user.username;
-    let testAdminUser = await UserModel.findByName(testAdminUsername);
-   
+    const testAdminUser = await UserModel.findByName(testAdminUsername);
+
     await dbManager.activateTestDB();
     // save admin user to test db
     await testAdminUser.persist();

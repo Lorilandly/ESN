@@ -95,18 +95,6 @@ class DatabaseManager {
         );
 
         await DatabaseManager.initModels(this.testDBPool);
-
-        const testUser = new UserModel(
-            'testUser',
-            'hash',
-            'salt',
-            'ONLINE',
-            'UNDEFINED',
-        );
-        const testUserId = await testUser.persist();
-
-        // await UserModel.initModel(this.DBPool);
-        return testUserId;
     }
 
     /*

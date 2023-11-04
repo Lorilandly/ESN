@@ -1,5 +1,4 @@
 import MessageModel from '../models/message.js';
-import { testModeActive, testUserId } from './performanceTest.js';
 
 let ioInstance = null;
 
@@ -9,14 +8,13 @@ function initIOInstanceForChat(io) {
 
 async function createMessage(req, res, next) {
     const username = req.user.username;
-    let userId = req.user.id;
 
     // Receiver Id 0 is for public chat
     const body = req.body.message;
     const time = new Date(Date.now()).toLocaleString();
     const user = req.user;
-    userId = testModeActive ? testUserId : userId;
     const status = user.status;
+    const userId = req.user.id;
     const receiverId = req.body.receiverId ? parseInt(req.body.receiverId) : 0;
     const readStatus = 'UNREAD';
     const message = new MessageModel(

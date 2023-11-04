@@ -3,14 +3,13 @@ import UserModel from '../models/user.js';
 
 let testModeActive = false;
 let testAdminUsername = null;
-let testUserId = null;
 
 async function startPerformanceTestMode(req, res) {
     const dbManager = DatabaseManager.getInstance();
     testAdminUsername = req.user.username;
     let testAdminUser = await UserModel.findByName(testAdminUsername);
-    // console.log(JSON.stringify(testAdminUser));
-    testUserId = await dbManager.activateTestDB();
+   
+    await dbManager.activateTestDB();
     // save admin user to test db
     await testAdminUser.persist();
 
@@ -31,5 +30,4 @@ export {
     endPerformanceTestMode,
     testModeActive,
     testAdminUsername,
-    testUserId,
 };

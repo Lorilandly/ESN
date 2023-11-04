@@ -129,7 +129,11 @@ $(document).ready(() => {
             const userListContainer = document.querySelector('.user-list-body');
 
             // Append this new user list element to the entire user list
-            const newUserListElement = createUserElement(username, loginStatus, status);
+            const newUserListElement = createUserElement(
+                username,
+                loginStatus,
+                status,
+            );
             userListContainer.appendChild(newUserListElement);
         }
 

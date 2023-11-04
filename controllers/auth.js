@@ -90,12 +90,11 @@ function handleSocketConnections(io) {
 
         socket.on('disconnect', () => {
             // Remove the user from the mapping on disconnect
-            io.emit('userStatus',
-                {
-                    username: decodedUser.username,
-                    loginStatus: 'OFFLINE',
-                    status,
-                });
+            io.emit('userStatus', {
+                username: decodedUser.username,
+                loginStatus: 'OFFLINE',
+                status,
+            });
         });
 
         socket.on('window-close', async (reason) => {
@@ -112,12 +111,11 @@ function handleSocketConnections(io) {
                 return;
             }
             // Emit 'userStatus' event to notify other clients
-            io.emit('userStatus',
-                {
-                    username: decodedUser.username,
-                    loginStatus: 'OFFLINE',
-                    status,
-                });
+            io.emit('userStatus', {
+                username: decodedUser.username,
+                loginStatus: 'OFFLINE',
+                status,
+            });
         });
     });
 }

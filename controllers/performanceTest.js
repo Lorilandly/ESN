@@ -11,7 +11,9 @@ async function startPerformanceTestMode(req, res) {
 
     await dbManager.activateTestDB();
     // save admin user to test db
-    await testAdminUser.persist();
+    await testAdminUser.persist().catch((err) => {
+        console.warn(err);
+    });
 
     testModeActive = true;
     res.status(201).json({ message: 'test mode active' });

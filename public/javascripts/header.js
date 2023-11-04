@@ -155,6 +155,8 @@ async function searchInformation() {
             searchType,
             searchInput,
             searchCriteria,
+            userIdOne,
+            userIdTwo,
         },
         success: (response) => {
             // Close searchModal

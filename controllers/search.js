@@ -1,3 +1,6 @@
+import UserModel from '../models/user.js';
+import MessageModel from '../models/message.js';
+
 // use a factory
 function searchContextFactory(context, criteria) {
     switch (context) {
@@ -22,14 +25,42 @@ function searchContextFactory(context, criteria) {
 
 class SearchContext {
     async search(input) {
-        return { result: 'good' };
+        return Promise.resolve('Not Implemented');
     }
 }
 
-class CitizenNameSearchContext extends SearchContext {}
-class CitizenStatusSearchContext extends SearchContext {}
-class PublicWallSearchContext extends SearchContext {}
-class PrivateChatSearchContext extends SearchContext {}
+class CitizenNameSearchContext extends SearchContext {
+    async search(input) {
+        return UserModel.searchByName(input).then((response) => ({
+            users: response,
+        }));
+    }
+}
+
+class CitizenStatusSearchContext extends SearchContext {
+    async search(input) {
+        return UserModel.searchByStatus(input).then((response) => ({
+            users: response,
+        }));
+    }
+}
+
+class PublicWallSearchContext extends SearchContext {
+    async search(input) {
+        return MessageModel.searchPublic(input).then((response) => ({
+            messages: response,
+        }));
+    }
+}
+
+class PrivateChatSearchContext extends SearchContext {
+    async search(input) {
+        return MessageModel.searchPrivate(input).then((response) => ({
+            messages: response,
+        }));
+    }
+}
+
 class AnnouncementSearchContext extends SearchContext {}
 
 export default searchContextFactory;

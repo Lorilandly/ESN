@@ -58,6 +58,12 @@ SET read_status = 'READ'
 WHERE receiver_id = $1 AND read_status = 'UNREAD';
 `;
 
+const searchPublicSQL = `
+SELECT * FROM messages
+WHERE receiver_id = 0
+AND body ILIKE '%' || $1 || '%';
+`;
+
 class MessageModel {
     constructor(senderId, receiverId, body, time, status, readStatus) {
         this.sender_id = senderId;
@@ -145,6 +151,25 @@ class MessageModel {
         await MessageModel.dbPoolInstance.query(changeMessageReadStatus, [
             receiverId,
         ]);
+    }
+
+    static async searchPublic(query) {
+        return MessageModel.dbPoolInstance
+            .query(searchPublicSQL, [query])
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => MessageModel.queryToModel(row)),
+            );
+    }
+
+    static queryToModel(queryRow) {
+        return new MessageModel(
+            queryRow.sender_id,
+            queryRow.receiver_id,
+            queryRow.body,
+            queryRow.time,
+            queryRow.status,
+            queryRow.read_status,
+        );
     }
 }
 

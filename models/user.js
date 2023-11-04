@@ -60,6 +60,18 @@ SET status = $1
 WHERE username = $2;
 `;
 
+const searchByNameSQL = `
+SELECT *
+FROM users
+WHERE username ILIKE '%' || $1 || '%';
+`;
+
+const searchByStatusSQL = `
+SELECT *
+FROM users
+WHERE status ILIKE '%' || $1 || '%';
+`;
+
 /*
  * User Model - provides interface for inserting and reading users from the database.
  * TODO: have a Model interface
@@ -153,21 +165,43 @@ class UserModel {
                 return null;
             } else {
                 const row = queryResponse.rows[0];
-                const user = new UserModel(
-                    row.username,
-                    row.password_hash,
-                    row.salt,
-                    row.login_status,
-                    row.status,
-                    row.status_time,
-                    row.privilege,
-                );
+                const user = UserModel.queryToModel(row);
+                user.passwordHash = row.password_hash;
+                user.salt = row.salt;
                 user.id = row.id;
                 return user;
             }
         } catch (err) {
             return err;
         }
+    }
+
+    static async searchByName(query) {
+        return UserModel.dbPoolInstance
+            .query(searchByNameSQL, [query])
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => UserModel.queryToModel(row)),
+            );
+    }
+
+    static async searchByStatus(query) {
+        return UserModel.dbPoolInstance
+            .query(searchByStatusSQL, [query])
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => UserModel.queryToModel(row)),
+            );
+    }
+
+    static queryToModel(queryRow) {
+        return new UserModel(
+            queryRow.username,
+            0, // use a placeholder for security reason.
+            0,
+            queryRow.login_status,
+            queryRow.status,
+            queryRow.status_time,
+            queryRow.privilege,
+        );
     }
 
     static async getAllStatuses() {

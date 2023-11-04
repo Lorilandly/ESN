@@ -46,7 +46,7 @@ $(document).ready(() => {
         dataType: 'json',
         success: (response) => {
             const messages = response.messages;
-            if (messages) {
+            if (messages && messages.length) {
                 const groupedMessages = {};
                 // store reciever id
                 const receiverId = messages[0].receiver_id;

@@ -82,7 +82,7 @@ class MessageModel {
     }
 
     async persist() {
-        await MessageModel.dbPoolInstance.query(insertMessage, [
+        return MessageModel.dbPoolInstance.query(insertMessage, [
             this.sender_id,
             this.receiver_id,
             this.body,
@@ -93,62 +93,52 @@ class MessageModel {
     }
 
     static async getAllPublicMessages() {
-        const queryResponse =
-            await MessageModel.dbPoolInstance.query(getAllPublicMessages);
-        if (queryResponse.rowCount === 0) {
-            return null;
-        } else {
-            queryResponse.rows.forEach(
-                (row) => (row.time = row.time.toLocaleString()),
+        return MessageModel.dbPoolInstance
+            .query(getAllPublicMessages)
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => {
+                    row.time = row.time.toLocaleString();
+                    return row;
+                }),
             );
-            return queryResponse.rows;
-        }
     }
 
     static async getAllPrivateMessages(senderId, receiverId) {
-        const queryResponse = await MessageModel.dbPoolInstance.query(
-            getAllPrivateMessages,
-            [senderId, receiverId],
-        );
-        if (queryResponse.rowCount === 0) {
-            return null;
-        } else {
-            queryResponse.rows.forEach(
-                (row) => (row.time = row.time.toLocaleString()),
+        return MessageModel.dbPoolInstance
+            .query(getAllPrivateMessages, [senderId, receiverId])
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => {
+                    row.time = row.time.toLocaleString();
+                    return row;
+                }),
             );
-            return queryResponse.rows;
-        }
     }
 
     static async getAllNewPrivateMessages(receiverId) {
-        const queryResponse = await MessageModel.dbPoolInstance.query(
-            getAllNewPrivateMessages,
-            [receiverId],
-        );
-        if (queryResponse.rowCount === 0) {
-            return null;
-        } else {
-            queryResponse.rows.forEach(
-                (row) => (row.time = row.time.toLocaleString()),
+        return MessageModel.dbPoolInstance
+            .query(getAllNewPrivateMessages, [receiverId])
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => {
+                    row.time = row.time.toLocaleString();
+                    return row;
+                }),
             );
-            return queryResponse.rows;
-        }
     }
 
     static async getLastMessageReadStatus(senderId, receiverId) {
-        const queryResponse = await MessageModel.dbPoolInstance.query(
-            getLastMessageReadStatus,
-            [senderId, receiverId],
-        );
-        if (queryResponse.rowCount === 0) {
-            return null;
-        } else {
-            return queryResponse.rows[0].read_status;
-        }
+        return MessageModel.dbPoolInstance
+            .query(getLastMessageReadStatus, [senderId, receiverId])
+            .then((queryResponse) => {
+                if (queryResponse.rowCount === 0) {
+                    return null;
+                } else {
+                    return queryResponse.rows[0].read_status;
+                }
+            });
     }
 
     static async updatePrivateMessagesStatus(receiverId) {
-        await MessageModel.dbPoolInstance.query(changeMessageReadStatus, [
+        return MessageModel.dbPoolInstance.query(changeMessageReadStatus, [
             receiverId,
         ]);
     }
@@ -166,7 +156,7 @@ class MessageModel {
             queryRow.sender_id,
             queryRow.receiver_id,
             queryRow.body,
-            queryRow.time,
+            queryRow.time.toLocaleString(),
             queryRow.status,
             queryRow.read_status,
         );

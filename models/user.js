@@ -22,20 +22,6 @@ SELECT * FROM users
 WHERE username = $1;
 `;
 
-const checkUserExistsWithName = `
-SELECT EXISTS(
-    SELECT 1 FROM users
-    WHERE username = $1
-);
-`;
-
-const checkUserExistsWithId = `
-SELECT EXISTS(
-    SELECT 1 FROM users
-    WHERE id = $1
-);
-`;
-
 const getAllUserStatusesOrdered = `
 SELECT id, username, login_status, status
 FROM users
@@ -115,22 +101,6 @@ class UserModel {
         return res.rows[0].id;
     }
 
-    static async nameExists(name) {
-        const res = await UserModel.dbPoolInstance.query(
-            checkUserExistsWithName,
-            [name],
-        );
-        return res.rows[0].exists;
-    }
-
-    static async idExists(id) {
-        const res = await UserModel.dbPoolInstance.query(
-            checkUserExistsWithId,
-            [id],
-        );
-        return res.rows[0].exists;
-    }
-
     async updateStatus(status) {
         await UserModel.dbPoolInstance.query(changeUserStatus, [
             status,
@@ -142,38 +112,21 @@ class UserModel {
         await this.dbPoolInstance.query(changeUserLoginStatus, [status, name]);
     }
 
-    static async findIdByName(name) {
-        const queryResponse = await UserModel.dbPoolInstance.query(
-            selectUserByName,
-            [name],
-        );
-        if (queryResponse.rowCount === 0) {
-            return null;
-        } else {
-            const row = queryResponse.rows[0];
-            return row.id;
-        }
-    }
-
     static async findByName(name) {
-        try {
-            const queryResponse = await UserModel.dbPoolInstance.query(
-                selectUserByName,
-                [name],
-            );
-            if (queryResponse.rowCount === 0) {
-                return null;
-            } else {
-                const row = queryResponse.rows[0];
-                const user = UserModel.queryToModel(row);
-                user.passwordHash = row.password_hash;
-                user.salt = row.salt;
-                user.id = row.id;
-                return user;
-            }
-        } catch (err) {
-            return err;
-        }
+        return UserModel.dbPoolInstance
+            .query(selectUserByName, [name])
+            .then((queryResponse) => {
+                if (queryResponse.rowCount === 0) {
+                    return null;
+                } else {
+                    const row = queryResponse.rows[0];
+                    const user = UserModel.queryToModel(row);
+                    user.passwordHash = row.password_hash;
+                    user.salt = row.salt;
+                    user.id = row.id;
+                    return user;
+                }
+            });
     }
 
     static async searchByName(query) {
@@ -205,14 +158,15 @@ class UserModel {
     }
 
     static async getAllStatuses() {
-        const queryResponse = await UserModel.dbPoolInstance.query(
-            getAllUserStatusesOrdered,
-        );
-        if (queryResponse.rowCount === 0) {
-            return null;
-        } else {
-            return queryResponse.rows;
-        }
+        return UserModel.dbPoolInstance
+            .query(getAllUserStatusesOrdered)
+            .then((queryResponse) => {
+                if (queryResponse.rowCount === 0) {
+                    return null;
+                } else {
+                    return queryResponse.rows;
+                }
+            });
     }
 }
 

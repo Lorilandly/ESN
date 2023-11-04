@@ -18,12 +18,12 @@ router.get(
     '/',
     passport.authenticate('jwt', { session: false }),
     async (req, res) => {
-        const users = await getAllUsers();
-        if (users) {
-            return res.status(200).json(users);
-        } else {
-            return res.sendStatus(500);
-        }
+        return getAllUsers()
+            .then((users) => res.status(200).json(users))
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(500);
+            });
     },
 );
 

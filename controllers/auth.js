@@ -21,12 +21,15 @@ const opts = {
 
 passport.use(
     new Strategy(opts, async (jwtPayload, done) => {
-        const user = await UserModel.findByName(jwtPayload.username);
-        if (user) {
-            return done(null, user);
-        } else {
-            return done(null, false);
-        }
+        return UserModel.findByName(jwtPayload.username)
+            .then((user) => {
+                if (user) {
+                    return done(null, user);
+                } else {
+                    return done(null, false);
+                }
+            })
+            .catch((err) => done(err));
     }),
 );
 
@@ -35,17 +38,14 @@ passport.use(
         if (!username || !password) {
             return done(new Error('Missing credentials'));
         }
-        UserModel.findByName(username.toLowerCase()).then(
-            (user) => {
+        return UserModel.findByName(username.toLowerCase())
+            .then((user) => {
                 if (checkPasswordForUser(user, password)) {
                     return done(null, user);
                 }
                 return done(null, false);
-            },
-            (err) => {
-                return done(err);
-            },
-        );
+            })
+            .catch((err) => done(err));
     }),
 );
 
@@ -246,12 +246,7 @@ async function validateNewCredentials(req, res, next) {
 }
 
 async function getAllUsers() {
-    try {
-        const users = await UserModel.getAllStatuses();
-        return users;
-    } catch (err) {
-        return null;
-    }
+    return UserModel.getAllStatuses();
 }
 
 async function getUserByName(username) {

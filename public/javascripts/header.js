@@ -128,18 +128,25 @@ $(document).ready(() => {
     });
 });
 
-function searchInformation() {
+async function searchInformation() {
     const searchType = localStorage.getItem('searchType');
     const searchInput = document.getElementById('search-input').value;
     let searchCriteria = null;
+    let userIdOne = null;
+    let userIdTwo = null;
     try {
         searchCriteria = document.getElementById('citizen-search-type').value;
     } catch (err) {
         searchCriteria = null;
     }
-    console.log(searchType);
-    console.log(searchInput);
-    console.log(searchCriteria);
+    try{
+        userIdOne = otherId;
+        userIdTwo = (await getCurrentUser()).id;
+    }
+    catch(err){
+        userIdOne = null;
+        userIdTwo = null;
+    }
     $.ajax({
         url: '/search',
         method: 'GET',

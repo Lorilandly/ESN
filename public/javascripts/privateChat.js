@@ -23,7 +23,7 @@ function getCurrentUser() {
     });
 }
 
-$(document).ready(() => {
+$(document).ready(async () => {
     // Capture form submission event
     $('#logout-form').submit((event) => {
         event.preventDefault(); // Prevent the default form submission
@@ -42,6 +42,12 @@ $(document).ready(() => {
     // Set Search Bar Title to Search Private Messages
     $('#searchModalLabel').html('Search Private Messages');
     setSearchType('private');
+    const searchInput = document.createElement('input');
+    searchInput.setAttribute('type', 'text');
+    searchInput.setAttribute('id', 'search-input');
+    searchInput.setAttribute('class', 'form-control');
+    searchInput.setAttribute('placeholder', 'Search Private Messages');
+    document.getElementById('search-modal-body').appendChild(searchInput);
 
     // Fetch and render all messages
     $.ajax({

@@ -52,7 +52,6 @@ router.get(
     '/status',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
-        console.log(`current status: ${req.user.currentStatus}`);
         return res.status(200).json({ status: req.user.currentStatus });
     },
 );

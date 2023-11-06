@@ -70,8 +70,8 @@ $(document).ready(() => {
     searchOption2.innerHTML = 'Status';
     searchSelect.appendChild(searchOption1);
     searchSelect.appendChild(searchOption2);
-    document.getElementById('search-modal-body').appendChild(searchInput);
-    document.getElementById('search-modal-body').appendChild(searchSelect);
+    document.getElementById('search-input-body').appendChild(searchInput);
+    document.getElementById('search-input-body').appendChild(searchSelect);
 
     // Get user list from API
     $.ajax('/users', {

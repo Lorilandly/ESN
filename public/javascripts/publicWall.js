@@ -25,7 +25,7 @@ $(document).ready(() => {
     searchInput.setAttribute('id', 'search-input');
     searchInput.setAttribute('class', 'form-control');
     searchInput.setAttribute('placeholder', 'Search Public Messages');
-    document.getElementById('search-modal-body').appendChild(searchInput);
+    document.getElementById('search-input-body').appendChild(searchInput);
 
     // Fetch and render all messages
     $.ajax({

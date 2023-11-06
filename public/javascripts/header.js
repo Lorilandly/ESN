@@ -152,18 +152,83 @@ async function searchInformation() {
         method: 'GET',
         dataType: 'json',
         data: {
-            searchType,
-            searchInput,
-            searchCriteria,
-            userIdOne,
-            userIdTwo,
+            context: searchType,
+            input: searchInput,
+            criteria: searchCriteria,
+            user0: userIdOne,
+            user1: userIdTwo,
         },
         success: (response) => {
             // Close searchModal
-            $('#searchModal').modal('hide');
+            switch(searchType){
+                case 'citizen':
+                    showCitizenSearchResults(response);
+                    break;
+                case 'public':
+                    showChatSearchResults(response);
+                    break;
+                case 'private':
+                    showChatSearchResults(response);
+                    break;
+            }
         },
         error: (error) => {
             console.error('Failed to fetch messages:', error);
         },
     });
+}
+
+function showCitizenSearchResults(responses){
+    // Remove everything from search-result
+    $('#search-result').empty();
+    const users = responses.users;
+    users.forEach((user) => {
+        console.log(user);
+        let bodyElement = document.createElement('div');
+        bodyElement.className = 'search-user-list-body-element';
+        let nameElement = document.createElement('div');
+        nameElement.className = 'search-user-list-body-element-name';
+        let usernameElement = document.createElement('span');
+        usernameElement.className = 'search-user-list-body-element-name-username';
+        usernameElement.innerHTML = user.username;
+        let statusElement = document.createElement('i');
+        statusElement.className = 'bi bi-circle-fill user-status-' + user.status;
+        let loginStatusElement = document.createElement('div');
+        if (user.loginStatus === 'ONLINE') {
+            loginStatusElement.className = 'search-user-list-body-element-status-online';
+        }
+        else {
+            loginStatusElement.className = 'search-user-list-body-element-status-offline';
+        }
+        loginStatusElement.innerHTML = user.loginStatus;
+        nameElement.appendChild(usernameElement);
+        nameElement.appendChild(statusElement);
+        bodyElement.appendChild(nameElement);
+        bodyElement.appendChild(loginStatusElement);
+        document.getElementById('search-result').appendChild(bodyElement);
+    })
+}
+
+function showChatSearchResults(response){
+    // Remove everything from search-result
+    $('#search-result').empty();
+    const messages = response.messages;
+    if (messages && messages.length > 0) {
+        let messageHtml = '';
+        messages.forEach((message) => {
+            console.log(message);
+            messageHtml += `
+                <div class="search-message">
+                    <div class="search-message-title">
+                        <span class="search-message-sender-name">${message.sender_id}</span>
+                        <span class="message-time">${message.time}</span>
+                        <span class="message-status">${message.status}</span>
+                    </div>
+                    <div class="message-body">
+                        <p>${message.body}</p>
+                    </div>
+                </div>`;
+        });
+        $('#search-result').append(messageHtml);
+    }
 }

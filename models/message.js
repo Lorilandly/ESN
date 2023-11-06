@@ -59,18 +59,22 @@ WHERE receiver_id = $1 AND read_status = 'UNREAD';
 `;
 
 const searchPublicSQL = `
-SELECT * FROM messages
-WHERE receiver_id = 0
-AND body ILIKE '%' || $1 || '%'
-ORDER BY time ASC;
+SELECT u.username, m.body, m.time, m.status
+FROM messages m
+INNER JOIN users u ON m.sender_id = u.id
+WHERE m.receiver_id = 0
+AND m.body ILIKE '%' || $1 || '%'
+ORDER BY m.time ASC;
 `;
 
 const searchPrivateSQL = `
-SELECT * FROM messages
-WHERE (receiver_id = $3 AND sender_id = $2)
-   OR (receiver_id = $2 AND sender_id = $3)
-AND body ILIKE '%' || $1 || '%'
-ORDER BY time ASC;
+SELECT u.username, m.body, m.time, m.status
+FROM messages m
+INNER JOIN users u ON m.sender_id = u.id
+WHERE (m.receiver_id = $3 AND m.sender_id = $2)
+   OR (m.receiver_id = $2 AND m.sender_id = $3)
+AND m.body ILIKE '%' || $1 || '%'
+ORDER BY m.time ASC;
 `;
 
 class MessageModel {
@@ -156,7 +160,11 @@ class MessageModel {
         return MessageModel.dbPoolInstance
             .query(searchPublicSQL, [query])
             .then((queryResponse) =>
-                queryResponse.rows.map((row) => MessageModel.queryToModel(row)),
+                queryResponse.rows.map((row) => {
+                    const obj = MessageModel.queryToModel(row);
+                    obj.sender = row.username;
+                    return obj;
+                }),
             );
     }
 
@@ -167,7 +175,11 @@ class MessageModel {
         return MessageModel.dbPoolInstance
             .query(searchPrivateSQL, [query, userId0, userId1])
             .then((queryResponse) =>
-                queryResponse.rows.map((row) => MessageModel.queryToModel(row)),
+                queryResponse.rows.map((row) => {
+                    const obj = MessageModel.queryToModel(row);
+                    obj.sender = row.username;
+                    return obj;
+                }),
             );
     }
 

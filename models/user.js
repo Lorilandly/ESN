@@ -49,13 +49,27 @@ WHERE username = $2;
 const searchByNameSQL = `
 SELECT *
 FROM users
-WHERE username ILIKE '%' || $1 || '%';
+WHERE username ILIKE '%' || $1 || '%'
+ORDER BY
+  CASE login_status
+    WHEN 'ONLINE' THEN 1
+    WHEN 'OFFLINE' THEN 2
+    ELSE 3
+  END,
+  username;
 `;
 
 const searchByStatusSQL = `
 SELECT *
 FROM users
-WHERE status ILIKE '%' || $1 || '%';
+WHERE status ILIKE '%' || $1 || '%'
+ORDER BY
+  CASE login_status
+    WHEN 'ONLINE' THEN 1
+    WHEN 'OFFLINE' THEN 2
+    ELSE 3
+  END,
+  username;
 `;
 
 /*

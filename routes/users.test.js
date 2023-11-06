@@ -4,9 +4,9 @@ import request from 'supertest';
 import config from 'config';
 import app from '../app.js';
 import DatabaseManager from '../db.js';
+import UserModel from '../models/user.js';
 
 beforeAll(async () => {
-    passport.use('jwt', new MockStrategy());
     // do db setups
     const { host, port, name } = config.get('db');
     const {
@@ -23,11 +23,26 @@ beforeAll(async () => {
     } catch (err) {
         console.error(err);
     }
+    const user = new UserModel(
+        'testUser',
+        null,
+        null,
+        false,
+        'UNDEFINED',
+        null,
+        null,
+    );
+    await user.persist();
+    passport.use('jwt', new MockStrategy({ user }));
 });
 
 describe('status routes', () => {
-    test('get status page', async () => {
-        const res = await request(app).get('/status');
+    test('get status endpoint', async () => {
+        const res = await request(app).get('/users/status');
+        expect(res.statusCode).toBe(200);
+    });
+    test('put status endpoint', async () => {
+        const res = await request(app).post('/users/status');
         expect(res.statusCode).toBe(200);
     });
 });

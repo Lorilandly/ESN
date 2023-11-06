@@ -73,6 +73,43 @@ $(document).ready(() => {
     document.getElementById('search-input-body').appendChild(searchInput);
     document.getElementById('search-input-body').appendChild(searchSelect);
 
+    searchSelect.addEventListener('change', (event) => {
+        // Remove the search-input element
+        document.getElementById('search-input-body').removeChild(document.getElementById('search-input'));
+        if (event.target.value === "status"){
+            const searchInput = document.createElement('select');
+            searchInput.setAttribute('id', 'search-input');
+            searchInput.setAttribute('class', 'form-select');
+            searchInput.style.width = '100%';
+            const searchOption1 = document.createElement('option');
+            searchOption1.setAttribute('value', 'OK');
+            searchOption1.innerHTML = 'OK';
+            const searchOption2 = document.createElement('option');
+            searchOption2.setAttribute('value', 'EMERGENCY');
+            searchOption2.innerHTML = 'EMERGENCY';
+            const searchOption3 = document.createElement('option');
+            searchOption3.setAttribute('value', 'HELP');
+            searchOption3.innerHTML = 'HELP';
+            const searchOption4 = document.createElement('option');
+            searchOption4.setAttribute('value', 'UNDEFINED');
+            searchOption4.innerHTML = 'UNDEFINED';
+            searchInput.appendChild(searchOption1);
+            searchInput.appendChild(searchOption2);
+            searchInput.appendChild(searchOption3);
+            searchInput.appendChild(searchOption4);
+            const searchInputBody = document.getElementById('search-input-body');
+            searchInputBody.insertBefore(searchInput, searchInputBody.children[0]);
+        }
+        else{
+            const searchInput = document.createElement('input');
+            searchInput.setAttribute('type', 'text');
+            searchInput.setAttribute('id', 'search-input');
+            searchInput.setAttribute('class', 'form-control');
+            searchInput.setAttribute('placeholder', 'Search Citizens');
+            const searchInputBody = document.getElementById('search-input-body');
+            searchInputBody.insertBefore(searchInput, searchInputBody.children[0]);
+        } 
+    });
     // Get user list from API
     $.ajax('/users', {
         method: 'GET',

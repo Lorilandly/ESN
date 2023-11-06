@@ -183,7 +183,6 @@ function showCitizenSearchResults(responses){
     $('#search-result').empty();
     const users = responses.users;
     users.forEach((user) => {
-        console.log(user);
         let bodyElement = document.createElement('div');
         bodyElement.className = 'search-user-list-body-element';
         let nameElement = document.createElement('div');
@@ -216,11 +215,10 @@ function showChatSearchResults(response){
     if (messages && messages.length > 0) {
         let messageHtml = '';
         messages.forEach((message) => {
-            console.log(message);
             messageHtml += `
                 <div class="search-message">
                     <div class="search-message-title">
-                        <span class="search-message-sender-name">${message.sender_id}</span>
+                        <span class="search-message-sender-name">${message.sender}</span>
                         <span class="message-time">${message.time}</span>
                         <span class="message-status">${message.status}</span>
                     </div>

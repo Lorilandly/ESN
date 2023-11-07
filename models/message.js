@@ -63,7 +63,7 @@ SELECT u.username, m.body, m.time, m.status
 FROM messages m
 INNER JOIN users u ON m.sender_id = u.id
 WHERE m.receiver_id = 0
-AND m.body ILIKE '%' || $1 || '%'
+AND ($99)
 ORDER BY m.time ASC;
 `;
 
@@ -71,9 +71,9 @@ const searchPrivateSQL = `
 SELECT u.username, m.body, m.time, m.status
 FROM messages m
 INNER JOIN users u ON m.sender_id = u.id
-WHERE (m.receiver_id = $3 AND m.sender_id = $2)
-   OR (m.receiver_id = $2 AND m.sender_id = $3)
-AND m.body ILIKE '%' || $1 || '%'
+WHERE (m.receiver_id = $2 AND m.sender_id = $1)
+   OR (m.receiver_id = $1 AND m.sender_id = $2)
+AND ($99)
 ORDER BY m.time ASC;
 `;
 
@@ -157,8 +157,11 @@ class MessageModel {
     }
 
     static async searchPublic(query) {
+        const terms = query.split(' ');
+        const whereClauses = terms.map(term => `m.body ILIKE '%${term}%'`).join(' OR ');
+        const sqlQuery = searchPublicSQL.replace('$99', whereClauses);
         return MessageModel.dbPoolInstance
-            .query(searchPublicSQL, [query])
+            .query(sqlQuery)
             .then((queryResponse) =>
                 queryResponse.rows.map((row) => {
                     const obj = MessageModel.queryToModel(row);
@@ -172,8 +175,11 @@ class MessageModel {
         if (!(userId0 && userId1)) {
             throw new Error('User ID not supplied!');
         }
+        const terms = query.split(' ');
+        const whereClauses = terms.map(term => `m.body ILIKE '%${term}%'`).join(' OR ');
+        const sqlQuery = searchPrivateSQL.replace('$99', whereClauses);
         return MessageModel.dbPoolInstance
-            .query(searchPrivateSQL, [query, userId0, userId1])
+            .query(sqlQuery, [userId0, userId1])
             .then((queryResponse) =>
                 queryResponse.rows.map((row) => {
                     const obj = MessageModel.queryToModel(row);

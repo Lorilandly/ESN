@@ -38,6 +38,17 @@ body {
     margin-right: 10px;
     border: none;
     background-color: inherit;
+    padding: 0.5em 1em;
+}
+
+.header .search-bar{
+    left: 0;
+    position: absolute;
+    margin-left: 10px;
+    border: none;
+    background-color: inherit;
+    padding: 0.5em 1em;
+    color: white;
 }
 
 
@@ -142,4 +153,85 @@ body {
     80% { transform: translate(-1px, -1px) rotate(1deg); }
     90% { transform: translate(1px, 2px) rotate(0deg); }
     100% { transform: translate(1px, -2px) rotate(-1deg); }
-  }
+}
+
+.modal-body{
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-body .search-input-body{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.search-user-list-body-element{
+    width: 100%;
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: #ccc solid 1px;
+}
+
+.search-user-list-body-element .search-user-list-body-element-name{
+    height: inherit;
+    line-height: 60px;
+    font-size: 20px;
+    width: 60%;
+    margin-left: 10px;
+}
+
+.search-user-list-body-element .search-user-list-body-element-status-online{
+    height: inherit;
+    line-height: 60px;
+    font-size: 20px;
+    color: green;
+    width: 40%;
+}
+
+.search-user-list-body-element .search-user-list-body-element-status-offline{
+    height: inherit;
+    line-height: 60px;
+    font-size: 20px;
+    color: red;
+    width: 40%;
+}
+
+.search-message{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: #ccc solid 1px;
+    padding: 10px;
+    margin-bottom: 5px;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.search-message .search-message-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-message .search-message-title .search-message-sender-name{
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.modal-body .form-select{
+    width: 40%;
+    margin-left: 10px;
+}
+
+.search-result{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    overflow-y: scroll;
+}

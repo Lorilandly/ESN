@@ -22,20 +22,6 @@ SELECT * FROM users
 WHERE username = $1;
 `;
 
-const checkUserExistsWithName = `
-SELECT EXISTS(
-    SELECT 1 FROM users
-    WHERE username = $1
-);
-`;
-
-const checkUserExistsWithId = `
-SELECT EXISTS(
-    SELECT 1 FROM users
-    WHERE id = $1
-);
-`;
-
 const getAllUserStatusesOrdered = `
 SELECT id, username, login_status, status
 FROM users
@@ -58,6 +44,32 @@ const changeUserStatus = `
 UPDATE users
 SET status = $1
 WHERE username = $2;
+`;
+
+const searchByNameSQL = `
+SELECT *
+FROM users
+WHERE username ILIKE '%' || $1 || '%'
+ORDER BY
+  CASE login_status
+    WHEN 'ONLINE' THEN 1
+    WHEN 'OFFLINE' THEN 2
+    ELSE 3
+  END,
+  username;
+`;
+
+const searchByStatusSQL = `
+SELECT *
+FROM users
+WHERE status ILIKE '%' || $1 || '%'
+ORDER BY
+  CASE login_status
+    WHEN 'ONLINE' THEN 1
+    WHEN 'OFFLINE' THEN 2
+    ELSE 3
+  END,
+  username;
 `;
 
 /*
@@ -103,22 +115,6 @@ class UserModel {
         return res.rows[0].id;
     }
 
-    static async nameExists(name) {
-        const res = await UserModel.dbPoolInstance.query(
-            checkUserExistsWithName,
-            [name],
-        );
-        return res.rows[0].exists;
-    }
-
-    static async idExists(id) {
-        const res = await UserModel.dbPoolInstance.query(
-            checkUserExistsWithId,
-            [id],
-        );
-        return res.rows[0].exists;
-    }
-
     async updateStatus(status) {
         await UserModel.dbPoolInstance.query(changeUserStatus, [
             status,
@@ -130,55 +126,61 @@ class UserModel {
         await this.dbPoolInstance.query(changeUserLoginStatus, [status, name]);
     }
 
-    static async findIdByName(name) {
-        const queryResponse = await UserModel.dbPoolInstance.query(
-            selectUserByName,
-            [name],
-        );
-        if (queryResponse.rowCount === 0) {
-            return null;
-        } else {
-            const row = queryResponse.rows[0];
-            return row.id;
-        }
+    static async findByName(name) {
+        return UserModel.dbPoolInstance
+            .query(selectUserByName, [name])
+            .then((queryResponse) => {
+                if (queryResponse.rowCount === 0) {
+                    return null;
+                } else {
+                    const row = queryResponse.rows[0];
+                    const user = UserModel.queryToModel(row);
+                    user.passwordHash = row.password_hash;
+                    user.salt = row.salt;
+                    user.id = row.id;
+                    return user;
+                }
+            });
     }
 
-    static async findByName(name) {
-        try {
-            const queryResponse = await UserModel.dbPoolInstance.query(
-                selectUserByName,
-                [name],
+    static async searchByName(query) {
+        return UserModel.dbPoolInstance
+            .query(searchByNameSQL, [query])
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => UserModel.queryToModel(row)),
             );
-            if (queryResponse.rowCount === 0) {
-                return null;
-            } else {
-                const row = queryResponse.rows[0];
-                const user = new UserModel(
-                    row.username,
-                    row.password_hash,
-                    row.salt,
-                    row.login_status,
-                    row.status,
-                    row.status_time,
-                    row.privilege,
-                );
-                user.id = row.id;
-                return user;
-            }
-        } catch (err) {
-            return err;
-        }
+    }
+
+    static async searchByStatus(query) {
+        return UserModel.dbPoolInstance
+            .query(searchByStatusSQL, [query])
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => UserModel.queryToModel(row)),
+            );
+    }
+
+    static queryToModel(queryRow) {
+        return new UserModel(
+            queryRow.username,
+            null, // use a placeholder for security reason.
+            null,
+            queryRow.login_status,
+            queryRow.status,
+            queryRow.status_time,
+            queryRow.privilege,
+        );
     }
 
     static async getAllStatuses() {
-        const queryResponse = await UserModel.dbPoolInstance.query(
-            getAllUserStatusesOrdered,
-        );
-        if (queryResponse.rowCount === 0) {
-            return null;
-        } else {
-            return queryResponse.rows;
-        }
+        return UserModel.dbPoolInstance
+            .query(getAllUserStatusesOrdered)
+            .then((queryResponse) => {
+                if (queryResponse.rowCount === 0) {
+                    return null;
+                } else {
+                    return queryResponse.rows;
+                }
+            });
     }
 }
 

@@ -7,7 +7,7 @@ router.get(
     '/',
     passport.authenticate('jwt', { failureRedirect: '/', session: false }),
     (req, res) => {
-        res.render('welcome');
+        return res.render('welcome');
     },
 );
 

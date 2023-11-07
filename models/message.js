@@ -58,6 +58,25 @@ SET read_status = 'READ'
 WHERE receiver_id = $1 AND read_status = 'UNREAD';
 `;
 
+const searchPublicSQL = `
+SELECT u.username, m.body, m.time, m.status
+FROM messages m
+INNER JOIN users u ON m.sender_id = u.id
+WHERE m.receiver_id = 0
+AND ($99)
+ORDER BY m.time ASC;
+`;
+
+const searchPrivateSQL = `
+SELECT u.username, m.body, m.time, m.status
+FROM messages m
+INNER JOIN users u ON m.sender_id = u.id
+WHERE (m.receiver_id = $2 AND m.sender_id = $1)
+   OR (m.receiver_id = $1 AND m.sender_id = $2)
+AND ($99)
+ORDER BY m.time ASC;
+`;
+
 class MessageModel {
     constructor(senderId, receiverId, body, time, status, readStatus) {
         this.sender_id = senderId;
@@ -76,7 +95,7 @@ class MessageModel {
     }
 
     async persist() {
-        await MessageModel.dbPoolInstance.query(insertMessage, [
+        return MessageModel.dbPoolInstance.query(insertMessage, [
             this.sender_id,
             this.receiver_id,
             this.body,
@@ -87,64 +106,102 @@ class MessageModel {
     }
 
     static async getAllPublicMessages() {
-        const queryResponse =
-            await MessageModel.dbPoolInstance.query(getAllPublicMessages);
-        if (queryResponse.rowCount === 0) {
-            return null;
-        } else {
-            queryResponse.rows.forEach(
-                (row) => (row.time = row.time.toLocaleString()),
+        return MessageModel.dbPoolInstance
+            .query(getAllPublicMessages)
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => {
+                    row.time = row.time.toLocaleString();
+                    return row;
+                }),
             );
-            return queryResponse.rows;
-        }
     }
 
     static async getAllPrivateMessages(senderId, receiverId) {
-        const queryResponse = await MessageModel.dbPoolInstance.query(
-            getAllPrivateMessages,
-            [senderId, receiverId],
-        );
-        if (queryResponse.rowCount === 0) {
-            return null;
-        } else {
-            queryResponse.rows.forEach(
-                (row) => (row.time = row.time.toLocaleString()),
+        return MessageModel.dbPoolInstance
+            .query(getAllPrivateMessages, [senderId, receiverId])
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => {
+                    row.time = row.time.toLocaleString();
+                    return row;
+                }),
             );
-            return queryResponse.rows;
-        }
     }
 
     static async getAllNewPrivateMessages(receiverId) {
-        const queryResponse = await MessageModel.dbPoolInstance.query(
-            getAllNewPrivateMessages,
-            [receiverId],
-        );
-        if (queryResponse.rowCount === 0) {
-            return null;
-        } else {
-            queryResponse.rows.forEach(
-                (row) => (row.time = row.time.toLocaleString()),
+        return MessageModel.dbPoolInstance
+            .query(getAllNewPrivateMessages, [receiverId])
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => {
+                    row.time = row.time.toLocaleString();
+                    return row;
+                }),
             );
-            return queryResponse.rows;
-        }
     }
 
     static async getLastMessageReadStatus(senderId, receiverId) {
-        const queryResponse = await MessageModel.dbPoolInstance.query(
-            getLastMessageReadStatus,
-            [senderId, receiverId],
-        );
-        if (queryResponse.rowCount === 0) {
-            return null;
-        } else {
-            return queryResponse.rows[0].read_status;
-        }
+        return MessageModel.dbPoolInstance
+            .query(getLastMessageReadStatus, [senderId, receiverId])
+            .then((queryResponse) => {
+                if (queryResponse.rowCount === 0) {
+                    return null;
+                } else {
+                    return queryResponse.rows[0].read_status;
+                }
+            });
     }
 
     static async updatePrivateMessagesStatus(receiverId) {
-        await MessageModel.dbPoolInstance.query(changeMessageReadStatus, [
+        return MessageModel.dbPoolInstance.query(changeMessageReadStatus, [
             receiverId,
         ]);
+    }
+
+    static async searchPublic(query) {
+        const terms = query.split(' ');
+        const whereClauses = terms
+            .map((term) => `m.body ILIKE '%${term}%'`)
+            .join(' OR ');
+        const sqlQuery = searchPublicSQL.replace('$99', whereClauses);
+        return MessageModel.dbPoolInstance
+            .query(sqlQuery)
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => {
+                    const obj = MessageModel.queryToModel(row);
+                    obj.sender = row.username;
+                    return obj;
+                }),
+            );
+    }
+
+    static async searchPrivate(query, userId0, userId1) {
+        if (!(userId0 && userId1)) {
+            throw new Error('User ID not supplied!');
+        }
+        const terms = query.split(' ');
+        const whereClauses = terms
+            .map((term) => `m.body ILIKE '%${term}%'`)
+            .join(' OR ');
+        const sqlQuery = searchPrivateSQL.replace('$99', whereClauses);
+        return MessageModel.dbPoolInstance
+            .query(sqlQuery, [userId0, userId1])
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => {
+                    const obj = MessageModel.queryToModel(row);
+                    obj.sender = row.username;
+                    return obj;
+                }),
+            );
+    }
+
+    static queryToModel(queryRow) {
+        return new MessageModel(
+            queryRow.sender_id,
+            queryRow.receiver_id,
+            queryRow.body,
+            queryRow.time.toLocaleString(),
+            queryRow.status,
+            queryRow.read_status,
+        );
     }
 }
 

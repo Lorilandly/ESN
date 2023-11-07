@@ -66,6 +66,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     document.getElementById('stopTest').addEventListener('click', async () => {
         stopPerformanceTest();
     });
+
+    document.getElementById('search-bar').remove();
 });
 
 async function startPerformanceTest(duration, interval) {

@@ -49,45 +49,19 @@ async function createMessage(req, res, next) {
 }
 
 async function getAllPublicMessages() {
-    try {
-        const messages = await MessageModel.getAllPublicMessages();
-        return messages;
-    } catch (err) {
-        console.error(err);
-        return null;
-    }
+    return MessageModel.getAllPublicMessages();
 }
 
 async function getAllPrivateMessages(senderId, receiverId) {
-    try {
-        const messages = await MessageModel.getAllPrivateMessages(
-            senderId,
-            receiverId,
-        );
-        return messages;
-    } catch (err) {
-        console.error(err);
-        return null;
-    }
+    return MessageModel.getAllPrivateMessages(senderId, receiverId);
 }
 
 async function getAllNewPrivateMessages(receiverId) {
-    try {
-        const messages =
-            await MessageModel.getAllNewPrivateMessages(receiverId);
-        return messages;
-    } catch (err) {
-        console.error(err);
-        return null;
-    }
+    return MessageModel.getAllNewPrivateMessages(receiverId);
 }
 
 async function updatePrivateMessagesStatus(receiverId) {
-    try {
-        await MessageModel.updatePrivateMessagesStatus(receiverId);
-    } catch (err) {
-        console.error(err);
-    }
+    return MessageModel.updatePrivateMessagesStatus(receiverId);
 }
 
 export {

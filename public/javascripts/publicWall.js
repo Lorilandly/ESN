@@ -1,4 +1,4 @@
-/* global io */
+/* global io setSearchType */
 var socket = io(); // eslint-disable-line
 
 $(document).ready(() => {
@@ -16,6 +16,16 @@ $(document).ready(() => {
             },
         });
     });
+
+    // Set Search Bar Title to Search Public Messages
+    $('#searchModalLabel').html('Search Public Messages');
+    setSearchType('public');
+    const searchInput = document.createElement('input');
+    searchInput.setAttribute('type', 'text');
+    searchInput.setAttribute('id', 'search-input');
+    searchInput.setAttribute('class', 'form-control');
+    searchInput.setAttribute('placeholder', 'Search Public Messages');
+    document.getElementById('search-input-body').appendChild(searchInput);
 
     // Fetch and render all messages
     $.ajax({

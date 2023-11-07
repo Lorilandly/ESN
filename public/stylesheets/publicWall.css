@@ -8,7 +8,7 @@
     align-items: center;
 }
 
-.message-container .message {
+.message {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -19,7 +19,7 @@
     border-radius: 5px;
 }
 
-.message-container .message .message-title {
+.message .message-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -50,7 +50,7 @@
     margin-bottom: 10px;
 }
 
-.message-container .message .message-title .message-sender-name {
+.message .message-title .message-sender-name {
     font-size: 1.2rem;
     font-weight: bold;
 }

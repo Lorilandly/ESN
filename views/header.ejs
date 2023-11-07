@@ -1,4 +1,7 @@
 <div class="header">
+    <button id="search-bar" class="search-bar" data-bs-toggle="modal" data-bs-target="#searchModal">
+        <i id="search-icon" class="bi bi-search text-light"></i>
+    </button>
     <div class="header-text">ESN</div>
     <button id="notification" class="notification" data-bs-toggle="offcanvas" href="#offcanvasAlert" role="button" aria-controls="offcanvasAlert">
         <i id="notification-icon" class="bi bi-app-indicator text-light"></i>
@@ -10,6 +13,27 @@
         <div class="alert-container" id="alert-container">
             <p id="receiver-id" style="display: none;"></p>
             <div class="message">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="searchModalLabel"></h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="search-modal-body">
+                <div class="search-input-body" id="search-input-body">
+
+                </div>
+                <div class="search-result" id="search-result">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="searchInformation()">Search</button>
             </div>
         </div>
     </div>

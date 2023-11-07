@@ -86,7 +86,7 @@ class DatabaseManager {
             await this.DBPool.query(createTestDBQuery);
         } catch (e) {
             // DB already created. We'll let this fall through.
-            console.error(`failed to create test db: ${e}`);
+            console.warn(`failed to create test db: ${e}`);
         }
         this.testDBPool = DatabaseManager.createDBPool(
             this.testDBHost,

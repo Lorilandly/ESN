@@ -205,15 +205,15 @@ async function create(req, res, next) {
         32,
         'sha256',
     );
-    const user = new UserModel(
-        username.toLowerCase(),
-        passwordHash,
-        salt,
-        'OFFLINE',
-        'UNDEFINED',
-        new Date(Date.now()).toLocaleString(),
-        'SUPERDUPERADMIN',
-    );
+    const user = new UserModel({
+        username: username.toLowerCase(),
+        passwordHash: passwordHash,
+        salt: salt,
+        loginStatus: 'OFFLINE',
+        status: 'UNDEFINED',
+        statusTime: new Date(Date.now()).toLocaleString(),
+        privilege: 'SUPERDUPERADMIN'
+    });
     await user.persist();
     return next();
 }

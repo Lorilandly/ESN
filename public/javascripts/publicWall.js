@@ -1,5 +1,4 @@
-/* global io setSearchType */
-var socket = io(); // eslint-disable-line
+/* global socket setSearchType */
 
 $(document).ready(() => {
     // Capture form submission event

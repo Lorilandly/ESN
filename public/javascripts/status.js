@@ -101,7 +101,6 @@ function createUserElement(username, loginStatus, status) {
 $(document).ready(() => {
     socket.on('userStatus', (data) => {
         // clear the user list first
-        console.log('userStatus', data);
         const userList = document.querySelector('.user-list-body');
         // Clear the existing list
         while (userList.hasChildNodes()) {

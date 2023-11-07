@@ -1,4 +1,4 @@
-import { reservedUsernames, validPassword, validUsername } from './auth.js';
+import { reservedUsernames, validPassword, validUsername } from '../auth.js';
 
 describe('Test username check', () => {
     test('username valid', () => {

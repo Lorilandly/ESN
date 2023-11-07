@@ -71,8 +71,8 @@ const searchPrivateSQL = `
 SELECT u.username, m.body, m.time, m.status
 FROM messages m
 INNER JOIN users u ON m.sender_id = u.id
-WHERE (m.receiver_id = $2 AND m.sender_id = $1)
-   OR (m.receiver_id = $1 AND m.sender_id = $2)
+WHERE ((m.receiver_id = $2 AND m.sender_id = $1)
+   OR (m.receiver_id = $1 AND m.sender_id = $2))
 AND ($99)
 ORDER BY m.time ASC;
 `;

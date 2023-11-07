@@ -3,7 +3,7 @@ $(document).ready(() => {
         event.preventDefault();
         $.ajax({
             url: '/users/status',
-            method: 'POST',
+            method: 'PUT',
             data: { status: $('#status').find(':selected').val() },
             dataType: 'json',
             success: () => {

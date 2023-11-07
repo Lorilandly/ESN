@@ -27,8 +27,8 @@ beforeAll(async () => {
         'testUser',
         null,
         null,
-        false,
-        'UNDEFINED',
+        'ONLINE',
+        'OK',
         null,
         null,
     );
@@ -40,10 +40,17 @@ describe('status routes', () => {
     test('get status endpoint', async () => {
         const res = await request(app).get('/users/status');
         expect(res.statusCode).toBe(200);
+        expect(res.body.status).toBe('OK');
     });
+
     test('put status endpoint', async () => {
-        const res = await request(app).post('/users/status');
+        const res = await request(app)
+            .put('/users/status')
+            .send({ status: 'HELP' });
         expect(res.statusCode).toBe(200);
+        expect(
+            await UserModel.findByName('testUser').then((user) => user.status),
+        ).toBe('HELP');
     });
 });
 

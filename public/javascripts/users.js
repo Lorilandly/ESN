@@ -1,3 +1,4 @@
+/* global setSearchType */
 function createPrivateChatButton(senderId, receiverId) {
     // Create the form element
     const form = document.createElement('form');
@@ -75,8 +76,10 @@ $(document).ready(() => {
 
     searchSelect.addEventListener('change', (event) => {
         // Remove the search-input element
-        document.getElementById('search-input-body').removeChild(document.getElementById('search-input'));
-        if (event.target.value === "status"){
+        document
+            .getElementById('search-input-body')
+            .removeChild(document.getElementById('search-input'));
+        if (event.target.value === 'status') {
             const searchInput = document.createElement('select');
             searchInput.setAttribute('id', 'search-input');
             searchInput.setAttribute('class', 'form-select');
@@ -97,18 +100,25 @@ $(document).ready(() => {
             searchInput.appendChild(searchOption2);
             searchInput.appendChild(searchOption3);
             searchInput.appendChild(searchOption4);
-            const searchInputBody = document.getElementById('search-input-body');
-            searchInputBody.insertBefore(searchInput, searchInputBody.children[0]);
-        }
-        else{
+            const searchInputBody =
+                document.getElementById('search-input-body');
+            searchInputBody.insertBefore(
+                searchInput,
+                searchInputBody.children[0],
+            );
+        } else {
             const searchInput = document.createElement('input');
             searchInput.setAttribute('type', 'text');
             searchInput.setAttribute('id', 'search-input');
             searchInput.setAttribute('class', 'form-control');
             searchInput.setAttribute('placeholder', 'Search Citizens');
-            const searchInputBody = document.getElementById('search-input-body');
-            searchInputBody.insertBefore(searchInput, searchInputBody.children[0]);
-        } 
+            const searchInputBody =
+                document.getElementById('search-input-body');
+            searchInputBody.insertBefore(
+                searchInput,
+                searchInputBody.children[0],
+            );
+        }
     });
     // Get user list from API
     $.ajax('/users', {

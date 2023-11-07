@@ -1,4 +1,4 @@
-/* global io */
+/* global io otherId */
 var socket = io(); // eslint-disable-line
 
 function shakeIndicator() {
@@ -40,6 +40,7 @@ async function changeReadStatus() {
 }
 
 function setSearchType(type) {
+    // eslint-disable-line
     localStorage.setItem('searchType', type);
 }
 
@@ -129,6 +130,7 @@ $(document).ready(() => {
 });
 
 async function searchInformation() {
+    // eslint-disable-line
     const searchType = localStorage.getItem('searchType');
     const searchInput = document.getElementById('search-input').value;
     let searchCriteria = null;
@@ -139,11 +141,10 @@ async function searchInformation() {
     } catch (err) {
         searchCriteria = null;
     }
-    try{
+    try {
         userIdOne = otherId;
         userIdTwo = (await getCurrentUser()).id;
-    }
-    catch(err){
+    } catch (err) {
         userIdOne = null;
         userIdTwo = null;
     }
@@ -160,7 +161,7 @@ async function searchInformation() {
         },
         success: (response) => {
             // Close searchModal
-            switch(searchType){
+            switch (searchType) {
                 case 'citizen':
                     showCitizenSearchResults(response);
                     break;
@@ -178,26 +179,29 @@ async function searchInformation() {
     });
 }
 
-function showCitizenSearchResults(responses){
+function showCitizenSearchResults(responses) {
     // Remove everything from search-result
     $('#search-result').empty();
     const users = responses.users;
     users.forEach((user) => {
-        let bodyElement = document.createElement('div');
+        const bodyElement = document.createElement('div');
         bodyElement.className = 'search-user-list-body-element';
-        let nameElement = document.createElement('div');
+        const nameElement = document.createElement('div');
         nameElement.className = 'search-user-list-body-element-name';
-        let usernameElement = document.createElement('span');
-        usernameElement.className = 'search-user-list-body-element-name-username';
+        const usernameElement = document.createElement('span');
+        usernameElement.className =
+            'search-user-list-body-element-name-username';
         usernameElement.innerHTML = user.username;
-        let statusElement = document.createElement('i');
-        statusElement.className = 'bi bi-circle-fill user-status-' + user.status;
-        let loginStatusElement = document.createElement('div');
+        const statusElement = document.createElement('i');
+        statusElement.className =
+            'bi bi-circle-fill user-status-' + user.status;
+        const loginStatusElement = document.createElement('div');
         if (user.loginStatus === 'ONLINE') {
-            loginStatusElement.className = 'search-user-list-body-element-status-online';
-        }
-        else {
-            loginStatusElement.className = 'search-user-list-body-element-status-offline';
+            loginStatusElement.className =
+                'search-user-list-body-element-status-online';
+        } else {
+            loginStatusElement.className =
+                'search-user-list-body-element-status-offline';
         }
         loginStatusElement.innerHTML = user.loginStatus;
         nameElement.appendChild(usernameElement);
@@ -205,10 +209,10 @@ function showCitizenSearchResults(responses){
         bodyElement.appendChild(nameElement);
         bodyElement.appendChild(loginStatusElement);
         document.getElementById('search-result').appendChild(bodyElement);
-    })
+    });
 }
 
-function showChatSearchResults(response){
+function showChatSearchResults(response) {
     // Remove everything from search-result
     $('#search-result').empty();
     const messages = response.messages;

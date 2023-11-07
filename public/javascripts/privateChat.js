@@ -1,4 +1,4 @@
-/* global io */
+/* global io setSearchType */
 var socket = io(); // eslint-disable-line
 
 function getReceiverIdFromPath() {

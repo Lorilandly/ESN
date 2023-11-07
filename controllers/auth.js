@@ -69,11 +69,10 @@ function initAuthController(config) {
 function handleSocketConnections(io) {
     io.on('connection', async (socket) => {
         const cookie = socket.request.headers.cookie;
-        const jwtIndex = cookie.indexOf('jwtToken');
-        const jwtToken = cookie.substring(jwtIndex).split('=')[1];
-
         let decodedUser;
         try {
+            const jwtIndex = cookie.indexOf('jwtToken');
+            const jwtToken = cookie.substring(jwtIndex).split('=')[1];
             decodedUser = jwt.verify(jwtToken, process.env.SECRET_KEY);
             await UserModel.updateLoginStatus(decodedUser.username, 'ONLINE');
         } catch (exception) {

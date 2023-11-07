@@ -158,7 +158,9 @@ class MessageModel {
 
     static async searchPublic(query) {
         const terms = query.split(' ');
-        const whereClauses = terms.map(term => `m.body ILIKE '%${term}%'`).join(' OR ');
+        const whereClauses = terms
+            .map((term) => `m.body ILIKE '%${term}%'`)
+            .join(' OR ');
         const sqlQuery = searchPublicSQL.replace('$99', whereClauses);
         return MessageModel.dbPoolInstance
             .query(sqlQuery)
@@ -176,7 +178,9 @@ class MessageModel {
             throw new Error('User ID not supplied!');
         }
         const terms = query.split(' ');
-        const whereClauses = terms.map(term => `m.body ILIKE '%${term}%'`).join(' OR ');
+        const whereClauses = terms
+            .map((term) => `m.body ILIKE '%${term}%'`)
+            .join(' OR ');
         const sqlQuery = searchPrivateSQL.replace('$99', whereClauses);
         return MessageModel.dbPoolInstance
             .query(sqlQuery, [userId0, userId1])

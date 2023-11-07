@@ -78,7 +78,7 @@ ORDER BY m.time ASC;
 `;
 
 class MessageModel {
-    constructor(senderId, receiverId, body, time, status, readStatus) {
+    constructor({senderId, receiverId, body, time, status, readStatus}) {
         this.sender_id = senderId;
         this.receiver_id = receiverId;
         this.body = body;
@@ -194,14 +194,14 @@ class MessageModel {
     }
 
     static queryToModel(queryRow) {
-        return new MessageModel(
-            queryRow.sender_id,
-            queryRow.receiver_id,
-            queryRow.body,
-            queryRow.time.toLocaleString(),
-            queryRow.status,
-            queryRow.read_status,
-        );
+        return new MessageModel({
+            senderId: queryRow.sender_id,
+            receiverId: queryRow.receiver_id,
+            body: queryRow.body,
+            time: queryRow.time.toLocaleString(), 
+            status: queryRow.status,
+            readStatus: queryRow.read_status
+        });
     }
 }
 

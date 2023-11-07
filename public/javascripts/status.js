@@ -44,51 +44,46 @@ function sortAndDisplayUsers() {
     });
 }
 
-function createUserElement(username, loginStatus, status) {
-    // Create a new new user list body element
+function createStatusElement(username, loginStatus) {
+    const statusElement = document.createElement('div');
+    statusElement.setAttribute('id', `user-status-${username}`);
+    statusElement.setAttribute(
+        'class',
+        loginStatus === 'ONLINE' ? 'user-list-body-element-status-online' : 'user-list-body-element-status-offline'
+    );
+    statusElement.textContent = loginStatus;
+    return statusElement;
+}
+
+function createUsernameElement(username) {
+    const usernameElement = document.createElement('div');
+    usernameElement.setAttribute('class', 'user-list-body-element-name');
+    const usernameSpan = document.createElement('span');
+    usernameSpan.setAttribute('class', 'user-list-body-element-name-username');
+    usernameSpan.textContent = username;
+    usernameElement.appendChild(usernameSpan);
+    return usernameElement;
+}
+
+function createUserStatusIcon(status) {
+    const statusIcon = document.createElement('i');
+    statusIcon.setAttribute('class', `bi bi-circle-fill user-status-${status}`);
+    return statusIcon;
+}
+
+function createUserElement(user) {
+    const { username, loginStatus, status } = user;
+
     const newUserListElement = document.createElement('div');
     newUserListElement.setAttribute('class', 'user-list-body-element');
 
-    // Create a new status element
-    const newStatusElement = document.createElement('div');
-    newStatusElement.setAttribute('id', `user-status-${username}`);
-
-    // Set the status for current user
-    if (loginStatus === 'ONLINE') {
-        newStatusElement.setAttribute(
-            'class',
-            'user-list-body-element-status-online',
-        );
-    } else {
-        newStatusElement.setAttribute(
-            'class',
-            'user-list-body-element-status-offline',
-        );
-    }
-
-    newStatusElement.textContent = loginStatus;
-
-    // Create a new username element
-    const newUserElement = document.createElement('div');
-    newUserElement.setAttribute('class', 'user-list-body-element-name');
-    const newUsernameElement = document.createElement('span');
-    newUsernameElement.setAttribute(
-        'class',
-        'user-list-body-element-name-username',
-    );
-    newUsernameElement.textContent = username;
-    const newUserStatusElement = document.createElement('i');
-    newUserStatusElement.setAttribute(
-        'class',
-        'bi bi-circle-fill user-status-' + status,
-    );
+    const newStatusElement = createStatusElement(username, loginStatus);
+    const newUserElement = createUsernameElement(username);
+    newUserElement.appendChild(createUserStatusIcon(status));
 
     const chatHolder = document.createElement('div');
     chatHolder.className = 'user-list-body-element-chat';
 
-    // Append the new username and status element to the user list element container
-    newUserElement.appendChild(newUsernameElement);
-    newUserElement.appendChild(newUserStatusElement);
     newUserListElement.appendChild(newUserElement);
     newUserListElement.appendChild(newStatusElement);
     newUserListElement.appendChild(chatHolder);
@@ -128,11 +123,11 @@ $(document).ready(() => {
             const userListContainer = document.querySelector('.user-list-body');
 
             // Append this new user list element to the entire user list
-            const newUserListElement = createUserElement(
-                username,
-                loginStatus,
-                status,
-            );
+            const newUserListElement = createUserElement({
+                username: username,
+                loginStatus: loginStatus,
+                status: status,
+            });
             userListContainer.appendChild(newUserListElement);
         }
 

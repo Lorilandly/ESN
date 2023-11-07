@@ -4,8 +4,8 @@ import request from 'supertest';
 import config from 'config';
 import app from '../app.js';
 import DatabaseManager from '../db.js';
-import MessageModel from '../models/message.js';
 import UserModel from '../models/user.js';
+import MessageModel from '../models/message.js';
 
 beforeAll(async () => {
     // do db setups
@@ -28,11 +28,12 @@ beforeAll(async () => {
         'testUser',
         null,
         null,
-        'OFFLINE',
-        'UNDEFINED',
+        'ONLINE',
+        'OK',
         null,
         null,
     );
+    user.id = 1;
     await user.persist();
     await new UserModel(
         'otherUser0',
@@ -43,62 +44,38 @@ beforeAll(async () => {
         null,
         null,
     ).persist();
-    await new UserModel(
-        'otherUser1',
-        null,
-        null,
-        'ONLINE',
-        'OK',
-        null,
-        null,
-    ).persist();
-    await new UserModel(
-        'otherUser2',
-        null,
-        null,
-        'OFFLINE',
-        'OK',
-        null,
-        null,
-    ).persist();
     await new MessageModel(
         1,
-        0,
+        2,
         'this is a test message',
         new Date(),
         null,
-        null,
+        'UNREAD',
     ).persist();
     passport.use('jwt', new MockStrategy({ user }));
 });
 
-describe('search routes', () => {
-    test('test public message search', async () => {
+describe('Chat Privately usecase tests', () => {
+    test('get private message', async () => {
         const res = await request(app)
-            .get('/search')
-            .query({ context: 'public', input: 'the message' });
+            .get('/messages/private')
+            .query({ receiverId: 2 });
         expect(res.statusCode).toBe(200);
         expect(res.body.messages[0].body).toBe('this is a test message');
     });
-    test('test user username search', async () => {
-        const res = await request(app).get('/search').query({
-            context: 'citizen',
-            criteria: 'username',
-            input: 'other',
-        });
-        expect(res.statusCode).toBe(200);
-        expect(res.body.users[0].username).toBe('otherUser1');
-        expect(res.body.users[1].username).toBe('otherUser0');
-        expect(res.body.users[2].username).toBe('otherUser2');
-    });
-    test('test user status search', async () => {
+
+    test('get private message with invalid receiverId', async () => {
         const res = await request(app)
-            .get('/search')
-            .query({ context: 'citizen', criteria: 'status', input: 'OK' });
-        expect(res.statusCode).toBe(200);
-        expect(res.body.users[0].username).toBe('otherUser1');
-        expect(res.body.users[1].username).toBe('otherUser0');
-        expect(res.body.users[2].username).toBe('otherUser2');
+            .get('/messages/private')
+            .query({ receiverId: null });
+        expect(res.statusCode).toBe(500);
+    });
+
+    test('post private message', async () => {
+        const res = await request(app)
+            .post('/messages/private')
+            .send({ receiverId: 2, message: 'test message' });
+        expect(res.statusCode).toBe(201);
     });
 });
 

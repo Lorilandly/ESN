@@ -36,7 +36,7 @@ beforeAll(async () => {
     passport.use('jwt', new MockStrategy({ user }));
 });
 
-describe('status routes', () => {
+describe('Share Status usecases tests', () => {
     test('get status endpoint', async () => {
         const res = await request(app).get('/users/status');
         expect(res.statusCode).toBe(200);

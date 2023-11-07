@@ -1,5 +1,4 @@
-/* global io */
-var socket = io(); // eslint-disable-line
+/* global socket  */
 
 function getCurrentUser() {
     return new Promise((resolve, reject) => {

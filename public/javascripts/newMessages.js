@@ -1,5 +1,4 @@
-/* global io getCurrentUser */
-var socket = io(); // eslint-disable-line
+/* global getCurrentUser socket */
 
 function createReplyButton(senderId, receiverId) {
     // Create the form element

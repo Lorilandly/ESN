@@ -1,9 +1,14 @@
 import passport from 'passport';
 import MockStrategy from 'passport-mock-strategy';
 import config from 'config';
-import DatabaseManager from '../../db.js';
-import UserModel from '../../models/user.js';
-import { reservedUsernames, validPassword, validUsername, validateNewCredentials } from '../auth.js';
+import DatabaseManager from '../db.js';
+import UserModel from '../models/user.js';
+import {
+    reservedUsernames,
+    validPassword,
+    validUsername,
+    validateNewCredentials,
+} from './auth.js';
 import { jest } from '@jest/globals';
 
 beforeAll(async () => {
@@ -39,7 +44,9 @@ beforeAll(async () => {
 
 const mockRes = () => {
     const res = {};
+    // set res.status to a jest mock function that returns res
     res.status = jest.fn().mockReturnValue(res);
+    // set res.json to a jest mock function that returns res
     res.json = jest.fn().mockReturnValue(res);
     return res;
 };
@@ -87,19 +94,23 @@ describe('Test password check', () => {
     });
 });
 
+// TODO: convert to integration test
 describe('Test validateNewCredentials', () => {
     test('invalid username', async () => {
         const res = await validateNewCredentials(
+            // mock req
             {
                 body: {
                     username: 'a',
                     password: '1234',
                     dryRun: false,
-                }
+                },
             },
+            // mock res
             mockRes(),
+            // mock next
             () => {},
-        )
+        );
         expect(res.json).toHaveBeenCalledWith({ error: 'Illegal username' });
     });
     test('invalid password', async () => {
@@ -109,11 +120,11 @@ describe('Test validateNewCredentials', () => {
                     username: 'abcd',
                     password: '12',
                     dryRun: false,
-                }
+                },
             },
             mockRes(),
-            () => { },
-        )
+            () => {},
+        );
         expect(res.json).toHaveBeenCalledWith({ error: 'Illegal password' });
     });
     test('dryRun set to true', async () => {
@@ -123,14 +134,14 @@ describe('Test validateNewCredentials', () => {
                     username: 'abcd',
                     password: '1234',
                     dryRun: true,
-                }
+                },
             },
             mockRes(),
-            () => { },
-        )
+            () => {},
+        );
         expect(res.status).toHaveBeenCalledWith(200);
     });
-})
+});
 
 afterAll(async () => {
     // dismantle db

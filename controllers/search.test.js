@@ -1,16 +1,17 @@
 import passport from 'passport';
 import MockStrategy from 'passport-mock-strategy';
 import config from 'config';
-import DatabaseManager from '../../db.js';
-import UserModel from '../../models/user.js';
-import MessageModel from '../../models/message.js';
+import DatabaseManager from '../db.js';
+import UserModel from '../models/user.js';
+import MessageModel from '../models/message.js';
 import {
     SearchContext,
+    searchContextFactory,
     CitizenNameSearchContext,
     CitizenStatusSearchContext,
     PublicWallSearchContext,
     PrivateChatSearchContext,
-} from '../search';
+} from './search.js';
 
 beforeAll(async () => {
     // do db setups
@@ -61,6 +62,31 @@ beforeAll(async () => {
         null,
     );
     await privateMessage.persist();
+});
+
+describe('Test search context factory', () => {
+    test('citizen name search context', () => {
+        const result =
+            searchContextFactory('citizen', 'username') instanceof
+            CitizenNameSearchContext;
+        expect(result).toBe(true);
+    });
+    test('citizen status search context', () => {
+        const result =
+            searchContextFactory('citizen', 'status') instanceof
+            CitizenStatusSearchContext;
+        expect(result).toBe(true);
+    });
+    test('public wall search context', () => {
+        const result =
+            searchContextFactory('public') instanceof PublicWallSearchContext;
+        expect(result).toBe(true);
+    });
+    test('private chat search context', () => {
+        const result =
+            searchContextFactory('private') instanceof PrivateChatSearchContext;
+        expect(result).toBe(true);
+    });
 });
 
 describe('Test stop rule', () => {

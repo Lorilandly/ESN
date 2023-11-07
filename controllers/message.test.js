@@ -1,15 +1,15 @@
 import passport from 'passport';
 import MockStrategy from 'passport-mock-strategy';
 import config from 'config';
-import DatabaseManager from '../../db.js';
-import UserModel from '../../models/user.js';
-import MessageModel from '../../models/message.js';
+import DatabaseManager from '../db.js';
+import UserModel from '../models/user.js';
+import MessageModel from '../models/message.js';
 import {
     getAllPublicMessages,
     getAllPrivateMessages,
     getAllNewPrivateMessages,
     updatePrivateMessagesStatus,
-} from '../message.js';
+} from './message.js';
 
 beforeAll(async () => {
     // do db setups

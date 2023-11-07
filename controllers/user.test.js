@@ -1,9 +1,9 @@
 import passport from 'passport';
 import MockStrategy from 'passport-mock-strategy';
 import config from 'config';
-import DatabaseManager from '../../db.js';
-import UserModel from '../../models/user.js';
-import { create, getAllUsers, getUserByName } from '../user.js';
+import DatabaseManager from '../db.js';
+import UserModel from '../models/user.js';
+import { create, getAllUsers, getUserByName } from './user.js';
 
 beforeAll(async () => {
     // do db setups
@@ -82,7 +82,7 @@ test('test create', async () => {
             body: { username: 'adminUser', password: '1234' },
         },
         null,
-        () => { },
+        () => {},
     );
     const result = await getUserByName('adminuser');
     expect(result.username).toEqual('adminuser');

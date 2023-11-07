@@ -173,33 +173,6 @@ async function checkUserAuthenticated(req, res, next) {
     return next();
 }
 
-/*
- * Save user to db with generated hashedPassword and salt
- * TODO: This should go to User controller
- */
-async function create(req, res, next) {
-    const { username, password } = req.body;
-    const salt = crypto.randomBytes(16);
-    const passwordHash = crypto.pbkdf2Sync(
-        password,
-        salt,
-        310000,
-        32,
-        'sha256',
-    );
-    const user = new UserModel(
-        username.toLowerCase(),
-        passwordHash,
-        salt,
-        'OFFLINE',
-        'UNDEFINED',
-        new Date(Date.now()).toLocaleString(),
-        'SUPERDUPERADMIN',
-    );
-    await user.persist();
-    return next();
-}
-
 async function validateNewCredentials(req, res, next) {
     const { username, password, dryRun } = req.body;
     const checkedUsername = validUsername(username);
@@ -226,25 +199,14 @@ async function validateNewCredentials(req, res, next) {
     return next();
 }
 
-async function getAllUsers() {
-    return UserModel.getAllStatuses();
-}
-
-async function getUserByName(username) {
-    return await UserModel.findByName(username);
-}
-
 export {
     initAuthController,
     setJwtCookie,
     handleSocketConnections,
     deauthenticateUser,
     checkUserAuthenticated,
-    create,
     validateNewCredentials,
     reservedUsernames,
-    getAllUsers,
-    getUserByName,
     validPassword,
     validUsername,
 };

@@ -1,10 +1,10 @@
 import passport from 'passport';
 import MockStrategy from 'passport-mock-strategy';
 import config from 'config';
-import DatabaseManager from '../../db.js';
-import UserModel from '../../models/user.js';
-import { getUserByName } from '../user.js';
-import updateUserStatus from '../status.js';
+import DatabaseManager from '../db.js';
+import UserModel from '../models/user.js';
+import { getUserByName } from './user.js';
+import updateUserStatus from './status.js';
 
 beforeAll(async () => {
     // do db setups
@@ -40,7 +40,7 @@ beforeAll(async () => {
 test('test updateUserStatus', async () => {
     await updateUserStatus(
         {
-            body: { status: 'emergency'},
+            body: { status: 'emergency' },
             user: new UserModel(
                 'testUser',
                 null,
@@ -49,10 +49,10 @@ test('test updateUserStatus', async () => {
                 'OK',
                 null,
                 null,
-            )
+            ),
         },
         null,
-        () => { },
+        () => {},
     );
     const result = await getUserByName('testUser');
     expect(result.status).toEqual('emergency');

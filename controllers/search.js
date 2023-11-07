@@ -194,18 +194,17 @@ class PrivateChatSearchContext extends SearchContext {
         if (!input) {
             return new Error('No search input provided!');
         }
-        if (input.toLowerCase() === "status"){
+        if (input.toLowerCase() === 'status') {
             return StatusModel.getLatestUserStatusChange(userId0).then(
                 (response) => ({
-                    type: "status",
+                    type: 'status',
                     messages: response,
                 }),
-            )
-        }
-        else{
+            );
+        } else {
             return MessageModel.searchPrivate(input, userId0, userId1).then(
                 (response) => ({
-                    type: "message",
+                    type: 'message',
                     messages: response,
                 }),
             );

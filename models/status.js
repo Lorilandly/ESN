@@ -20,8 +20,8 @@ ORDER BY time DESC
 LIMIT 10;
 `;
 
-class StatusModel{
-    constructor(userId, status, time){
+class StatusModel {
+    constructor(userId, status, time) {
         this.user_id = userId;
         this.status = status;
         this.time = time;
@@ -29,20 +29,20 @@ class StatusModel{
 
     static dbPoolInstance = null;
 
-    static async initModel(dbPool){
+    static async initModel(dbPool) {
         StatusModel.dbPoolInstance = dbPool;
         await StatusModel.dbPoolInstance.query(createStatusTable);
     }
 
-    async persist(){
+    async persist() {
         return StatusModel.dbPoolInstance.query(insertStatusChange, [
             this.user_id,
             this.status,
-            this.time
+            this.time,
         ]);
     }
 
-    static async getLatestUserStatusChange(userId){
+    static async getLatestUserStatusChange(userId) {
         return StatusModel.dbPoolInstance
             .query(getLatestUserStatusChange, [userId])
             .then((queryResponse) =>

@@ -159,7 +159,6 @@ async function searchInformation() {
         },
         success: (response) => {
             // Close searchModal
-            console.log(response);
             switch (searchType) {
                 case 'citizen':
                     showCitizenSearchResults(response);
@@ -168,10 +167,9 @@ async function searchInformation() {
                     showChatSearchResults(response);
                     break;
                 case 'private':
-                    if(response.type === "status"){
+                    if (response.type === 'status') {
                         showChatSearchStatus(response);
-                    }
-                    else{
+                    } else {
                         showChatSearchResults(response);
                     }
                     break;
@@ -239,7 +237,7 @@ function showChatSearchResults(response) {
     }
 }
 
-function showChatSearchStatus(response){
+function showChatSearchStatus(response) {
     $('#search-result').empty();
     const messages = response.messages;
     if (messages && messages.length > 0) {

@@ -40,7 +40,6 @@ async function changeReadStatus() {
 }
 
 function setSearchType(type) {
-    // eslint-disable-line
     localStorage.setItem('searchType', type);
 }
 
@@ -130,7 +129,6 @@ $(document).ready(() => {
 });
 
 async function searchInformation() {
-    // eslint-disable-line
     const searchType = localStorage.getItem('searchType');
     const searchInput = document.getElementById('search-input').value;
     let searchCriteria = null;

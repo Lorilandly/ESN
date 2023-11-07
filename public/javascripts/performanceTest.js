@@ -79,7 +79,6 @@ async function startPerformanceTest(duration, interval) {
     const postDuration = duration / 2;
 
     while (testInProgress && !timeElapsed(postDuration, startTime)) {
-        // eslint-disable-line
         if (numPOSTSent > 1000) {
             alert('POST requests sent exceeded 1000');
             stopPerformanceTest();
@@ -104,7 +103,6 @@ async function startPerformanceTest(duration, interval) {
     // GET Requests
     let numGETCompleted = 0;
     while (testInProgress && !timeElapsed(duration, startTime)) {
-        // eslint-disable-line
         $.ajax('/messages/public', {
             method: 'GET',
             dataType: 'json',

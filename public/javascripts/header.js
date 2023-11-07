@@ -1,5 +1,5 @@
 /* global io otherId */
-var socket = io(); // eslint-disable-line
+const socket = io();
 
 function shakeIndicator() {
     const indicator = document.getElementById('notification');

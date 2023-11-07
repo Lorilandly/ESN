@@ -4,13 +4,11 @@ import updateUserStatus from '../controllers/status.js';
 
 import {
     setJwtCookie,
-    create,
     validateNewCredentials,
     deauthenticateUser,
-    getAllUsers,
-    getUserByName,
     checkUserAuthenticated,
 } from '../controllers/auth.js';
+import { create, getAllUsers, getUserByName } from '../controllers/user.js';
 const router = express.Router();
 
 /* GET all users */

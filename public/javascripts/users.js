@@ -43,6 +43,7 @@ $(document).ready(() => {
         $.ajax('/users/logout', {
             method: 'PUT',
             datatype: 'json',
+            data: {type: 'logout'},
             success: () => {
                 location.href = '/';
             },
@@ -120,6 +121,11 @@ $(document).ready(() => {
             );
         }
     });
+
+    fetchUserList();
+});
+
+function fetchUserList() {
     // Get user list from API
     $.ajax('/users', {
         method: 'GET',
@@ -128,49 +134,9 @@ $(document).ready(() => {
             const currentUser = await getCurrentUser();
             const listbody = document.getElementById('user-list-body');
             for (const i in res) {
-                const user = res[i];
-                const userId = document.getElementById(
-                    `user-status-${user.username}`,
-                );
-                if (!userId) {
-                    const element = document.createElement('div');
-                    element.className = 'user-list-body-element';
-                    const name = document.createElement('div');
-                    name.className = 'user-list-body-element-name';
-                    const username = document.createElement('span');
-                    username.className = 'user-list-body-element-name-username';
-                    username.innerHTML = user.username;
-                    const status = document.createElement('i');
-                    status.className =
-                        'bi bi-circle-fill user-status-' + user.status;
-                    const loginStatus = document.createElement('div');
-                    const chatHolder = document.createElement('div');
-                    chatHolder.className = 'user-list-body-element-chat';
-
-                    if (user.login_status === 'ONLINE') {
-                        loginStatus.className =
-                            'user-list-body-element-status-online';
-                    } else {
-                        loginStatus.className =
-                            'user-list-body-element-status-offline';
-                    }
-                    loginStatus.id = `user-status-${user.username}`;
-                    loginStatus.innerHTML = user.login_status;
-
-                    element.appendChild(name);
-                    element.appendChild(loginStatus);
-
-                    if (user.username !== currentUser.username) {
-                        chatHolder.appendChild(
-                            createPrivateChatButton(currentUser, user.id),
-                        );
-                    }
-                    // chatHolder.appendChild(createPrivateChatButton(currentUser, user.id));
-                    element.appendChild(chatHolder);
-                    // element.appendChild(createPrivateChatButton(currentUser, user.id));
-                    name.appendChild(username);
-                    name.appendChild(status);
-                    listbody.appendChild(element);
+                const user = createUserList(res[i], currentUser);
+                if (user) {
+                    listbody.appendChild(user);
                 }
             }
         },
@@ -178,4 +144,52 @@ $(document).ready(() => {
             console.error('Error:', res);
         },
     });
-});
+}
+
+function createUserList(user, currentUser){
+    const userId = document.getElementById(
+        `user-status-${user.username}`,
+    );
+    if (!userId) {
+        const element = document.createElement('div');
+        element.className = 'user-list-body-element';
+        const name = document.createElement('div');
+        name.className = 'user-list-body-element-name';
+        const username = document.createElement('span');
+        username.className = 'user-list-body-element-name-username';
+        username.innerHTML = user.username;
+        const status = document.createElement('i');
+        status.className =
+            'bi bi-circle-fill user-status-' + user.status;
+        const loginStatus = document.createElement('div');
+        const chatHolder = document.createElement('div');
+        chatHolder.className = 'user-list-body-element-chat';
+
+        if (user.login_status === 'ONLINE') {
+            loginStatus.className =
+                'user-list-body-element-status-online';
+        } else {
+            loginStatus.className =
+                'user-list-body-element-status-offline';
+        }
+        loginStatus.id = `user-status-${user.username}`;
+        loginStatus.innerHTML = user.login_status;
+
+        element.appendChild(name);
+        element.appendChild(loginStatus);
+
+        if (user.username !== currentUser.username) {
+            chatHolder.appendChild(
+                createPrivateChatButton(currentUser, user.id),
+            );
+        }
+        // chatHolder.appendChild(createPrivateChatButton(currentUser, user.id));
+        element.appendChild(chatHolder);
+        // element.appendChild(createPrivateChatButton(currentUser, user.id));
+        name.appendChild(username);
+        name.appendChild(status);
+
+        return element;
+    }
+    return null;
+}

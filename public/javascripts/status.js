@@ -100,48 +100,19 @@ function createUserElement(username, loginStatus, status) {
 // Notice all other clients if someone else's status changes
 $(document).ready(() => {
     socket.on('userStatus', (data) => {
-        const { username, loginStatus, status } = data;
-
-        // Use a unique ID for each user's status element
-        const statusElement = document.getElementById(
-            `user-status-${username}`,
-        );
-        // Change the status to real-time status
-        // If the current user is somone already in the ESN directory
-        if (statusElement) {
-            // Based on the real-time status, set the corresponding class attribute
-            statusElement.textContent = loginStatus;
-            if (loginStatus === 'ONLINE') {
-                statusElement.setAttribute(
-                    'class',
-                    'user-list-body-element-status-online',
-                );
-            } else {
-                statusElement.setAttribute(
-                    'class',
-                    'user-list-body-element-status-offline',
-                );
-            }
-        } else {
-            // If the current user is a first-time user just joined
-            // Select the user list body class, which will append the new user list body element
-            const userListContainer = document.querySelector('.user-list-body');
-
-            // Append this new user list element to the entire user list
-            const newUserListElement = createUserElement(
-                username,
-                loginStatus,
-                status,
-            );
-            userListContainer.appendChild(newUserListElement);
+        // clear the user list first
+        console.log('userStatus', data);
+        const userList = document.querySelector('.user-list-body');
+        // Clear the existing list
+        while (userList.hasChildNodes()) {
+            userList.removeChild(userList.firstChild);
         }
-
-        // alphabetical by ONLINE then alphabetical by OFFLINE
-        sortAndDisplayUsers();
+        // Add the current user back to the list
+        fetchUserList();
     });
 });
 
-window.addEventListener('beforeunload', (event) => {
-    // Check if the window is being closed intentionally
-    socket.emit('window-close');
-});
+// window.addEventListener('beforeunload', (event) => {
+//     // Check if the window is being closed intentionally
+//     socket.emit('window-close');
+// });

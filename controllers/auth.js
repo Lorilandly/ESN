@@ -87,34 +87,14 @@ function handleSocketConnections(io) {
             status,
         });
 
-        socket.on('disconnect', () => {
+        socket.on('disconnect', async () => {
             // Remove the user from the mapping on disconnect
             io.emit('userStatus', {
                 username: decodedUser.username,
                 loginStatus: 'OFFLINE',
                 status,
             });
-        });
-
-        socket.on('window-close', async (reason) => {
-            // Update the user status in the database to 'OFFLINE'
-            try {
-                if (reason === 'INTENTIONAL_CLOSE') {
-                    await UserModel.updateLoginStatus(
-                        decodedUser.username,
-                        'OFFLINE',
-                    );
-                }
-            } catch (error) {
-                console.error('Error updating user status:', error);
-                return;
-            }
-            // Emit 'userStatus' event to notify other clients
-            io.emit('userStatus', {
-                username: decodedUser.username,
-                loginStatus: 'OFFLINE',
-                status,
-            });
+            await UserModel.updateLoginStatus(decodedUser.username, 'OFFLINE');
         });
     });
 }
@@ -148,14 +128,16 @@ async function deauthenticateUser(req, res, next) {
     const token = req.cookies.jwtToken;
     const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
     req.user = decodedUser;
-
     // sets JWT to expired cookie, effectively removing authentication
-    res.cookie('jwtToken', '', {
-        expires: new Date(0),
-        httpOnly: true,
-        secure: true,
-        sameSite: 'Strict',
-    });
+    // If the user is intentionally logging out, we want to remove the cookie
+    if (req.body.type === 'logout'){
+        res.cookie('jwtToken', '', {
+            expires: new Date(0),
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict',
+        });
+    }
     await UserModel.updateLoginStatus(req.user.username, 'OFFLINE');
     return next();
 }

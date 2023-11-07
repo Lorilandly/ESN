@@ -232,3 +232,12 @@ function showChatSearchResults(response) {
         $('#search-result').append(messageHtml);
     }
 }
+
+window.addEventListener('beforeunload', (event) => {
+    event.preventDefault();
+    $.ajax('/users/logout', {
+        method: 'PUT',
+        datatype: 'json',
+        data: {type: 'close'}
+    });
+});

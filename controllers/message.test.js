@@ -92,7 +92,7 @@ test('test getAllPublicMessages', async () => {
             receiver_id: 0,
             sender_id: 1,
             status: null,
-            time: '12/31/1969, 4:00:00 PM',
+            time: new Date(1).toLocaleString(),
             username: 'testUser',
         },
     ];

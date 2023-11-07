@@ -1,4 +1,4 @@
-/* global io */
+/* global io getCurrentUser */
 var socket = io(); // eslint-disable-line
 
 function createReplyButton(senderId, receiverId) {

@@ -1,3 +1,5 @@
+/* global socket */
+
 $(document).ready(() => {
     $('#status-form').submit((event) => {
         event.preventDefault();

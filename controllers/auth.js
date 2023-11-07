@@ -130,7 +130,7 @@ async function deauthenticateUser(req, res, next) {
     req.user = decodedUser;
     // sets JWT to expired cookie, effectively removing authentication
     // If the user is intentionally logging out, we want to remove the cookie
-    if (req.body.type === 'logout'){
+    if (req.body.type === 'logout') {
         res.cookie('jwtToken', '', {
             expires: new Date(0),
             httpOnly: true,

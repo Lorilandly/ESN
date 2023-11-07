@@ -43,7 +43,7 @@ $(document).ready(() => {
         $.ajax('/users/logout', {
             method: 'PUT',
             datatype: 'json',
-            data: {type: 'logout'},
+            data: { type: 'logout' },
             success: () => {
                 location.href = '/';
             },
@@ -146,10 +146,8 @@ function fetchUserList() {
     });
 }
 
-function createUserList(user, currentUser){
-    const userId = document.getElementById(
-        `user-status-${user.username}`,
-    );
+function createUserList(user, currentUser) {
+    const userId = document.getElementById(`user-status-${user.username}`);
     if (!userId) {
         const element = document.createElement('div');
         element.className = 'user-list-body-element';
@@ -159,18 +157,15 @@ function createUserList(user, currentUser){
         username.className = 'user-list-body-element-name-username';
         username.innerHTML = user.username;
         const status = document.createElement('i');
-        status.className =
-            'bi bi-circle-fill user-status-' + user.status;
+        status.className = 'bi bi-circle-fill user-status-' + user.status;
         const loginStatus = document.createElement('div');
         const chatHolder = document.createElement('div');
         chatHolder.className = 'user-list-body-element-chat';
 
         if (user.login_status === 'ONLINE') {
-            loginStatus.className =
-                'user-list-body-element-status-online';
+            loginStatus.className = 'user-list-body-element-status-online';
         } else {
-            loginStatus.className =
-                'user-list-body-element-status-offline';
+            loginStatus.className = 'user-list-body-element-status-offline';
         }
         loginStatus.id = `user-status-${user.username}`;
         loginStatus.innerHTML = user.login_status;

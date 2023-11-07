@@ -1,4 +1,4 @@
-/* global socket */
+/* global socket fetchUserList */
 
 function createUserElement(username, loginStatus, status) {
     // Create a new new user list body element
@@ -66,8 +66,3 @@ $(document).ready(() => {
         fetchUserList();
     });
 });
-
-// window.addEventListener('beforeunload', (event) => {
-//     // Check if the window is being closed intentionally
-//     socket.emit('window-close');
-// });

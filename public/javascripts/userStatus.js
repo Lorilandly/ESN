@@ -7,6 +7,7 @@ $(document).ready(() => {
             data: { status: $('#status').find(':selected').val() },
             dataType: 'json',
             success: () => {
+                socket.emit('userStatus', {});
                 location.reload();
             },
             error: (err) => {

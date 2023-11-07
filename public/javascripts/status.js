@@ -1,49 +1,5 @@
 /* global socket */
 
-// Function to sort and display users based on status and username
-function sortAndDisplayUsers() {
-    const userElements = Array.from(
-        document.querySelectorAll('.user-list-body-element'),
-    );
-
-    userElements.sort((a, b) => {
-        const usernameA = a.querySelector(
-            '.user-list-body-element-name-username',
-        ).textContent;
-        const usernameB = b.querySelector(
-            '.user-list-body-element-name-username',
-        ).textContent;
-
-        const statusA = document.getElementById(
-            `user-status-${usernameA}`,
-        ).textContent;
-        const statusB = document.getElementById(
-            `user-status-${usernameB}`,
-        ).textContent;
-
-        // Prioritize online users over offline users
-        if (statusA === 'ONLINE' && statusB === 'OFFLINE') {
-            return -1; // Online users come first
-        } else if (statusA === 'OFFLINE' && statusB === 'ONLINE') {
-            return 1; // Online users come first
-        } else {
-            // If statuses are the same, sort alphabetically by username
-            return usernameA.localeCompare(usernameB); // Sort by username
-        }
-    });
-
-    const userList = document.querySelector('.user-list-body');
-    // Clear the existing list
-    while (userList.hasChildNodes()) {
-        userList.removeChild(userList.firstChild);
-    }
-
-    // Append the sorted user elements back to the list
-    userElements.forEach((userElement) => {
-        userList.appendChild(userElement.cloneNode(true));
-    });
-}
-
 function createUserElement(username, loginStatus, status) {
     // Create a new new user list body element
     const newUserListElement = document.createElement('div');
@@ -99,7 +55,7 @@ function createUserElement(username, loginStatus, status) {
 // Listen for 'userStatus'
 // Notice all other clients if someone else's status changes
 $(document).ready(() => {
-    socket.on('userStatus', (data) => {
+    socket.on('userStatus', () => {
         // clear the user list first
         const userList = document.querySelector('.user-list-body');
         // Clear the existing list

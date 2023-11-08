@@ -167,7 +167,6 @@ async function checkUserAuthenticated(req, res, next) {
         req.user = decodedUser;
         res.locals.isAuthenticated = true;
     } catch (error) {
-        // res.status(401).json({ message: 'Token expired or invalid' });
         res.locals.isAuthenticated = false;
     }
     return next();

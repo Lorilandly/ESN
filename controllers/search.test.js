@@ -184,23 +184,23 @@ describe('Test search rules for PrivateChatSearchContext', () => {
     const searchContext = new PrivateChatSearchContext();
     test('has search result', async () => {
         const result = await searchContext.search('private', 1, 2);
+        const msg = new MessageModel(
+            undefined,
+            undefined,
+            'test private message',
+            new Date(1).toLocaleString(),
+            null,
+            undefined,
+        );
+        msg.sender = 'testUser';
         const expectedResult = {
-            messages: [
-                {
-                    body: 'test private message',
-                    read_status: undefined,
-                    receiver_id: undefined,
-                    sender: 'testUser',
-                    sender_id: undefined,
-                    status: null,
-                    time: new Date(1).toLocaleString(),
-                },
-            ],
+            messages: [msg],
+            type: 'message',
         };
         expect(result).toEqual(expectedResult);
     });
     test('no search result', async () => {
-        const expectedResult = { messages: [] };
+        const expectedResult = { messages: [], type: 'message' };
         const result = await searchContext.search('randomMessage', 1, 2);
         expect(result).toEqual(expectedResult);
     });

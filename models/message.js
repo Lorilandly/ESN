@@ -160,7 +160,7 @@ class MessageModel {
         const terms = query.split(' ');
         const whereClauses = terms
             .map((term) => `m.body ILIKE '%${term}%'`)
-            .join(' OR ');
+            .join(' AND ');
         const sqlQuery = searchPublicSQL.replace('$99', whereClauses);
         return MessageModel.dbPoolInstance
             .query(sqlQuery)
@@ -180,7 +180,7 @@ class MessageModel {
         const terms = query.split(' ');
         const whereClauses = terms
             .map((term) => `m.body ILIKE '%${term}%'`)
-            .join(' OR ');
+            .join(' AND ');
         const sqlQuery = searchPrivateSQL.replace('$99', whereClauses);
         return MessageModel.dbPoolInstance
             .query(sqlQuery, [userId0, userId1])

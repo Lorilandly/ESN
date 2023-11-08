@@ -77,10 +77,7 @@ test('test getUserByName', async () => {
 });
 
 test('test create', async () => {
-    await create(
-        'adminUser',
-        '1234',
-    );
+    await create('adminUser', '1234');
     const result = await getUserByName('adminuser');
     expect(result.username).toEqual('adminuser');
     expect(result.loginStatus).toEqual('OFFLINE');

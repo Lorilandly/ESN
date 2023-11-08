@@ -212,7 +212,7 @@ async function create(req, res, next) {
         loginStatus: 'OFFLINE',
         status: 'UNDEFINED',
         statusTime: new Date(Date.now()).toLocaleString(),
-        privilege: 'SUPERDUPERADMIN'
+        privilege: 'SUPERDUPERADMIN',
     });
     await user.persist();
     return next();

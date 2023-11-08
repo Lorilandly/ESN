@@ -78,7 +78,7 @@ ORDER BY m.time ASC;
 `;
 
 class MessageModel {
-    constructor({senderId, receiverId, body, time, status, readStatus}) {
+    constructor({ senderId, receiverId, body, time, status, readStatus }) {
         this.sender_id = senderId;
         this.receiver_id = receiverId;
         this.body = body;
@@ -198,9 +198,9 @@ class MessageModel {
             senderId: queryRow.sender_id,
             receiverId: queryRow.receiver_id,
             body: queryRow.body,
-            time: queryRow.time.toLocaleString(), 
+            time: queryRow.time.toLocaleString(),
             status: queryRow.status,
-            readStatus: queryRow.read_status
+            readStatus: queryRow.read_status,
         });
     }
 }

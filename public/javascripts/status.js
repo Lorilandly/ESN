@@ -49,7 +49,9 @@ function createStatusElement(username, loginStatus) {
     statusElement.setAttribute('id', `user-status-${username}`);
     statusElement.setAttribute(
         'class',
-        loginStatus === 'ONLINE' ? 'user-list-body-element-status-online' : 'user-list-body-element-status-offline'
+        loginStatus === 'ONLINE'
+            ? 'user-list-body-element-status-online'
+            : 'user-list-body-element-status-offline',
     );
     statusElement.textContent = loginStatus;
     return statusElement;

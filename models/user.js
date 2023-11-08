@@ -77,7 +77,15 @@ ORDER BY
  * TODO: have a Model interface
  */
 class UserModel {
-    constructor({ username, passwordHash, salt, loginStatus, status, statusTime, privilege }) {
+    constructor({
+        username,
+        passwordHash,
+        salt,
+        loginStatus,
+        status,
+        statusTime,
+        privilege,
+    }) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.salt = salt;

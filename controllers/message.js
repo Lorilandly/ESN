@@ -23,7 +23,7 @@ async function createMessage(req, res, next) {
         body: body,
         time: time,
         status: status,
-        readStatus: readStatus
+        readStatus: readStatus,
     });
     await message.persist();
 

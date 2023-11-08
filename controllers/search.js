@@ -214,4 +214,11 @@ class PrivateChatSearchContext extends SearchContext {
 
 class AnnouncementSearchContext extends SearchContext {}
 
-export default searchContextFactory;
+export {
+    searchContextFactory,
+    SearchContext,
+    CitizenNameSearchContext,
+    CitizenStatusSearchContext,
+    PublicWallSearchContext,
+    PrivateChatSearchContext,
+};

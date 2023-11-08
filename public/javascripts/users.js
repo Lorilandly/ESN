@@ -37,22 +37,6 @@ function getCurrentUser() {
 }
 
 $(document).ready(() => {
-    // Capture form submission event
-    $('#logout-form').submit((event) => {
-        event.preventDefault();
-        $.ajax('/users/logout', {
-            method: 'PUT',
-            datatype: 'json',
-            data: { type: 'logout' },
-            success: () => {
-                location.href = '/';
-            },
-            error: (res) => {
-                console.error('Login error:', res);
-            },
-        });
-    });
-
     // Set Search Bar Title to Search Citizens
     $('#searchModalLabel').html('Search Citizens');
     setSearchType('citizen');

@@ -24,51 +24,51 @@ beforeAll(async () => {
     } catch (err) {
         console.error(err);
     }
-    const user = new UserModel(
-        'testUser',
-        null,
-        null,
-        'OFFLINE',
-        'UNDEFINED',
-        null,
-        null,
-    );
+    const user = new UserModel({
+        username: 'testUser',
+        passwordHash: null,
+        salt: null,
+        loginStatus: 'OFFLINE',
+        status: 'UNDEFINED',
+        statusTime: null,
+        privilege: null,
+    });
     await user.persist();
-    await new UserModel(
-        'otherUser0',
-        null,
-        null,
-        'OFFLINE',
-        'OK',
-        null,
-        null,
-    ).persist();
-    await new UserModel(
-        'otherUser1',
-        null,
-        null,
-        'ONLINE',
-        'OK',
-        null,
-        null,
-    ).persist();
-    await new UserModel(
-        'otherUser2',
-        null,
-        null,
-        'OFFLINE',
-        'OK',
-        null,
-        null,
-    ).persist();
-    await new MessageModel(
-        1,
-        0,
-        'this is a test message',
-        new Date(),
-        null,
-        null,
-    ).persist();
+    await new UserModel({
+        username: 'otherUser0',
+        passwordHash: null,
+        salt: null,
+        loginStatus: 'OFFLINE',
+        status: 'OK',
+        statusTime: null,
+        privilege: null,
+    }).persist();
+    await new UserModel({
+        username: 'otherUser1',
+        passwordHash: null,
+        salt: null,
+        loginStatus: 'ONLINE',
+        status: 'OK',
+        statusTime: null,
+        privilege: null,
+    }).persist();
+    await new UserModel({
+        username: 'otherUser2',
+        passwordHash: null,
+        salt: null,
+        loginStatus: 'OFFLINE',
+        status: 'OK',
+        statusTime: null,
+        privilege: null,
+    }).persist();
+    await new MessageModel({
+        senderId: 1,
+        receiverId: 0,
+        body: 'this is a test message',
+        time: new Date(),
+        status: null,
+        readStatus: null,
+    }).persist();
     passport.use('jwt', new MockStrategy({ user }));
 });
 

@@ -29,57 +29,57 @@ beforeAll(async () => {
         console.error(err);
     }
 
-    const user1 = new UserModel(
-        'testUser',
-        null,
-        null,
-        'ONLINE',
-        'OK',
-        null,
-        null,
-    );
+    const user1 = new UserModel({
+        username: 'testUser',
+        passwordHash: null,
+        salt: null,
+        loginStatus: 'ONLINE',
+        status: 'OK',
+        statusTime: null,
+        privilege: null,
+    });
     await user1.persist();
     passport.use('jwt', new MockStrategy({ user1 }));
 
-    const user2 = new UserModel(
-        'testUser2',
-        null,
-        null,
-        'ONLINE',
-        'OK',
-        null,
-        null,
-    );
+    const user2 = new UserModel({
+        username: 'testUser2',
+        passwordHash: null,
+        salt: null,
+        loginStatus: 'ONLINE',
+        status: 'OK',
+        statusTime: null,
+        privilege: null,
+    });
     await user2.persist();
 
-    const publicMessage = new MessageModel(
-        1,
-        0,
-        'test public message',
-        new Date(1),
-        null,
-        null,
-    );
+    const publicMessage = new MessageModel({
+        senderId: 1,
+        receiverId: 0,
+        body: 'test public message',
+        time: new Date(1),
+        status: null,
+        readStatus: null,
+    });
     await publicMessage.persist();
 
-    const privateMessage = new MessageModel(
-        1,
-        2,
-        'test old private message',
-        new Date(1),
-        null,
-        'READ',
-    );
+    const privateMessage = new MessageModel({
+            senderId: 1,
+            receiverId: 2,
+            body: 'test old private message',
+            time: new Date(1),
+            status: null,
+            readStatus: 'READ',
+        });
     await privateMessage.persist();
 
-    const privateNewMessage = new MessageModel(
-        1,
-        2,
-        'test new private message',
-        new Date(2),
-        null,
-        'UNREAD',
-    );
+    const privateNewMessage = new MessageModel({
+            senderId: 1,
+            receiverId: 2,
+            body: 'test new private message',
+            time: new Date(2),
+            status: null,
+            readStatus: 'UNREAD',
+        });
     await privateNewMessage.persist();
 });
 

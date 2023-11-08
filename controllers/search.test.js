@@ -31,36 +31,36 @@ beforeAll(async () => {
         console.error(err);
     }
 
-    const user = new UserModel(
-        'testUser',
-        null,
-        null,
-        'ONLINE',
-        'OK',
-        null,
-        null,
-    );
+    const user = new UserModel({
+        username: 'testUser',
+        passwordHash: null,
+        salt: null,
+        loginStatus: 'ONLINE',
+        status: 'OK',
+        statusTime: null,
+        privilege: null,
+    });
     await user.persist();
     passport.use('jwt', new MockStrategy({ user }));
 
-    const publicMessage = new MessageModel(
-        1,
-        0,
-        'test public message',
-        new Date(1),
-        null,
-        null,
-    );
+    const publicMessage = new MessageModel({
+            senderId: 1,
+            receiverId: 0,
+            body: 'test public message',
+            time: new Date(1),
+            status: null,
+            readStatus: null,
+        });
     await publicMessage.persist();
 
-    const privateMessage = new MessageModel(
-        1,
-        2,
-        'test private message',
-        new Date(1),
-        null,
-        null,
-    );
+    const privateMessage = new MessageModel({
+            senderId: 1,
+            receiverId: 2,
+            body: 'test private message',
+            time: new Date(1),
+            status: null,
+            readStatus: null,
+        });
     await privateMessage.persist();
 });
 
@@ -108,15 +108,15 @@ describe('Test search rules for CitizenNameSearchContext', () => {
         const result = await searchContext.search('testUser');
         const expectedResult = {
             users: [
-                new UserModel(
-                    'testUser',
-                    null,
-                    null,
-                    'ONLINE',
-                    'OK',
-                    null,
-                    null,
-                ),
+                new UserModel({
+                    username: 'testUser',
+                    passwordHash: null,
+                    salt: null,
+                    loginStatus: 'ONLINE',
+                    status: 'OK',
+                    statusTime: null,
+                    privilege: null,
+                }),
             ],
         };
         expect(result).toEqual(expectedResult);
@@ -134,15 +134,15 @@ describe('Test search rules for CitizenStatusSearchContext', () => {
         const result = await searchContext.search('OK');
         const expectedResult = {
             users: [
-                new UserModel(
-                    'testUser',
-                    null,
-                    null,
-                    'ONLINE',
-                    'OK',
-                    null,
-                    null,
-                ),
+                new UserModel({
+                    username: 'testUser',
+                    passwordHash: null,
+                    salt: null,
+                    loginStatus: 'ONLINE',
+                    status: 'OK',
+                    statusTime: null,
+                    privilege: null,
+                }),
             ],
         };
         expect(result).toEqual(expectedResult);
@@ -184,14 +184,14 @@ describe('Test search rules for PrivateChatSearchContext', () => {
     const searchContext = new PrivateChatSearchContext();
     test('has search result', async () => {
         const result = await searchContext.search('private', 1, 2);
-        const msg = new MessageModel(
-            undefined,
-            undefined,
-            'test private message',
-            new Date(1).toLocaleString(),
-            null,
-            undefined,
-        );
+        const msg = new MessageModel({
+                senderId: undefined,
+                receiverId: undefined,
+                body: 'test private message',
+                time: new Date(1).toLocaleString(),
+                status: null,
+                readStatus: undefined,
+            });
         msg.sender = 'testUser';
         const expectedResult = {
             messages: [msg],

@@ -23,15 +23,15 @@ beforeAll(async () => {
     } catch (err) {
         console.error(err);
     }
-    const user = new UserModel(
-        'testUser',
-        null,
-        null,
-        'ONLINE',
-        'OK',
-        null,
-        null,
-    );
+    const user = new UserModel({
+        username: 'testUser',
+        passwordHash: null,
+        salt: null,
+        loginStatus: 'ONLINE',
+        status: 'OK',
+        statusTime: null,
+        privilege: null,
+    });
     await user.persist();
     passport.use('jwt', new MockStrategy({ user }));
 });

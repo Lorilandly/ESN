@@ -24,34 +24,34 @@ beforeAll(async () => {
     } catch (err) {
         console.error(err);
     }
-    const user = new UserModel(
-        'testUser',
-        null,
-        null,
-        'ONLINE',
-        'OK',
-        null,
-        null,
-    );
+    const user = new UserModel({
+        username: 'testUser',
+        passwordHash: null,
+        salt: null,
+        loginStatus: 'ONLINE',
+        status: 'OK',
+        statusTime: null,
+        privilege: null,
+    });
     user.id = 1;
     await user.persist();
-    await new UserModel(
-        'otherUser0',
-        null,
-        null,
-        'OFFLINE',
-        'OK',
-        null,
-        null,
-    ).persist();
-    await new MessageModel(
-        1,
-        2,
-        'this is a test message',
-        new Date(),
-        null,
-        'UNREAD',
-    ).persist();
+    await new UserModel({
+        username: 'otherUser0',
+        passwordHash: null,
+        salt: null,
+        loginStatus: 'OFFLINE',
+        status: 'OK',
+        statusTime: null,
+        privilege: null,
+    }).persist();
+    await new MessageModel({
+        senderId: 1,
+        receiverId: 2,
+        body: 'this is a test message',
+        time: new Date(),
+        status: null,
+        readStatus: 'UNREAD',
+    }).persist();
     passport.use('jwt', new MockStrategy({ user }));
 });
 

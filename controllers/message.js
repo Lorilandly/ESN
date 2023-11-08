@@ -17,14 +17,14 @@ async function createMessage(req, res, next) {
     const userId = req.user.id;
     const receiverId = req.body.receiverId ? parseInt(req.body.receiverId) : 0;
     const readStatus = 'UNREAD';
-    const message = new MessageModel(
-        userId,
-        receiverId,
-        body,
-        time,
-        status,
-        readStatus,
-    );
+    const message = new MessageModel({
+        senderId: userId,
+        receiverId: receiverId,
+        body: body,
+        time: time,
+        status: status,
+        readStatus: readStatus,
+    });
     await message.persist();
 
     try {

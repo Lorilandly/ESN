@@ -29,15 +29,15 @@ beforeAll(async () => {
         console.error(err);
     }
 
-    const user1 = new UserModel(
-        'testuser',
-        null,
-        null,
-        'OFFLINE',
-        'OK',
-        null,
-        null,
-    );
+    const user1 = new UserModel({
+        username: 'testUser',
+        passwordHash: null,
+        salt: null,
+        loginStatus: 'OFFLINE',
+        status: 'OK',
+        statusTime: null,
+        privilege: null,
+    });
     await user1.persist();
     passport.use('jwt', new MockStrategy({ user1 }));
 });

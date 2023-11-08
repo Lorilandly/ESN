@@ -77,7 +77,7 @@ ORDER BY
  * TODO: have a Model interface
  */
 class UserModel {
-    constructor(
+    constructor({
         username,
         passwordHash,
         salt,
@@ -85,7 +85,7 @@ class UserModel {
         status,
         statusTime,
         privilege,
-    ) {
+    }) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.salt = salt;
@@ -160,15 +160,17 @@ class UserModel {
     }
 
     static queryToModel(queryRow) {
-        return new UserModel(
-            queryRow.username,
-            null, // use a placeholder for security reason.
-            null,
-            queryRow.login_status,
-            queryRow.status,
-            queryRow.status_time,
-            queryRow.privilege,
-        );
+        const params = {
+            username: queryRow.username,
+            passwordHash: null,
+            salt: null,
+            loginStatus: queryRow.login_status,
+            status: queryRow.status,
+            statusTime: queryRow.status_time,
+            privilege: queryRow.privilege,
+        };
+
+        return new UserModel(params);
     }
 
     static async getAllStatuses() {

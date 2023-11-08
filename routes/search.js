@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from 'passport';
-import searchContextFactory from '../controllers/search.js';
+import { searchContextFactory } from '../controllers/search.js';
 
 const router = express.Router();
 router.use(passport.authenticate('jwt', { session: false }));

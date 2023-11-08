@@ -142,18 +142,18 @@ async function deauthenticateUser(req, res, next) {
     return next();
 }
 
-async function setJwtCookie(req, res, next) {
-    const username = req.body.username.toLowerCase();
+async function setJwtCookie(username, res) {
     const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '1h',
     });
-    await UserModel.updateLoginStatus(username, 'ONLINE');
-    res.cookie('jwtToken', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'Strict',
+    return UserModel.updateLoginStatus(username, 'ONLINE').then(() => {
+        res.cookie('jwtToken', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict',
+        });
+        return res;
     });
-    return next();
 }
 
 async function checkUserAuthenticated(req, res, next) {

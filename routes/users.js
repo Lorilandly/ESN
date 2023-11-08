@@ -26,15 +26,17 @@ router.get(
 );
 
 /* POST new user */
-router.post(
-    '/',
-    await validateNewCredentials,
-    await create,
-    setJwtCookie,
-    (req, res) => {
-        res.status(201).json({});
-    },
-);
+router.post('/', await validateNewCredentials, (req, res) => {
+    let { username, password } = req.body;
+    username = username.toLowerCase();
+    return create(username, password)
+        .then(() => setJwtCookie(username, res))
+        .then((res) => res.status(201).json({}))
+        .catch((err) => {
+            console.error(err);
+            return res.sendStatus(500);
+        });
+});
 
 router.put(
     '/status',
@@ -57,9 +59,13 @@ router.get(
 router.put(
     '/login',
     passport.authenticate('local', { session: false }),
-    setJwtCookie,
     (req, res) => {
-        return res.status(200).json({});
+        return setJwtCookie(req.user.username, res)
+            .then((res) => res.status(200).json({}))
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(500);
+            });
     },
 );
 

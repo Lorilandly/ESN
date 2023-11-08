@@ -4,8 +4,7 @@ import UserModel from '../models/user.js';
 /*
  * Save user to db with generated hashedPassword and salt
  */
-async function create(req, res, next) {
-    const { username, password } = req.body;
+async function create(username, password) {
     const salt = crypto.randomBytes(16);
     const passwordHash = crypto.pbkdf2Sync(
         password,
@@ -23,8 +22,7 @@ async function create(req, res, next) {
         new Date(Date.now()).toLocaleString(),
         'SUPERDUPERADMIN',
     );
-    await user.persist();
-    return next();
+    return user.persist();
 }
 
 async function getAllUsers() {

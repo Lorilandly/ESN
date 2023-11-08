@@ -78,11 +78,8 @@ test('test getUserByName', async () => {
 
 test('test create', async () => {
     await create(
-        {
-            body: { username: 'adminUser', password: '1234' },
-        },
-        null,
-        () => {},
+        'adminUser',
+        '1234',
     );
     const result = await getUserByName('adminuser');
     expect(result.username).toEqual('adminuser');

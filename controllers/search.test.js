@@ -211,7 +211,6 @@ describe('Test search rules for PrivateChatSearchContext', () => {
             expect(err).toEqual(new Error('User ID not supplied!'));
         }
     });
-    test('search criteria is status', async () => {});
 });
 
 afterAll(async () => {

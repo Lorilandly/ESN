@@ -204,7 +204,11 @@ async function searchInformation() {
                     showChatSearchResults(response);
                     break;
                 case 'private':
-                    showChatSearchResults(response);
+                    if (response.type === 'status') {
+                        showChatSearchStatus(response);
+                    } else {
+                        showChatSearchResults(response);
+                    }
                     break;
             }
         },

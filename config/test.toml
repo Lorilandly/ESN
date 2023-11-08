@@ -7,19 +7,11 @@ port = 3000 # the port used by the service
 host = "localhost"   # the database hosting address
 port = 5432          # the database port
 name = "sb2-project"
-client = ""
 
 [performance-test-db]
 host = "localhost"               # the database hosting address
 port = 5432                      # the database port
-name = "sb2-project-performance"
-client = ""
-
-[share-status-db]
-host = "localhost"               # the database hosting address
-port = 5432                      # the database port
-name = "sb2ProjectShareStatus"
-client = ""
+name = "sb2ProjectPerformance"
 
 [auth] # auth service config data
 reservedUsernamesRegistry = "config/reserved_usernames.txt"

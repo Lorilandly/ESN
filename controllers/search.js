@@ -1,5 +1,6 @@
 import UserModel from '../models/user.js';
 import MessageModel from '../models/message.js';
+import StatusModel from '../models/status.js';
 
 // use a factory
 function searchContextFactory(context, criteria) {
@@ -193,11 +194,21 @@ class PrivateChatSearchContext extends SearchContext {
         if (!input) {
             return new Error('No search input provided!');
         }
-        return MessageModel.searchPrivate(input, userId0, userId1).then(
-            (response) => ({
-                messages: response,
-            }),
-        );
+        if (input.toLowerCase() === 'status') {
+            return StatusModel.getLatestUserStatusChange(userId0).then(
+                (response) => ({
+                    type: 'status',
+                    messages: response,
+                }),
+            );
+        } else {
+            return MessageModel.searchPrivate(input, userId0, userId1).then(
+                (response) => ({
+                    type: 'message',
+                    messages: response,
+                }),
+            );
+        }
     }
 }
 

@@ -38,7 +38,7 @@ router.post(
     },
 );
 
-router.post(
+router.put(
     '/status',
     await passport.authenticate('jwt', { session: false }),
     updateUserStatus,
@@ -52,7 +52,7 @@ router.get(
     '/status',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
-        return res.status(200).json({ status: req.user.currentStatus });
+        return res.status(200).json({ status: req.user.status });
     },
 );
 

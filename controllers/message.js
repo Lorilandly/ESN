@@ -27,23 +27,25 @@ async function createMessage(req, res, next) {
     });
     await message.persist();
 
-    if (receiverId === 0) {
-        ioInstance.emit('create public message', {
-            username,
-            time,
-            status,
-            body,
-        });
-    } else {
-        ioInstance.emit('create private message', {
-            username,
-            time,
-            status,
-            body,
-            userId,
-            receiverId,
-        });
-    }
+    try {
+        if (receiverId === 0) {
+            ioInstance.emit('create public message', {
+                username,
+                time,
+                status,
+                body,
+            });
+        } else {
+            ioInstance.emit('create private message', {
+                username,
+                time,
+                status,
+                body,
+                userId,
+                receiverId,
+            });
+        }
+    } catch {}
 
     return next();
 }

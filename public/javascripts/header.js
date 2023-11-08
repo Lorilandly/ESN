@@ -274,6 +274,24 @@ function showChatSearchResults(response) {
     }
 }
 
+function showChatSearchStatus(response) {
+    $('#search-result').empty();
+    const messages = response.messages;
+    if (messages && messages.length > 0) {
+        let messageHtml = '';
+        messages.forEach((message) => {
+            messageHtml += `
+                <div class="search-message">
+                    <div class="search-message-title">
+                        <span class="search-message-sender-name">${message.time}</span>
+                        <span class="message-status">${message.status}</span>
+                    </div>
+                </div>`;
+        });
+        $('#search-result').append(messageHtml);
+    }
+}
+
 window.addEventListener('beforeunload', (event) => {
     $.ajax('/users/logout', {
         method: 'PUT',

@@ -1,17 +1,4 @@
-function getCurrentUser() {
-    return new Promise((resolve, reject) => {
-        $.ajax('/users/current', {
-            method: 'GET',
-            datatype: 'json',
-            success: (response) => {
-                resolve(response);
-            },
-            error: (error) => {
-                reject(error);
-            },
-        });
-    });
-}
+/* global getCurrentUser */
 
 $(document).ready(async function () {
     // find the offcanvas-username element

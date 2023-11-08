@@ -233,4 +233,35 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
+    overflow-y: scroll;
+}
+
+.message-alert{
+    display: flex;
+    flex-direction: column;
+}
+
+.message-alert .message-title{
+    display: flex;
+    flex-direction: column;
+}
+
+.message-alert .message-title .message-sender-name{
+    text-align: left;
+    font-size: 1.2rem;
+}
+
+.message-alert .message-title .message-time{
+    text-align: left;
+    font-size: 0.8rem;
+}
+
+.message-alert .message-title .message-status{
+    text-align: left;
+    font-size: 0.8rem;
+}
+
+.message-alert .message-body{
+    text-align: left;
+    font-size: 1rem;
 }

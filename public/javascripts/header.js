@@ -51,6 +51,7 @@ $(document).ready(() => {
         success: (response) => {
             const messages = response.messages;
             if (messages && messages.length) {
+                showNewMessageWarning(true);
                 const groupedMessages = {};
                 // store reciever id
                 const receiverId = messages[0].receiver_id;
@@ -68,20 +69,26 @@ $(document).ready(() => {
                     let messageHtml = '';
                     groupedMessages[sender].forEach((message) => {
                         messageHtml += `
-                        <div class="message">
-                            <form class = "message-form" action = '/privateChat/${senderId}' method = 'GET'>
-                                <button type="submit" class="btn btn-primary" onclick="clearMessage(this)">
-                                    <div class="message-title">
-                                        <span class="message-sender-name">${message.sender_name}</span>
-                                        <span class="message-time">${message.time}</span>
-                                        <span class="message-status">${message.status}</span>
-                                    </div>
-                                    <div class="message-body">
-                                        <span>${message.body}</span>
-                                    </div>
-                                </button>
-                            </form>
-                        </div>`;
+                        <form class = "message-form message-alert" action = '/privateChat/${senderId}' method = 'GET'>
+                            <button type="submit" class="btn btn-${getStatusColor(
+                                message.status,
+                            )}" onclick="clearMessage(this)">
+                                <div class="message-title">
+                                    <span class="message-sender-name">${
+                                        message.sender_name
+                                    }</span>
+                                    <span class="message-time">${
+                                        message.time
+                                    }</span>
+                                    <span class="message-status">${
+                                        message.status
+                                    }</span>
+                                </div>
+                                <div class="message-body">
+                                    <span>${message.body}</span>
+                                </div>
+                            </button>
+                        </form>`;
                     });
                     $('#alert-container').append(messageHtml);
                 }
@@ -98,35 +105,65 @@ $(document).ready(() => {
             // Parsing issue so use == instead of ===, fix later!
             if (currentId === receiverId) {
                 shakeIndicator();
+                showNewMessageWarning(true);
                 // append message to alert container
                 const messageHtml = `
-                <div class="message">
-                    <form class = "message-form" action = '/privateChat/${senderId}' method = 'GET'>
-                        <button type="submit" class="btn btn-primary" onclick="clearMessage(this)">
-                            <div class="message-title">
-                                <span class="message-sender-name">${username}</span>
-                                <span class="message-time">${time}</span>
-                                <span class="message-status">${status}</span>
-                            </div>
-                            <div class="message-body">
-                                <span>${body}</span>
-                            </div>
-                        </button>
-                    </form>
-                </div>`;
+                <form class = "message-form message-alert" action = '/privateChat/${senderId}' method = 'GET'>
+                    <button type="submit" class="btn btn-${getStatusColor(
+                        status,
+                    )}" onclick="clearMessage(this)">
+                        <div class="message-title">
+                            <span class="message-sender-name">${username}</span>
+                            <span class="message-time">${time}</span>
+                            <span class="message-status">${status}</span>
+                        </div>
+                        <div class="message-body">
+                            <span>${body}</span>
+                        </div>
+                    </button>
+                </form>`;
                 $('#alert-container').append(messageHtml);
             }
         },
     );
 
     const offcanvasElement = document.getElementById('offcanvasAlert');
-
-    offcanvasElement.addEventListener('hidden.bs.offcanvas', function (event) {
+    offcanvasElement.addEventListener('hidden.bs.offcanvas', function () {
         // remove all the messages
         $('#alert-container').empty();
         changeReadStatus();
+        showNewMessageWarning(false);
     });
 });
+
+function getStatusColor(status) {
+    let color = '';
+    if (status === 'OK') {
+        color = 'success';
+    } else if (status === 'EMERGENCY') {
+        color = 'danger';
+    } else if (status === 'HELP') {
+        color = 'warning';
+    } else {
+        color = 'info';
+    }
+    return color;
+}
+
+function showNewMessageWarning(state) {
+    // get element notification-icon
+    const indicator = document.getElementById('notification-icon');
+    // remove text-light class
+    if (state) {
+        indicator.classList.remove('text-light');
+        // add text-warning class
+        indicator.classList.add('text-warning');
+    } else {
+        indicator.classList.remove('text-warning');
+        // add text-light class
+        indicator.classList.add('text-light');
+    }
+}
 
 async function searchInformation() {
     const searchType = localStorage.getItem('searchType');
@@ -167,7 +204,11 @@ async function searchInformation() {
                     showChatSearchResults(response);
                     break;
                 case 'private':
-                    showChatSearchResults(response);
+                    if (response.type === 'status') {
+                        showChatSearchStatus(response);
+                    } else {
+                        showChatSearchResults(response);
+                    }
                     break;
             }
         },
@@ -232,3 +273,11 @@ function showChatSearchResults(response) {
         $('#search-result').append(messageHtml);
     }
 }
+
+window.addEventListener('beforeunload', (event) => {
+    $.ajax('/users/logout', {
+        method: 'PUT',
+        datatype: 'json',
+        data: { type: 'close' },
+    });
+});

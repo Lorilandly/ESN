@@ -1,0 +1,21 @@
+@startuml
+
+class ReportFloodBoundary {
+    accessFloodReportPage()
+    displayFloodReports()
+    createFloodReport()
+    displayFloodReportForm()
+    submitFloodReport(location, description)
+}
+
+class ReportFloodController {
+    createFloodReport(location, description)
+}
+entity FloodReport {
+    create(location, description, timestamp)
+}
+
+ReportFloodBoundary "1" -- "1" ReportFloodController
+ReportFloodController "1" -- "0..*" FloodReport
+
+@enduml

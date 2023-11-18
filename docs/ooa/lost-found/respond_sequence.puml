@@ -1,0 +1,48 @@
+@startuml postL&A
+
+actor Citizen as c
+boundary postView as pv
+control postController as pc
+entity ":Post" as p
+boundary "other : postBoundary" as o
+
+
+c -> pv : openPost()
+activate pv
+pv -> pc : getPost()
+activate pc 
+pc -> p : getTitle
+activate p
+pc -> p : getBody
+pc -> p : getSender
+pc -> p : getTimestamp
+deactivate p
+pc --> pv : post info
+
+
+pv -> pv : displayPost()
+activate pv
+deactivate pv
+
+c -> pv : replyPost()
+pv -> pv : displayReplyView()
+activate pv
+deactivate pv
+
+c -> pv : fillReplyForm(reply)
+pv -> pc : createReply(reply)
+
+pc -> p : createReply(reply, sender, timestamp)
+activate p
+deactivate p
+
+pc -> pv : updatePost(reply, sender, timestamp)
+deactivate pv
+pc -> o : updatePost(reply, sender, timestamp)
+deactivate pc
+activate o
+deactivate o
+
+
+
+@enduml

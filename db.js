@@ -2,6 +2,8 @@ import pg from 'pg';
 import UserModel from './models/user.js';
 import MessageModel from './models/message.js';
 import StatusModel from './models/status.js';
+import PostModel from './models/post.js';
+import ReplyModel from './models/reply.js';
 
 class DatabaseManager {
     static instance;
@@ -32,6 +34,8 @@ class DatabaseManager {
         await UserModel.initModel(db);
         await MessageModel.initModel(db);
         await StatusModel.initModel(db);
+        await PostModel.initModel(db);
+        await ReplyModel.initModel(db);
     }
 
     /* Connect to Postgres db and initalize a connection pool */

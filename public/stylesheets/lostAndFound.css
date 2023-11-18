@@ -19,14 +19,14 @@
     font-weight: bold;
 }
 
-.my-lost-and-found{
+.lost-and-found{
     left: 0;
     position: absolute;
     margin-left: 10px;
     text-align: center;
 }
 
-.my-lost-and-found .my-lost-and-found-text{
+.lost-and-found .lost-and-found-text{
     color: white;
     cursor: pointer;
     border: none;
@@ -44,14 +44,19 @@
     background-color: #eeeeee;
 }
 
-.post .bi{
-    font-size: 20px;
-    cursor: pointer;
-    position: absolute;
-    right: 20px;
+.post .post-title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
 }
 
-.post .post-title{
+.post .post-title .bi{
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.post .post-title .post-title-text{
     font-size: 20px;
     font-weight: bold;
 }
@@ -88,9 +93,21 @@ button{
 }
 
 .post .resolved{
-    background-color: red;
+    background-color: green;
     color: white;
     border-radius: 5px;
     width: fit-content;
     padding: 5px;
+}
+
+.resolve-div-wrap{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.resolve-div-wrap .bi{
+    cursor: pointer;
+    font-size: 20px;
 }

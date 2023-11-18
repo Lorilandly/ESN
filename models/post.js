@@ -35,7 +35,7 @@ const getMyPosts = `
     FROM posts
     JOIN users ON posts.sender_id = users.id
     WHERE posts.sender_id = $1
-    ORDER BY time ASC;
+    ORDER BY resolved ASC, time ASC;
 `;
 
 const resolvePost = `

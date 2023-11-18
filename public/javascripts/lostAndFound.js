@@ -1,19 +1,30 @@
 /* global socket */
 
+let onUnresolvedPage = true;
+
 $(document).ready(async () => {
     const userID = (await getCurrentUser())["id"];
     document.getElementById('search-bar').remove();
     const myLostAndFound = document.createElement('div');
-    myLostAndFound.className = 'my-lost-and-found';
+    myLostAndFound.className = 'lost-and-found';
+    myLostAndFound.id = 'my-lost-and-found';
     myLostAndFound.innerHTML = `
-        <button class="my-lost-and-found-text" onclick="openMyPosts(${userID})" >My Posts</button>
+        <button class="lost-and-found-text" onclick="openMyPosts(${userID})" >My Posts</button>
     `;
     document.getElementsByClassName('header')[0].appendChild(myLostAndFound);
     document.getElementsByClassName('header-text')[0].innerHTML = 'Unresolved Posts';
     getAllUnresolvedPosts();
 
     socket.on('create new lost and found post', () => {
-        refreshPostList();
+        if (onUnresolvedPage){
+            refreshPostList();
+        }
+    })
+
+    socket.on('resolve lost and found post', ({userId}) => {
+        if (userID != userId && onUnresolvedPage){
+            refreshPostList();
+        }
     })
 })
 
@@ -29,11 +40,13 @@ function getAllUnresolvedPosts(){
                 postDiv.className = 'post';
                 // postDiv.onclick = () => openPost(post.id);
                 postDiv.innerHTML = `
-                    <form action="/lostAndFound/post/${post.id}" method="GET">
+                    <div class="post-title">
+                        <span class="post-title-text">${post.title}</span> 
+                        <form action="/lostAndFound/post/${post.id}" method="GET">
                         <button class="bi bi-arrow-right-short" type="submit">
                         </button>
                     </form>
-                    <span class="post-title">${post.title}</span>
+                    </div>
                     <span class="post-time">${post.time}</span>
                     <span class="post-sender">${post.sender_name}</span>
                 `;
@@ -114,7 +127,39 @@ async function refreshMyPostList(){
     openMyPosts(userID);
 }
 
+async function backToUnresolved(){
+    onUnresolvedPage = true;
+    const userID = (await getCurrentUser())["id"];
+    document.getElementsByClassName('header-text')[0].innerHTML = 'Unresolved Posts';
+    // remove my-lost-and-found button
+    document.getElementById('lost-and-found').remove();
+    const myLostAndFound = document.createElement('div');
+    myLostAndFound.className = 'lost-and-found';
+    myLostAndFound.id = 'my-lost-and-found';
+    myLostAndFound.innerHTML = `
+        <button class="lost-and-found-text" onclick="openMyPosts(${userID})" >My Posts</button>
+    `;
+    document.getElementsByClassName('header')[0].appendChild(myLostAndFound);
+    refreshPostList();
+}
+
 function openMyPosts(userID){
+    if (onUnresolvedPage){
+        document.getElementById('my-lost-and-found').remove();
+        document.getElementsByClassName('header-text')[0].innerHTML = 'My Posts';
+    }
+    onUnresolvedPage = false;
+    if (!document.getElementById('lost-and-found')){
+        const unresolved = document.createElement('div');
+        unresolved.className = 'lost-and-found';
+        unresolved.id = "lost-and-found";
+        unresolved.innerHTML = `
+            <button class="bi bi-arrow-left" style="color:white" onclick="backToUnresolved()"></button>
+        `;
+    document.getElementsByClassName('header')[0].appendChild(unresolved);
+    };
+    
+
     $.ajax({
         url: '/lostAndFound/myPosts',
         method: 'GET',
@@ -128,34 +173,33 @@ function openMyPosts(userID){
             posts.forEach(post => {
                 const postDiv = document.createElement('div');
                 postDiv.className = 'post';
-                // postDiv.onclick = () => openPost(post.id);
-                postDiv.innerHTML = `
-                    <form action="/lostAndFound/post/${post.id}" method="GET">
-                        <button class="bi bi-arrow-right-short" type="submit">
-                        </button>
-                    </form>
-                `;
-                let resolvedDiv = document.createElement('button');
-                resolvedDiv.type = 'button';
                 if(post.resolved){
-                    resolvedDiv.className = 'resolved';
-                    resolvedDiv.innerHTML = 'Resolved';
-                    postDiv.appendChild(resolvedDiv);
+                    const resolveDivWrap = document.createElement('div');
+                    resolveDivWrap.className = 'resolve-div-wrap';
+                    resolveDivWrap.innerHTML = `
+                        <button class="resolved" type="button">Resolved</button>
+                        <form action="/lostAndFound/post/${post.id}" method="GET">
+                            <button class="bi bi-arrow-right-short" type="submit">
+                        </button>
+                    `
+                    postDiv.appendChild(resolveDivWrap);
                 }
                 else{
-                    const resolvePostForm = document.createElement('form');
-                    resolvePostForm.action = '/lostAndFound/myPosts/resolve';
-                    resolvePostForm.method = 'POST';
-                    resolvePostForm.innerHTML = `
-                        <input type="hidden" name="postID" value="${post.id}">
-                            <button class="unresolved" type="submit">
-                                Unresolved
-                            </button>
-                    `;
-                    postDiv.appendChild(resolvePostForm);
+                    const resolveDivWrap = document.createElement('div');
+                    resolveDivWrap.className = 'resolve-div-wrap';
+                    resolveDivWrap.innerHTML = `
+                        <button class="unresolved" type="button" onclick = resolvePost(${post.id}) >Unresolved</button>
+                        <form action="/lostAndFound/post/${post.id}" method="GET">
+                            <button class="bi bi-arrow-right-short" type="submit">
+                        </button>
+                    `
+                    postDiv.appendChild(resolveDivWrap);
                 }
                 postDiv.innerHTML += `
-                    <span class="post-title">${post.title}</span>
+                    <div class="post-title">
+                        <span class="post-title-text">${post.title}</span>
+                    </form>
+                    </div>
                     <span class="post-time">${post.time}</span>
                     <span class="post-sender">${post.sender_name}</span>
                 `;
@@ -169,19 +213,18 @@ function openMyPosts(userID){
 }
 
 function resolvePost(postid){
-    console.log(postid);
-    // $.ajax({
-    //     url: '/lostAndFound/myPosts/resolve',
-    //     method: 'POST',
-    //     dataType: 'json',
-    //     data: {
-    //         postID: postid,
-    //     },
-    //     success: () => {
-    //         refreshMyPostList();
-    //     },
-    //     error: (error) => {
-    //         console.error('Failed to fetch messages:', error);
-    //     },
-    // })
+    $.ajax({
+        url: '/lostAndFound/myPosts/resolve',
+        method: 'POST',
+        dataType: 'json',
+        data: {
+            postID: postid,
+        },
+        success: () => {
+            refreshMyPostList();
+        },
+        error: (error) => {
+            console.error('Failed to fetch messages:', error);
+        },
+    })
 }

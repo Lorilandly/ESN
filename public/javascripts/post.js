@@ -13,9 +13,7 @@ $(document).ready(() => {
     getPostInformation();
 
     socket.on("create new reply", ({postID}) => {
-        console.log(postID);
         const thisPostID = parseInt(getPostID());
-        console.log(thisPostID);
         if (postID == thisPostID){
             refreshPost();
         }
@@ -177,8 +175,6 @@ async function createReplyReply(replyID){
     const modalElement = document.getElementById('replyReplyModal');
     const modalInstance = bootstrap.Modal.getInstance(modalElement);
     modalInstance.hide();
-    refreshPost();
-    
 }
 
 function refreshPost(){

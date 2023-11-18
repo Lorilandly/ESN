@@ -38,9 +38,11 @@ async function getMyPosts(userId){
 }
 
 async function resolvePost(req, res, next){
-    const postId = req.query.postID;
+    const postId = req.body.postID;
+    const userId = req.user.id;
     await PostModel.resolvePost(postId);
-    ioInstance.emit('resolve lost and found post');
+    console.log(userId);
+    ioInstance.emit('resolve lost and found post', {userId: userId});
     return next();
 }
 

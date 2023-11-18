@@ -12,6 +12,10 @@ async function createPost(req, res, next){
     const title = req.body.title;
     const message = req.body.message;
 
+    if (title.length === 0 || message.length === 0){
+        return new Error('Post title or message cannot be empty');
+    };
+
     const post = new PostModel({
         senderId: userId,
         title: title,

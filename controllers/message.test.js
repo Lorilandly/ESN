@@ -63,23 +63,23 @@ beforeAll(async () => {
     await publicMessage.persist();
 
     const privateMessage = new MessageModel({
-            senderId: 1,
-            receiverId: 2,
-            body: 'test old private message',
-            time: new Date(1),
-            status: null,
-            readStatus: 'READ',
-        });
+        senderId: 1,
+        receiverId: 2,
+        body: 'test old private message',
+        time: new Date(1),
+        status: null,
+        readStatus: 'READ',
+    });
     await privateMessage.persist();
 
     const privateNewMessage = new MessageModel({
-            senderId: 1,
-            receiverId: 2,
-            body: 'test new private message',
-            time: new Date(2),
-            status: null,
-            readStatus: 'UNREAD',
-        });
+        senderId: 1,
+        receiverId: 2,
+        body: 'test new private message',
+        time: new Date(2),
+        status: null,
+        readStatus: 'UNREAD',
+    });
     await privateNewMessage.persist();
 });
 

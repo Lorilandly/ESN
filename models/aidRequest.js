@@ -6,22 +6,22 @@ CREATE TABLE IF NOT EXISTS aidRequests (
     title TEXT,
     description TEXT,
     priority TEXT,
-    status TEXT,
+    status TEXT
 );
 `;
 
 const insertAidRequest = `
-INSERT INTO aidRequests (creator_id, acceptor_id, title, description, priority, status)
+INSERT INTO aidRequests (title, description, priority, creator_id, acceptor_id, status)
 VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING id;
 `;
 
 const getAllAidRequests = `
-SELECT id, users.username, creator_id, acceptor_id, title, description, priority, status
+SELECT aidRequests.id, users.username, creator_id, acceptor_id, title, description, priority, aidRequests.status
 FROM aidRequests
 JOIN users ON aidRequests.creator_id = users.id
 ORDER BY 
-    CASE status
+    CASE aidRequests.status
         WHEN 'submitted' then 1
         WHEN 'accepted' then 2
     END,
@@ -48,7 +48,7 @@ ORDER BY
 `;
 
 const getAcceptedAidRequests = `
-SELECT id, users.username, creator_id, acceptor_id, title, description, priority, status
+SELECT aidRequests.id, users.username, creator_id, acceptor_id, title, description, priority, aidRequests.status
 FROM aidRequests
 JOIN users ON aidRequests.creator_id = users.id
 WHERE acceptor_id = $1
@@ -61,10 +61,10 @@ ORDER BY
 `;
 
 const getAidRequest = `
-SELECT id, users.username, creator_id, acceptor_id, title, description, priority, status
+SELECT aidRequests.id, users.username, creator_id, acceptor_id, title, description, priority, aidRequests.status
 FROM aidRequests
 JOIN users ON aidRequests.creator_id = users.id
-WHERE id = $1
+WHERE aidRequests.id = $1
 ORDER BY 
     CASE priority
         WHEN 'high' then 1
@@ -142,9 +142,12 @@ class AidRequestModel {
         return AidRequestModel.dbPoolInstance
             .query(getAllAidRequests)
             .then((queryResponse) =>
-                queryResponse.rows.map((row) =>
-                    AidRequestModel.queryToModel(row),
-                ),
+                queryResponse.rows.map((row) => {
+                    const obj = AidRequestModel.queryToModel(row);
+                    obj.creatorName = row.username;
+                    obj.id = row.id;
+                    return obj;
+                }),
             );
     }
 
@@ -152,9 +155,11 @@ class AidRequestModel {
         return AidRequestModel.dbPoolInstance
             .query(getSubmittedAidRequests, [creatorId])
             .then((queryResponse) =>
-                queryResponse.rows.map((row) =>
-                    AidRequestModel.queryToModel(row),
-                ),
+                queryResponse.rows.map((row) => {
+                    const obj = AidRequestModel.queryToModel(row);
+                    obj.id = row.id;
+                    return obj;
+                }),
             );
     }
 
@@ -162,20 +167,29 @@ class AidRequestModel {
         return AidRequestModel.dbPoolInstance
             .query(getAcceptedAidRequests, [acceptorId])
             .then((queryResponse) =>
-                queryResponse.rows.map((row) =>
-                    AidRequestModel.queryToModel(row),
-                ),
+                queryResponse.rows.map((row) => {
+                    const obj = AidRequestModel.queryToModel(row);
+                    obj.creatorName = row.username;
+                    obj.id = row.id;
+                    return obj;
+                }),
             );
     }
 
     static async getAidRequest(aidRequestId) {
         return AidRequestModel.dbPoolInstance
             .query(getAidRequest, [aidRequestId])
-            .then((queryResponse) =>
-                queryResponse.rows.map((row) =>
-                    AidRequestModel.queryToModel(row),
-                ),
-            );
+            .then((queryResponse) => {
+                if (queryResponse.rowCount === 0) {
+                    return null;
+                } else {
+                    const row = queryResponse.rows[0];
+                    const aidRequest = AidRequestModel.queryToModel(row);
+                    aidRequest.creatorName = row.username;
+                    aidRequest.id = row.id;
+                    return aidRequest;
+                }
+            });
     }
 
     static async updateAidRequest(title, description, priority, aidRequestId) {
@@ -195,12 +209,7 @@ class AidRequestModel {
 
     static async acceptAidRequest(aidRequestId, acceptorId) {
         return AidRequestModel.dbPoolInstance
-            .query(acceptAidRequest, [acceptorId, aidRequestId])
-            .then((queryResponse) =>
-                queryResponse.rows.map((row) =>
-                    AidRequestModel.queryToModel(row),
-                ),
-            );
+            .query(acceptAidRequest, [acceptorId, aidRequestId]);
     }
 
     static async deleteAidRequest(aidRequestId) {

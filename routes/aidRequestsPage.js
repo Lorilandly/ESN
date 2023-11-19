@@ -5,7 +5,27 @@ const router = express.Router();
 
 router.use(passport.authenticate('jwt', { session: false }));
 
-router.get('/', (req, res) => {
+router.get('/all', (req, res) => {
+    return res.render('aidRequests');
+});
+
+router.get('/detail/:aidRequestId', (req, res) => {
+    return res.render('aidRequestDetail');
+});
+
+router.get('/new', (req, res) => {
+    return res.render('newAidRequest');
+});
+
+router.get('/edit/:aidRequestId', (req, res) => {
+    return res.render('editAidRequest');
+});
+
+router.get('/submitted', (req, res) => {
+    return res.render('aidRequests');
+});
+
+router.get('/accepted', (req, res) => {
     return res.render('aidRequests');
 });
 

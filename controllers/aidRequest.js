@@ -1,8 +1,8 @@
-import AidRequestModel from '../models/aidRequest';
+import AidRequestModel from '../models/aidRequest.js';
 
 async function createAidRequest(aidRequest) {
-    const aidRequest = new AidRequestModel(aidRequest);
-    await aidRequest.persist();
+    const aidRequestObj = new AidRequestModel(aidRequest);
+    await aidRequestObj.persist();
 }
 
 async function getAllAidRequests() {
@@ -35,8 +35,7 @@ async function cancelAidRequest(aidRequestId) {
 }
 
 async function acceptAidRequest(aidRequestId, acceptorId) {
-    return await AidRequestModel.setAidRequestStatus(
-        'ACCEPTED',
+    return await AidRequestModel.acceptAidRequest(
         aidRequestId,
         acceptorId,
     );

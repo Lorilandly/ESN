@@ -13,11 +13,13 @@ import publicWallRouter from './routes/publicWall.js';
 import privateChatRouter from './routes/privateChat.js';
 import newMessagesRouter from './routes/newMessages.js';
 import performanceTestRouter from './routes/performanceTest.js';
+import aidRequestsPageRouter from './routes/aidRequestsPage.js';
 
 /* API */
 import usersRouter from './routes/users.js';
 import messagesRouter from './routes/messages.js';
 import searchRouter from './routes/search.js';
+import aidRequestsRouter from './routes/aidRequests.js';
 
 import statusRouter from './routes/status.js';
 import { fileURLToPath } from 'url';
@@ -54,10 +56,12 @@ app.use('/privateChat', privateChatRouter);
 app.use('/performanceTest', performanceTestRouter);
 app.use('/status', statusRouter);
 app.use('/newMessages', newMessagesRouter);
+app.use('/aidRequestsPage', aidRequestsPageRouter);
 
 /* API */
 app.use('/users', usersRouter);
 app.use('/messages', messagesRouter);
 app.use('/search', searchRouter);
+app.use('/aidRequests', aidRequestsRouter);
 
 export default app;

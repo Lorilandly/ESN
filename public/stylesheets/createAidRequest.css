@@ -1,0 +1,12 @@
+.aid-request-page-header {
+    display: flex;
+    flex-direction: row;
+    /* align-items: center; */
+}
+
+.create-aid-request-page-body .create-aid-request-form {
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+}
+

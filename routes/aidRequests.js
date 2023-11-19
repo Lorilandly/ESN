@@ -5,18 +5,28 @@ import {
     updateAidRequest,
     cancelAidRequest,
     getAllAidRequests,
+    getAidRequest,
     getSubmittedAidRequests,
     getAcceptedAidRequests,
     acceptAidRequest,
     resolveAidRequest,
-} from '../controllers/aidRequest';
+} from '../controllers/aidRequest.js';
 const router = express.Router();
 
 router.use(passport.authenticate('jwt', { session: false }));
 
-router.get('/', async (req, res) => {
+router.get('/all', async (req, res) => {
     return getAllAidRequests()
         .then((aidRequests) => res.status(200).json({ aidRequests }))
+        .catch((err) => {
+            console.error(err);
+            return res.sendStatus(500);
+        });
+});
+
+router.get('/all/:aidRequestId', async (req, res) => {
+    return getAidRequest(req.params.aidRequestId)
+        .then((aidRequest) => res.status(200).json({ aidRequest }))
         .catch((err) => {
             console.error(err);
             return res.sendStatus(500);
@@ -34,17 +44,17 @@ router.post('/', async (req, res) => {
     }).then(() => res.status(201).json({}));
 });
 
-router.put('/', async (req, res) => {
+router.put('/:aidRequestId', async (req, res) => {
     return updateAidRequest(
         req.body.title,
         req.body.description,
         req.body.priority,
-        req.body.aidRequestId,
+        req.params.aidRequestId,
     ).then(() => res.status(200).json({}));
 });
 
 router.delete('/', async (req, res) => {
-    return cancelAidRequest(req.body.aidRequestId).then(() =>
+    return cancelAidRequest(req.query.aidRequestId).then(() =>
         res.status(200).json({}),
     );
 });
@@ -58,15 +68,6 @@ router.get('/submitted', async (req, res) => {
         });
 });
 
-router.put('/', async (req, res) => {
-    return updateAidRequest(
-        req.body.title,
-        req.body.description,
-        req.body.priority,
-        req.body.aidRequestId,
-    ).then(() => res.status(200).json({}));
-});
-
 router.get('/accepted', async (req, res) => {
     return getAcceptedAidRequests(req.user.id)
         .then((aidRequests) => res.status(200).json({ aidRequests }))
@@ -76,14 +77,16 @@ router.get('/accepted', async (req, res) => {
         });
 });
 
-router.put('/accepted', async (req, res) => {
-    return acceptAidRequest(req.body.aidRequestId).then(() =>
+router.put('/accepted/:aidRequestId', async (req, res) => {
+    return acceptAidRequest(req.params.aidRequestId).then(() =>
         res.status(200).json({}),
     );
 });
 
-router.put('/resolved', async (req, res) => {
-    return resolveAidRequest(req.body.aidRequestId).then(() =>
+router.put('/resolved/:aidRequestId', async (req, res) => {
+    return resolveAidRequest(req.params.aidRequestId).then(() =>
         res.status(200).json({}),
     );
 });
+
+export default router;

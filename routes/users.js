@@ -83,4 +83,31 @@ router.get('/current', checkUserAuthenticated, async (req, res) => {
     return res.status(200).json(user);
 });
 
+/** Get profile of another user
+ * @argument UserId
+ */
+router.get('/:id/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
+    return res.sendStatus(200);
+});
+
+/** Get current user profile */
+router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
+    return res.sendStatus(200);
+});
+
+/** Update current user profile */
+router.put('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
+    return res.sendStatus(200);
+});
+
+/** Add to current user profile */
+router.post('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
+    return res.sendStatus(200);
+});
+
+/** Delete from current user profile */
+router.delete('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
+    return res.sendStatus(200);
+});
+
 export default router;

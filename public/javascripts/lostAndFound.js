@@ -30,7 +30,7 @@ $(document).ready(async () => {
 
 function getAllUnresolvedPosts(){
     $.ajax({
-        url: '/lostAndFound/unresolved',
+        url: '/lostAndFounds/unresolved',
         method: 'GET',
         dataType: 'json',
         success: (response) => {
@@ -42,7 +42,7 @@ function getAllUnresolvedPosts(){
                 postDiv.innerHTML = `
                     <div class="post-title">
                         <span class="post-title-text">${post.title}</span> 
-                        <form action="/lostAndFound/post/${post.id}" method="GET">
+                        <form action="/lostAndFounds/posts/${post.id}" method="GET">
                         <button class="bi bi-arrow-right-short" type="submit">
                         </button>
                     </form>
@@ -79,7 +79,7 @@ async function createPost() {
     }
     const userID = (await getCurrentUser())["id"];
     $.ajax({
-        url: '/lostAndFound',
+        url: '/lostAndFounds',
         method: 'POST',
         data: {
             userID: userID,
@@ -102,11 +102,11 @@ async function createPost() {
 
 function openPost(postid){
     $.ajax({
-        url: '/lostAndFound/post/' + postid,
+        url: '/lostAndFounds/posts/' + postid,
         method: 'GET',
         dataType: 'json',
         success: () => {
-            window.location.href = '/lostAndFound/post/' + postid;
+            window.location.href = '/lostAndFounds/posts/' + postid;
         },
         error: (error) => {
             console.error('Failed to fetch messages:', error);
@@ -161,7 +161,7 @@ function openMyPosts(userID){
     
 
     $.ajax({
-        url: '/lostAndFound/myPosts',
+        url: '/lostAndFounds/myPosts',
         method: 'GET',
         dataType: 'json',
         data: {
@@ -178,7 +178,7 @@ function openMyPosts(userID){
                     resolveDivWrap.className = 'resolve-div-wrap';
                     resolveDivWrap.innerHTML = `
                         <button class="resolved" type="button">Resolved</button>
-                        <form action="/lostAndFound/post/${post.id}" method="GET">
+                        <form action="/lostAndFounds/posts/${post.id}" method="GET">
                             <button class="bi bi-arrow-right-short" type="submit">
                         </button>
                     `
@@ -189,7 +189,7 @@ function openMyPosts(userID){
                     resolveDivWrap.className = 'resolve-div-wrap';
                     resolveDivWrap.innerHTML = `
                         <button class="unresolved" type="button" onclick = resolvePost(${post.id}) >Unresolved</button>
-                        <form action="/lostAndFound/post/${post.id}" method="GET">
+                        <form action="/lostAndFounds/posts/${post.id}" method="GET">
                             <button class="bi bi-arrow-right-short" type="submit">
                         </button>
                     `
@@ -214,7 +214,7 @@ function openMyPosts(userID){
 
 function resolvePost(postid){
     $.ajax({
-        url: '/lostAndFound/myPosts/resolve',
+        url: '/lostAndFounds/myPosts/status',
         method: 'POST',
         dataType: 'json',
         data: {

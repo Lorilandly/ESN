@@ -25,7 +25,11 @@ async function createPost(req, res, next){
     });
 
     await post.persist();
-    ioInstance.emit('create new lost and found post');
+    try{
+        ioInstance.emit('create new lost and found post');
+    }
+    catch(err){
+    }
     return next();
 }
 
@@ -45,8 +49,12 @@ async function resolvePost(req, res, next){
     const postId = req.body.postID;
     const userId = req.user.id;
     await PostModel.resolvePost(postId);
-    console.log(userId);
-    ioInstance.emit('resolve lost and found post', {userId: userId});
+    try{
+        ioInstance.emit('resolve lost and found post', {userId: userId});
+    }
+    catch(err){
+    }
+    
     return next();
 }
 

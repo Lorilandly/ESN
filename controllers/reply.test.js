@@ -6,7 +6,8 @@ import UserModel from '../models/user.js';
 import PostModel from '../models/post';
 import ReplyModel from '../models/reply.js';
 import {
-    getAllReplyFromPost
+    getAllReplyFromPost,
+    createReply,
 } from './reply.js';
 
 beforeAll(async () => {
@@ -79,6 +80,8 @@ beforeAll(async () => {
     await reply2.persist();
 })
 
+// Positive tests
+
 test('test getAllReplyFromPost', async () => {
     const reply = await getAllReplyFromPost(1);
     expect(reply.length).toBe(2);
@@ -91,6 +94,43 @@ test('test getAllReplyFromPost', async () => {
     expect(reply[1].time).toBe(new Date(1).toLocaleString());
     expect(reply[1].replyee_name).toBe("No replyee");
 })
+
+test("test createReply", async () => {
+    const req = {
+        user: {
+            id: 1,
+        },
+        body: {
+            postID: 1,
+            body: 'test body',
+            replyID: null,
+        },
+    };
+    const res = {};
+    const next = () => {};
+    await createReply(req, res, next);
+    const reply = await getAllReplyFromPost(1);
+    expect(reply.length).toBe(3);
+})
+
+// Negative tests
+
+test("test createReply with no message", async () => {
+    const req = {
+        user: {
+            id: 1,
+        },
+        body: {
+            postID: 1,
+            body: '',
+            replyID: null,
+        },
+    };
+    const res = {};
+    const next = () => {};
+    const result = await createReply(req, res, next);
+    expect(result.message).toBe('Reply body cannot be empty');
+});
 
 afterAll(async () => {
     const dbManager = DatabaseManager.getInstance();

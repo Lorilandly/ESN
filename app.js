@@ -55,7 +55,7 @@ app.use('/privateChat', privateChatRouter);
 app.use('/performanceTest', performanceTestRouter);
 app.use('/status', statusRouter);
 app.use('/newMessages', newMessagesRouter);
-app.use('/lostAndFound', lostAndFoundRouter);
+app.use('/lostAndFounds', lostAndFoundRouter);
 
 /* API */
 app.use('/users', usersRouter);

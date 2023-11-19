@@ -33,7 +33,7 @@ router.get('/myPosts', async(req, res) => {
     });
 });
 
-router.post('/myPosts/resolve', resolvePost, async(req, res) => {
+router.post('/myPosts/status', resolvePost, async(req, res) => {
     return res.status(201).json({});
 });
 
@@ -46,12 +46,18 @@ router.get("/unresolved", async(req, res) => {
     });
 });
 
-router.get('/post/:id', async (req, res) => {
+router.get('/posts/:id', async (req, res) => {
+    if (req.params.id <= 0) {
+        return res.sendStatus(500);
+    }
     return res.render('post');
 });
 
-router.get('/post/:id/info', async (req, res) => {
+router.get('/posts/:id/info', async (req, res) => {
     const postId = req.params.id;
+    if (postId <= 0) {
+        return res.sendStatus(500);
+    }
     // get post information and all replies
     return getPostInfo(postId)
     .then((post) => {
@@ -67,7 +73,10 @@ router.get('/post/:id/info', async (req, res) => {
 });
 
 
-router.post('/post/:id/reply', createReply,  async (req, res) => {
+router.post('/posts/:id/response', createReply,  async (req, res) => {
+    if(req.params.id <= 0){
+        return res.sendStatus(500);
+    }
     return res.status(201).json({});
 });
 

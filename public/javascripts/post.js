@@ -3,7 +3,7 @@
 $(document).ready(() => {
     document.getElementById('search-bar').remove();
     const backButton = document.createElement('form');
-    backButton.action = "/lostAndFound";
+    backButton.action = "/lostAndFounds";
     backButton.className = 'back-button';
     backButton.method = 'GET';
     backButton.innerHTML = `
@@ -30,7 +30,7 @@ function getPostID(){
 
 function getPostInformation(){
     const postID = getPostID();
-    $.ajax('/lostAndFound/post/' + postID + '/info', {
+    $.ajax('/lostAndFounds/posts/' + postID + '/info', {
         method: 'GET',
         datatype: 'json',
         success: (data) => {
@@ -114,7 +114,7 @@ async function createPostReply(){
     }
 
     $.ajax({
-        url: '/lostAndFound/post/' + postID + '/reply',
+        url: '/lostAndFounds/posts/' + postID + '/response',
         method: 'POST',
         data: {
             postID: postID,
@@ -154,7 +154,7 @@ async function createReplyReply(replyID){
         return;
     }
     $.ajax({
-        url: '/lostAndFound/post/' + postID + '/reply',
+        url: '/lostAndFounds/posts/' + postID + '/response',
         method: 'POST',
         data: {
             postID: postID,

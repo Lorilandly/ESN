@@ -8,6 +8,8 @@ import {
     getAllUnresolvedPosts,
     getPostInfo,
     getMyPosts,
+    createPost,
+    resolvePost,
 } from './post.js';
 
 beforeAll(async () => {
@@ -56,6 +58,8 @@ beforeAll(async () => {
     await lostAndFoundPost2.persist();
 });
 
+// Positive tests
+
 test('test getAllUnresolvedPosts', async () => {
     const posts = await getAllUnresolvedPosts();
     expect(posts.length).toBe(1);
@@ -72,6 +76,63 @@ test('test getPostInfo', async () => {
 test('test getMyPosts', async () => {
     const posts = await getMyPosts(1);
     expect(posts.length).toBe(2);
+});
+
+test('test getMyPosts no posts', async () => {
+    const posts = await getMyPosts(2);
+    expect(posts.length).toBe(0);
+});
+
+test('test resolvePost', async () => {
+    // set req.body.postID = 1
+    const req = {
+        body: {
+            postID: 1,
+        },
+        user: {
+            id: 1,
+        },
+    };
+    const res = {};
+    const next = () => {};
+    await resolvePost(req, res, next);
+    const posts = await getAllUnresolvedPosts();
+    expect(posts.length).toBe(0);
+});
+
+test('test createPost', async () => {
+    const req = {
+        body: {
+            title: 'test title',
+            message: 'test message',
+        },
+        user: {
+            id: 1,
+        },
+    };
+    const res = {};
+    const next = () => {};
+    await createPost(req, res, next);
+    const posts = await getAllUnresolvedPosts();
+    expect(posts.length).toBe(1);
+});
+
+// Negative tests
+
+test('test createPost empty title', async () => {
+    const req = {
+        body: {
+            title: '',
+            message: 'test message',
+        },
+        user: {
+            id: 1,
+        },
+    };
+    const res = {};
+    const next = () => {};
+    const result = await createPost(req, res, next);
+    expect(result.message).toBe('Post title or message cannot be empty');
 });
 
 afterAll(async () => {

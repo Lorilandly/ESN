@@ -44,23 +44,23 @@ beforeAll(async () => {
     passport.use('jwt', new MockStrategy({ user }));
 
     const publicMessage = new MessageModel({
-            senderId: 1,
-            receiverId: 0,
-            body: 'test public message',
-            time: new Date(1),
-            status: null,
-            readStatus: null,
-        });
+        senderId: 1,
+        receiverId: 0,
+        body: 'test public message',
+        time: new Date(1),
+        status: null,
+        readStatus: null,
+    });
     await publicMessage.persist();
 
     const privateMessage = new MessageModel({
-            senderId: 1,
-            receiverId: 2,
-            body: 'test private message',
-            time: new Date(1),
-            status: null,
-            readStatus: null,
-        });
+        senderId: 1,
+        receiverId: 2,
+        body: 'test private message',
+        time: new Date(1),
+        status: null,
+        readStatus: null,
+    });
     await privateMessage.persist();
 });
 
@@ -185,13 +185,13 @@ describe('Test search rules for PrivateChatSearchContext', () => {
     test('has search result', async () => {
         const result = await searchContext.search('private', 1, 2);
         const msg = new MessageModel({
-                senderId: undefined,
-                receiverId: undefined,
-                body: 'test private message',
-                time: new Date(1).toLocaleString(),
-                status: null,
-                readStatus: undefined,
-            });
+            senderId: undefined,
+            receiverId: undefined,
+            body: 'test private message',
+            time: new Date(1).toLocaleString(),
+            status: null,
+            readStatus: undefined,
+        });
         msg.sender = 'testUser';
         const expectedResult = {
             messages: [msg],

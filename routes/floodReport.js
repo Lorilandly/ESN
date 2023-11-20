@@ -3,6 +3,7 @@ import passport from 'passport';
 import {
     getAllFloodReports,
     createFloodReport,
+    updateFloodReportByID,
     deleteFloodReportByID,
 } from '../controllers/floodReport.js';
 
@@ -23,6 +24,11 @@ router.get('/', async (_, res) => {
 
 router.post('/', await createFloodReport, async (_, res) => {
     return res.status(201).json({});
+});
+
+router.post('/:floodReportID', async (req, res) => {
+    await updateFloodReportByID(req.params.floodReportID, req.body.fields);
+    return res.status(200).json({});
 });
 
 router.delete('/:floodReportID', async (req, res) => {

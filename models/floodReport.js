@@ -26,6 +26,12 @@ WHERE id = $1
 ORDER BY floodReports.time ASC;
 `;
 
+const updateFloodReportByID = `
+UPDATE floodReports
+SET address = $2, city = $3, state = $4, zipcode = $5, description = $6
+WHERE id = $1;
+`;
+
 const deleteFloodReportByID = `
 DELETE FROM floodReports
 WHERE id = $1;
@@ -89,6 +95,33 @@ class FloodReportModel {
         if (queryResponse.rowCount === 0) {
             return null;
         }
+        const record = queryResponse.rows[0];
+        return new FloodReportModel({
+            address: record.address,
+            city: record.city,
+            state: record.state,
+            zipcode: record.zipcode,
+            description: record.description,
+            time: record.time,
+        });
+    }
+
+    static async updateByID(floodReportID, fields) {
+        const floodReport = await FloodReportModel.findByID(floodReportID);
+        if (floodReport === null) {
+            return null;
+        }
+        let { address, city, state, zipcode, description } = fields;
+        address = address ?? floodReport.address;
+        city = city ?? floodReport.city;
+        state = state ?? floodReport.state;
+        zipcode = zipcode ?? floodReport.zipcode;
+        description = description ?? floodReport.description;
+
+        const queryResponse = FloodReportModel.dbPoolInstance.query(
+            updateFloodReportByID,
+            [floodReportID, address, city, state, zipcode, description],
+        );
         const record = queryResponse.rows[0];
         return new FloodReportModel({
             address: record.address,

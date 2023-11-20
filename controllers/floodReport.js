@@ -14,19 +14,19 @@ function initFloodReportController(io, config) {
 async function createFloodReport(req, res, next) {
     const errors = [];
     if (!validAddress(req.body.address)) {
-        errors.append(invalidAddressMessage);
+        errors.push(invalidAddressMessage);
     }
     if (!validCity(req.body.city)) {
-        errors.append(invalidCityMessage);
+        errors.push(invalidCityMessage);
     }
     if (!validState(req.body.state)) {
-        errors.append(invalidStateMessage);
+        errors.push(invalidStateMessage);
     }
     if (!validZipcode(req.body.zipcode)) {
-        errors.append(invalidZipcodeMessage);
+        errors.push(invalidZipcodeMessage);
     }
     if (!validDescription(req.body.description)) {
-        errors.append(invalidDescriptionMessage);
+        errors.push(invalidDescriptionMessage);
     }
     if (errors.length !== 0) {
         return res.sendStatus(400).json({ errors });
@@ -56,6 +56,31 @@ async function getAllFloodReports() {
 
 async function getFloodReportByID(floodReportID) {
     return FloodReportModel.findByID(floodReportID);
+}
+
+// returns null if no errors are reported, else an array of errors
+async function updateFloodReportByID(floodReportID, fields) {
+    const errors = [];
+    if (fields.address && !validAddress(fields.address)) {
+        errors.push(invalidAddressMessage);
+    }
+    if (fields.city && !validCity(fields.city)) {
+        errors.push(invalidCityMessage);
+    }
+    if (fields.state && !validState(fields.state)) {
+        errors.push(invalidStateMessage);
+    }
+    if (fields.zipcode && !validZipcode(fields.zipcode)) {
+        errors.push(invalidZipcodeMessage);
+    }
+    if (fields.description && !validDescription(fields.description)) {
+        errors.push(invalidDescriptionMessage);
+    }
+    if (errors.length !== 0) {
+        return errors;
+    }
+    await FloodReportModel.updateByID(floodReportID, fields);
+    return null;
 }
 
 async function deleteFloodReportByID(floodReportID) {
@@ -110,7 +135,7 @@ function validZipcode(zipcode) {
     if (!zipcode) {
         return false;
     }
-    return zipcode.length === 5 && isNaN(Number(zipcode));
+    return zipcode.length === 5 && !isNaN(Number(zipcode));
 }
 
 const invalidDescriptionMessage = 'Description cannot exceed 200 characters';
@@ -128,5 +153,6 @@ export {
     createFloodReport,
     getAllFloodReports,
     getFloodReportByID,
+    updateFloodReportByID,
     deleteFloodReportByID,
 };

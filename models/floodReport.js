@@ -74,14 +74,8 @@ class FloodReportModel {
             .query(getAllFloodReports)
             .then((queryResponse) => {
                 queryResponse.rows.map((row) => {
-                    return new FloodReportModel({
-                        address: row.address,
-                        city: row.city,
-                        state: row.state,
-                        zipcode: row.zipcode,
-                        description: row.description,
-                        time: row.time.toLocaleString(),
-                    });
+                    row.time = row.time.toLocaleString();
+                    return row;
                 });
                 return queryResponse.rows;
             });

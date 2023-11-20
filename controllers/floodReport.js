@@ -60,8 +60,7 @@ async function createFloodReport(req, res, next) {
 }
 
 async function getAllFloodReports() {
-    const floodReports = FloodReportModel.getAll();
-    return floodReports;
+    return await FloodReportModel.getAll();
 }
 
 async function getFloodReportByID(floodReportID) {
@@ -166,4 +165,14 @@ export {
     getFloodReportByID,
     updateFloodReportByID,
     deleteFloodReportByID,
+    validAddress,
+    validCity,
+    validState,
+    validZipcode,
+    validDescription,
+    invalidAddressMessage,
+    invalidCityMessage,
+    invalidStateMessage,
+    invalidZipcodeMessage,
+    invalidDescriptionMessage,
 };

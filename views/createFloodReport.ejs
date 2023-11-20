@@ -17,19 +17,33 @@
             <%- include('./header.ejs') %>
             <form class="flood-report-form" id="flood-report-form">
                 <label for="address">Address:</label>
+                <br>
                 <input type="text" id="address" name="address" required>
+                <br>
+
+                <label for="city">City:</label>
+                <br>
+                <input type="text" id="city" name="city" required>
                 <br>
         
                 <label for="state">State:</label>
-                <input type="text" id="state" name="state" required>
                 <br>
-        
+                <select id="state" name="state" required>
+                    <option value="" disabled selected>---</option>
+                    <% states.forEach(function(state) { %>
+                        <option value="<%= state.abbreviation %>"><%= state.name %></option>
+                    <% }); %>
+                </select>
+                <br>
+
                 <label for="zipcode">Zipcode:</label>
+                <br>
                 <input type="text" id="zipcode" name="zipcode" required>
                 <br>
         
                 <label for="description">Description:</label>
-                <textarea id="description" name="description" rows="4" required></textarea>
+                <br>
+                <textarea id="description" name="description" rows="4"></textarea>
                 <br>
         
                 <button type="submit">Submit</button>

@@ -1,3 +1,16 @@
+function registerCancelHandler(button, location, floodReportID) {
+    button.addEventListener('click', function () {
+        const areaSafe = confirm(
+            'You are canceling the flood report for:\n\n' +
+                location +
+                '\n\nIs this area safe?',
+        );
+        if (areaSafe) {
+            deleteFloodReport(floodReportID);
+        }
+    });
+}
+
 function createFloodReport(floodReport) {
     const newFloodReport = document.createElement('div');
     newFloodReport.setAttribute('class', 'flood-report');
@@ -5,7 +18,6 @@ function createFloodReport(floodReport) {
     // create cancel button
     const cancelButton = document.createElement('button');
     cancelButton.className = 'cancel-flood-report-button';
-    console.log(`setting flood-report-id: ${floodReport.id}`);
     cancelButton.setAttribute('flood-report-id', floodReport.id);
 
     const cancelIcon = document.createElement('i');
@@ -30,9 +42,11 @@ function createFloodReport(floodReport) {
     const timestamp = floodReport.time;
     const address =
         floodReport.address +
-        '\n' +
+        '<br>' +
+        floodReport.city +
+        ', ' +
         floodReport.state +
-        '\t' +
+        ' ' +
         floodReport.zipcode;
     const description = floodReport.description;
 
@@ -40,7 +54,7 @@ function createFloodReport(floodReport) {
     timestampBody.textContent = timestamp;
 
     const addressBody = document.createElement('p');
-    addressBody.textContent = address;
+    addressBody.innerHTML = address;
 
     const descriptionBody = document.createElement('p');
     descriptionBody.textContent = description;
@@ -53,7 +67,25 @@ function createFloodReport(floodReport) {
     newFloodReport.append(descriptionHeader);
     newFloodReport.append(descriptionBody);
 
+    registerCancelHandler(cancelButton, address, floodReport.id);
+
     return newFloodReport;
+}
+
+function deleteFloodReport(floodReportID) {
+    $.ajax({
+        url: `/floodReports/${floodReportID}`,
+        method: 'DELETE',
+        success: (_) => {
+            window.location.href = '/floodNotices';
+        },
+        error: (error) => {
+            console.error(
+                `Failed to delete flood report with id ${floodReportID}`,
+                error,
+            );
+        },
+    });
 }
 
 function displayAllFloodReports() {
@@ -67,13 +99,14 @@ function displayAllFloodReports() {
             if (!floodReports || floodReports.length === 0) {
                 return;
             }
-            const floodReportsList = document.getElementById(
-                'flood-reports-container',
-            );
 
             for (const i in floodReports) {
-                floodReportsList.append(createFloodReport(floodReports[i]));
-                // floodReportsList.scrollTop(floodReportsList[0].scrollHeight);
+                $('#flood-reports-container').append(
+                    createFloodReport(floodReports[i]),
+                );
+                $('#flood-reports-container').scrollTop(
+                    $('#flood-reports-container')[0].scrollHeight,
+                );
             }
         },
         error: (error) => {

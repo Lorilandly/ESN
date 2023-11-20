@@ -2,6 +2,7 @@ const createFloodReportTable = `
 CREATE TABLE IF NOT EXISTS floodReports (
     id SERIAL PRIMARY KEY,
     address TEXT NOT NULL,
+    city TEXT NOT NULL,
     state TEXT NOT NULL,
     zipcode TEXT NOT NULL,
     description TEXT NOT NULL,
@@ -10,8 +11,8 @@ CREATE TABLE IF NOT EXISTS floodReports (
 `;
 
 const insertFloodReport = `
-INSERT INTO floodReports (address, state, zipcode, description, time)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO floodReports (address, city, state, zipcode, description, time)
+VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING id;
 `;
 
@@ -30,8 +31,9 @@ WHERE id = $1;
 `;
 
 class FloodReportModel {
-    constructor({ address, state, zipcode, description, time }) {
+    constructor({ address, city, state, zipcode, description, time }) {
         this.address = address;
+        this.city = city;
         this.state = state;
         this.zipcode = zipcode;
         this.description = description;
@@ -50,6 +52,7 @@ class FloodReportModel {
             insertFloodReport,
             [
                 this.address,
+                this.city,
                 this.state,
                 this.zipcode,
                 this.description,
@@ -66,6 +69,7 @@ class FloodReportModel {
                 queryResponse.rows.map((row) => {
                     return new FloodReportModel({
                         address: row.address,
+                        city: row.city,
                         state: row.state,
                         zipcode: row.zipcode,
                         description: row.description,
@@ -85,13 +89,14 @@ class FloodReportModel {
             return null;
         }
         const record = queryResponse.rows[0];
-        return new FloodReportModel(
-            record.address,
-            record.state,
-            record.zipcode,
-            record.description,
-            record.time,
-        );
+        return new FloodReportModel({
+            address: record.address,
+            city: record.city,
+            state: record.state,
+            zipcode: record.zipcode,
+            description: record.description,
+            time: record.time,
+        });
     }
 
     static async deleteByID(floodReportID) {

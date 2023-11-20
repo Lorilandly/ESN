@@ -4,14 +4,17 @@ description = "default configuration file that provides a good starting point"
 port = 3000 # the port used by the service
 
 [db]
-host = "dpg-ckrdj962eoec73f7abng-a"   # the database hosting address
-port = 5432          # the database port
+host = "dpg-ckrdj962eoec73f7abng-a" # the database hosting address
+port = 5432                         # the database port
 name = "sb2project"
 
 [performance-test-db]
-host = "dpg-ckrdj962eoec73f7abng-a"               # the database hosting address
-port = 5432                      # the database port
+host = "dpg-ckrdj962eoec73f7abng-a" # the database hosting address
+port = 5432                         # the database port
 name = "sb2ProjectPerformance"
 
 [auth] # auth service config data
 reservedUsernamesRegistry = "config/reserved_usernames.txt"
+
+[flood-report] # flood reporting config data
+stateAbbreviations = "config/us_states.txt"

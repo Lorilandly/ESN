@@ -25,8 +25,8 @@ router.post('/', await createFloodReport, async (_, res) => {
     return res.status(201).json({});
 });
 
-router.delete('/:floodReportID', async (_, res) => {
-    return deleteFloodReportByID(floodReportID).catch((err) => {
+router.delete('/:floodReportID', async (req, res) => {
+    return deleteFloodReportByID(req.params.floodReportID).catch((err) => {
         console.error(err);
         return res.sendStatus(500);
     });

@@ -19,6 +19,9 @@ $(document).ready(async () => {
         if (onUnresolvedPage){
             refreshPostList();
         }
+        else{
+            refreshMyPostList();
+        }
     })
 
     socket.on('resolve lost and found post', ({userId}) => {

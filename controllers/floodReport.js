@@ -30,7 +30,7 @@ async function createFloodReport(req, res, next) {
         errors.push(invalidDescriptionMessage);
     }
     if (errors.length !== 0) {
-        return res.sendStatus(400).json({ errors });
+        return res.status(400).json({ errors });
     }
 
     const floodReport = new FloodReportModel({
@@ -57,6 +57,8 @@ async function createFloodReport(req, res, next) {
         description,
         time: floodReport.time,
     });
+
+    next();
 }
 
 async function getAllFloodReports() {
@@ -93,8 +95,11 @@ async function updateFloodReportByID(floodReportID, fields) {
 }
 
 async function deleteFloodReportByID(floodReportID) {
-    await FloodReportModel.deleteByID(floodReportID);
-    ioInstance.emit('delete-flood-report', floodReportID);
+    const deleted = await FloodReportModel.deleteByID(floodReportID);
+    if (deleted) {
+        ioInstance.emit('delete-flood-report', floodReportID);
+    }
+    return deleted;
 }
 
 function initStateDataFromFile(filepath) {

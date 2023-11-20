@@ -128,9 +128,11 @@ class FloodReportModel {
     }
 
     static async deleteByID(floodReportID) {
-        await FloodReportModel.dbPoolInstance.query(deleteFloodReportByID, [
-            floodReportID,
-        ]);
+        const queryResponse = await FloodReportModel.dbPoolInstance.query(
+            deleteFloodReportByID,
+            [floodReportID],
+        );
+        return queryResponse.rowCount !== 0;
     }
 }
 

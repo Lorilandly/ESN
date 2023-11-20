@@ -22,7 +22,8 @@ SELECT * FROM floodReports;
 
 const getFloodReportByID = `
 SELECT * FROM floodReports
-WHERE id = $1;
+WHERE id = $1
+ORDER BY floodReports.time ASC;
 `;
 
 const deleteFloodReportByID = `
@@ -73,7 +74,7 @@ class FloodReportModel {
                         state: row.state,
                         zipcode: row.zipcode,
                         description: row.description,
-                        time: row.time,
+                        time: row.time.toLocaleString(),
                     });
                 });
                 return queryResponse.rows;

@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from 'passport';
-import { stateAbbreviations } from '../controllers/floodReport.js';
+import { stateOptions } from '../controllers/floodReport.js';
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ router.get('/', (_, res) => {
 });
 
 router.get('/create', (_, res) => {
-    return res.render('createFloodReport', { states: stateAbbreviations });
+    return res.render('createFloodReport', { states: stateOptions });
 });
 
 export default router;

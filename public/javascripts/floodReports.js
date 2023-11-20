@@ -1,8 +1,51 @@
+function constructBaseFloodReport() {
+    const floodReport = document.createElement('div');
+    floodReport.className = 'flood-report';
+
+    const cancelButton = document.createElement('button');
+    cancelButton.className = 'cancel-flood-report-button';
+
+    const cancelIcon = document.createElement('i');
+    cancelIcon.className = 'bi bi-x-circle';
+    cancelButton.appendChild(cancelIcon);
+
+    const timestampHeader = document.createElement('h3');
+    timestampHeader.className = 'time-reported-header';
+    timestampHeader.textContent = 'Time Reported';
+
+    const addressHeader = document.createElement('h3');
+    addressHeader.className = 'location-header';
+    addressHeader.textContent = 'Location';
+
+    const descriptionHeader = document.createElement('h3');
+    descriptionHeader.className = 'description-header';
+    descriptionHeader.textContent = 'Description';
+
+    const timestampBody = document.createElement('p');
+    timestampBody.className = 'time-reported-body';
+
+    const addressBody = document.createElement('p');
+    addressBody.className = 'location-body';
+
+    const descriptionBody = document.createElement('p');
+    descriptionBody.className = 'description-body';
+
+    floodReport.append(cancelButton);
+    floodReport.append(timestampHeader);
+    floodReport.append(timestampBody);
+    floodReport.append(addressHeader);
+    floodReport.append(addressBody);
+    floodReport.append(descriptionHeader);
+    floodReport.append(descriptionBody);
+
+    return floodReport;
+}
+
 function registerCancelHandler(button, location, floodReportID) {
     button.addEventListener('click', function () {
         const areaSafe = confirm(
             'You are canceling the flood report for:\n\n' +
-                location +
+                location.replace('<br>', '\n') +
                 '\n\nIs this area safe?',
         );
         if (areaSafe) {
@@ -11,34 +54,9 @@ function registerCancelHandler(button, location, floodReportID) {
     });
 }
 
+const baseFloodReport = constructBaseFloodReport();
+
 function createFloodReport(floodReport) {
-    const newFloodReport = document.createElement('div');
-    newFloodReport.setAttribute('class', 'flood-report');
-
-    // create cancel button
-    const cancelButton = document.createElement('button');
-    cancelButton.className = 'cancel-flood-report-button';
-    cancelButton.setAttribute('flood-report-id', floodReport.id);
-
-    const cancelIcon = document.createElement('i');
-    cancelIcon.className = 'bi bi-x-circle';
-    cancelButton.appendChild(cancelIcon);
-
-    // create timestamp header
-    const timestampHeader = document.createElement('h3');
-    timestampHeader.setAttribute('class', 'time-reported-header');
-    timestampHeader.textContent = 'Time Reported';
-
-    // create address header
-    const addressHeader = document.createElement('h3');
-    addressHeader.setAttribute('class', 'location-header');
-    addressHeader.textContent = 'Location';
-
-    // create description header
-    const descriptionHeader = document.createElement('h3');
-    descriptionHeader.setAttribute('class', 'description-header');
-    descriptionHeader.textContent = 'Description';
-
     const timestamp = floodReport.time;
     const address =
         floodReport.address +
@@ -50,24 +68,16 @@ function createFloodReport(floodReport) {
         floodReport.zipcode;
     const description = floodReport.description;
 
-    const timestampBody = document.createElement('p');
-    timestampBody.textContent = timestamp;
+    const newFloodReport = baseFloodReport.cloneNode(true);
+    newFloodReport.querySelector('.time-reported-body').textContent = timestamp;
+    newFloodReport.querySelector('.location-body').innerHTML = address;
+    newFloodReport.querySelector('.description-body').textContent = description;
 
-    const addressBody = document.createElement('p');
-    addressBody.innerHTML = address;
-
-    const descriptionBody = document.createElement('p');
-    descriptionBody.textContent = description;
-
-    newFloodReport.append(cancelButton);
-    newFloodReport.append(timestampHeader);
-    newFloodReport.append(timestampBody);
-    newFloodReport.append(addressHeader);
-    newFloodReport.append(addressBody);
-    newFloodReport.append(descriptionHeader);
-    newFloodReport.append(descriptionBody);
-
-    registerCancelHandler(cancelButton, address, floodReport.id);
+    registerCancelHandler(
+        newFloodReport.querySelector('.cancel-flood-report-button'),
+        address,
+        floodReport.id,
+    );
 
     return newFloodReport;
 }

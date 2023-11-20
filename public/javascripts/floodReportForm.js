@@ -7,17 +7,6 @@ $('#flood-report-form').submit((event) => {
     const zipcode = $('#zipcode').val();
     const description = $('#description').val();
 
-    if (
-        address.trim() === '' ||
-        city.trim() === '' ||
-        state.trim() === '' ||
-        zipcode.trim() === ''
-    ) {
-        // TODO: inform user
-        console.error('Required fields not populated');
-        return;
-    }
-
     $.ajax('/floodReports', {
         method: 'POST',
         data: {
@@ -28,7 +17,7 @@ $('#flood-report-form').submit((event) => {
             description,
         },
         dataType: 'json',
-        success: (resp) => {
+        success: (_) => {
             window.location.replace('/floodNotices');
         },
         error: (error) => {

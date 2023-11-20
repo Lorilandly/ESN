@@ -79,8 +79,13 @@ router.put(
 );
 
 router.get('/current', checkUserAuthenticated, async (req, res) => {
-    const user = await getUserByName(req.user.username);
-    return res.status(200).json(user);
+    try {
+        const user = await getUserByName(req.user.username);
+        return res.status(200).json(user);
+    } catch (e) {
+        console.error(`failed to get user with username ${req.user.username}`);
+        return res.status(401);
+    }
 });
 
 export default router;

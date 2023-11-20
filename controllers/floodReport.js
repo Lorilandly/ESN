@@ -5,23 +5,24 @@ import FloodReportModel from '../models/floodReport.js';
 async function createFloodReport(req, res, next) {
     // TODO: check if fields are null/undefined?
     const floodReport = new FloodReportModel({
-        address: req.address,
-        state: req.state,
-        zipcode: req.zipcode,
-        description: req.description,
+        address: req.body.address,
+        state: req.body.state,
+        zipcode: req.body.zipcode,
+        description: req.body.description,
         time: new Date(Date.now()).toLocaleString(),
     });
     floodReport
         .persist()
         .then(() => next())
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             return res.sendStatus(500);
         });
 }
 
 async function getAllFloodReports() {
-    return FloodReportModel.getAll();
+    const floodReports = FloodReportModel.getAll();
+    return floodReports;
 }
 
 async function getFloodReportByID(floodReportID) {

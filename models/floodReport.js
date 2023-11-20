@@ -62,17 +62,18 @@ class FloodReportModel {
     static async getAll() {
         return FloodReportModel.dbPoolInstance
             .query(getAllFloodReports)
-            .then((queryResponse) =>
+            .then((queryResponse) => {
                 queryResponse.rows.map((row) => {
-                    return new FloodReportModel(
-                        row.address,
-                        row.state,
-                        row.zipcode,
-                        row.description,
-                        row.time,
-                    );
-                }),
-            );
+                    return new FloodReportModel({
+                        address: row.address,
+                        state: row.state,
+                        zipcode: row.zipcode,
+                        description: row.description,
+                        time: row.time,
+                    });
+                });
+                return queryResponse.rows;
+            });
     }
 
     static async findByID(floodReportID) {

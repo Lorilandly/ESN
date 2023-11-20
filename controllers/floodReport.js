@@ -12,20 +12,21 @@ function initFloodReportController(io, config) {
 }
 
 async function createFloodReport(req, res, next) {
+    const { address, city, state, zipcode, description } = req.body;
     const errors = [];
-    if (!validAddress(req.body.address)) {
+    if (!validAddress(address)) {
         errors.push(invalidAddressMessage);
     }
-    if (!validCity(req.body.city)) {
+    if (!validCity(city)) {
         errors.push(invalidCityMessage);
     }
-    if (!validState(req.body.state)) {
+    if (!validState(state)) {
         errors.push(invalidStateMessage);
     }
-    if (!validZipcode(req.body.zipcode)) {
+    if (!validZipcode(zipcode)) {
         errors.push(invalidZipcodeMessage);
     }
-    if (!validDescription(req.body.description)) {
+    if (!validDescription(description)) {
         errors.push(invalidDescriptionMessage);
     }
     if (errors.length !== 0) {
@@ -33,20 +34,29 @@ async function createFloodReport(req, res, next) {
     }
 
     const floodReport = new FloodReportModel({
-        address: req.body.address,
-        city: req.body.city,
-        state: req.body.state,
-        zipcode: req.body.zipcode,
-        description: req.body.description,
+        address,
+        city,
+        state,
+        zipcode,
+        description,
         time: new Date(Date.now()).toLocaleString(),
     });
-    floodReport
+    const floodReportID = floodReport
         .persist()
         .then(() => next())
         .catch((err) => {
             console.error(err);
             return res.sendStatus(500);
         });
+    ioInstance.emit('create-flood-report', {
+        id: floodReportID,
+        address,
+        city,
+        state,
+        zipcode,
+        description,
+        time: floodReport.time,
+    });
 }
 
 async function getAllFloodReports() {
@@ -84,7 +94,8 @@ async function updateFloodReportByID(floodReportID, fields) {
 }
 
 async function deleteFloodReportByID(floodReportID) {
-    return FloodReportModel.deleteByID(floodReportID);
+    await FloodReportModel.deleteByID(floodReportID);
+    ioInstance.emit('delete-flood-report', floodReportID);
 }
 
 function initStateDataFromFile(filepath) {

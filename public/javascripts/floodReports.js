@@ -1,3 +1,5 @@
+/* global socket */
+
 function constructBaseFloodReport() {
     const floodReport = document.createElement('div');
     floodReport.className = 'flood-report';
@@ -69,6 +71,7 @@ function createFloodReport(floodReport) {
     const description = floodReport.description;
 
     const newFloodReport = baseFloodReport.cloneNode(true);
+    newFloodReport.setAttribute('flood-report-id', floodReport.id);
     newFloodReport.querySelector('.time-reported-body').textContent = timestamp;
     newFloodReport.querySelector('.location-body').innerHTML = address;
     newFloodReport.querySelector('.description-body').textContent = description;
@@ -127,4 +130,20 @@ function displayAllFloodReports() {
 
 $(document).ready(() => {
     displayAllFloodReports();
+    socket.on('create-flood-report', (floodReport) => {
+        $('#flood-reports-container').append(createFloodReport(floodReport));
+        $('#flood-reports-container').scrollTop(
+            $('#flood-reports-container')[0].scrollHeight,
+        );
+    });
+    socket.on('delete-flood-report', (floodReportID) => {
+        const query = `[flood-report-id="${floodReportID}"]`;
+        const element = $(query);
+        if (element.length > 0) {
+            element.remove();
+        }
+        $('#flood-reports-container').scrollTop(
+            $('#flood-reports-container')[0].scrollHeight,
+        );
+    });
 });

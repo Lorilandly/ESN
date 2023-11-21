@@ -1,14 +1,15 @@
 $('#flood-report-form').submit((event) => {
     event.preventDefault();
 
+    const floodReportID = $('#flood-report-form').attr('flood-report-id');
     const address = $('#address').val();
     const city = $('#city').val();
     const state = $('#state').val();
     const zipcode = $('#zipcode').val();
     const description = $('#description').val();
 
-    $.ajax('/floodReports', {
-        method: 'POST',
+    $.ajax('/floodReports/' + floodReportID, {
+        method: 'PUT',
         data: {
             address,
             city,
@@ -21,7 +22,7 @@ $('#flood-report-form').submit((event) => {
             window.location.replace('/floodNotices');
         },
         error: (error) => {
-            console.error('Failed to create flood report:', error);
+            console.error('Failed to update flood report:', error);
         },
     });
 });

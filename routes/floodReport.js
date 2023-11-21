@@ -27,7 +27,16 @@ router.post('/', await createFloodReport, async (_, res) => {
 });
 
 router.put('/:floodReportID', async (req, res) => {
-    await updateFloodReportByID(req.params.floodReportID, req.body.fields);
+    const result = await updateFloodReportByID(
+        req.params.floodReportID,
+        req.body,
+    );
+    if (Array.isArray(result)) {
+        return res.status(400).json({ errors: result });
+    }
+    if (!result) {
+        return res.status(404);
+    }
     return res.status(200).json({});
 });
 

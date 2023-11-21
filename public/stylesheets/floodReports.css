@@ -43,6 +43,15 @@
     border: none;
 }
 
+.flood-report .update-flood-report-button {
+    color: black;
+    font-size: x-large;
+    position: absolute;
+    top: 5px;
+    right: 40px;
+    border: none;
+}
+
 .create-flood-report-button {
     position: fixed;
     bottom: 90px;

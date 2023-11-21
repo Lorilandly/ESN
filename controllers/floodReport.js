@@ -66,10 +66,9 @@ async function getAllFloodReports() {
 }
 
 async function getFloodReportByID(floodReportID) {
-    return FloodReportModel.findByID(floodReportID);
+    return await FloodReportModel.findByID(floodReportID);
 }
 
-// returns null if no errors are reported, else an array of errors
 async function updateFloodReportByID(floodReportID, fields) {
     const errors = [];
     if (fields.address && !validAddress(fields.address)) {
@@ -90,8 +89,23 @@ async function updateFloodReportByID(floodReportID, fields) {
     if (errors.length !== 0) {
         return errors;
     }
-    await FloodReportModel.updateByID(floodReportID, fields);
-    return null;
+    const floodReportData = await FloodReportModel.updateByID(
+        floodReportID,
+        fields,
+    );
+    if (floodReportData === null) {
+        return false;
+    }
+    ioInstance.emit('updated-flood-report', {
+        id: floodReportID,
+        address: floodReportData.address,
+        city: floodReportData.city,
+        state: floodReportData.state,
+        zipcode: floodReportData.zipcode,
+        description: floodReportData.description,
+        time: floodReportData.time,
+    });
+    return true;
 }
 
 async function deleteFloodReportByID(floodReportID) {

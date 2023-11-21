@@ -11,6 +11,13 @@ function constructBaseFloodReport() {
     cancelIcon.className = 'bi bi-x-circle';
     cancelButton.appendChild(cancelIcon);
 
+    const updateButton = document.createElement('button');
+    updateButton.className = 'update-flood-report-button';
+
+    const updateIcon = document.createElement('i');
+    updateIcon.className = 'bi bi-pencil-square';
+    updateButton.appendChild(updateIcon);
+
     const timestampHeader = document.createElement('h3');
     timestampHeader.className = 'time-reported-header';
     timestampHeader.textContent = 'Time Reported';
@@ -33,6 +40,7 @@ function constructBaseFloodReport() {
     descriptionBody.className = 'description-body';
 
     floodReport.append(cancelButton);
+    floodReport.append(updateButton);
     floodReport.append(timestampHeader);
     floodReport.append(timestampBody);
     floodReport.append(addressHeader);
@@ -56,18 +64,26 @@ function registerCancelHandler(button, location, floodReportID) {
     });
 }
 
+function registerUpdateHandler(button, floodReportID) {
+    button.addEventListener('click', function () {
+        updateFloodReport(floodReportID);
+    });
+}
+
 const baseFloodReport = constructBaseFloodReport();
+
+function formatLocation(address, city, state, zipcode) {
+    return address + '<br>' + city + ', ' + state + ' ' + zipcode;
+}
 
 function createFloodReport(floodReport) {
     const timestamp = floodReport.time;
-    const address =
-        floodReport.address +
-        '<br>' +
-        floodReport.city +
-        ', ' +
-        floodReport.state +
-        ' ' +
-        floodReport.zipcode;
+    const address = formatLocation(
+        floodReport.address,
+        floodReport.city,
+        floodReport.state,
+        floodReport.zipcode,
+    );
     const description = floodReport.description;
 
     const newFloodReport = baseFloodReport.cloneNode(true);
@@ -79,6 +95,10 @@ function createFloodReport(floodReport) {
     registerCancelHandler(
         newFloodReport.querySelector('.cancel-flood-report-button'),
         address,
+        floodReport.id,
+    );
+    registerUpdateHandler(
+        newFloodReport.querySelector('.update-flood-report-button'),
         floodReport.id,
     );
 
@@ -99,6 +119,10 @@ function deleteFloodReport(floodReportID) {
             );
         },
     });
+}
+
+function updateFloodReport(floodReportID) {
+    window.location.href = '/floodNotices/update/' + floodReportID;
 }
 
 function displayAllFloodReports() {
@@ -141,6 +165,26 @@ $(document).ready(() => {
         const element = $(query);
         if (element.length > 0) {
             element.remove();
+        }
+        $('#flood-reports-container').scrollTop(
+            $('#flood-reports-container')[0].scrollHeight,
+        );
+    });
+    socket.on('updated-flood-report', (floodReport) => {
+        const query = `[flood-report-id="${floodReport.id}"]`;
+        const element = $(query);
+        if (element.length > 0) {
+            element
+                .find('.location-body')
+                .html(
+                    formatLocation(
+                        floodReport.address,
+                        floodReport.city,
+                        floodReport.state,
+                        floodReport.zipcode,
+                    ),
+                );
+            element.find('.description-body').text(floodReport.description);
         }
         $('#flood-reports-container').scrollTop(
             $('#flood-reports-container')[0].scrollHeight,

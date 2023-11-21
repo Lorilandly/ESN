@@ -17,7 +17,8 @@ RETURNING id;
 `;
 
 const getAllFloodReports = `
-SELECT * FROM floodReports;
+SELECT * FROM floodReports
+ORDER BY floodReports.time ASC;
 `;
 
 const getFloodReportByID = `
@@ -38,6 +39,10 @@ WHERE id = $1;
 `;
 
 class FloodReportModel {
+    /**
+     * Constructs new Flood Report Model with provided object's fields.
+     * @param {*} floodReportData
+     */
     constructor({ address, city, state, zipcode, description, time }) {
         this.address = address;
         this.city = city;
@@ -49,11 +54,18 @@ class FloodReportModel {
 
     static dbPoolInstance = null;
 
+    /**
+     * Initializes this model with the provided db connection.
+     * @param {*} dbPool
+     */
     static async initModel(dbPool) {
         FloodReportModel.dbPoolInstance = dbPool;
         await FloodReportModel.dbPoolInstance.query(createFloodReportTable);
     }
 
+    /**
+     * Saves Flood Report Model to the database.
+     */
     async persist() {
         const res = await FloodReportModel.dbPoolInstance.query(
             insertFloodReport,
@@ -69,6 +81,10 @@ class FloodReportModel {
         return res.rows[0].id;
     }
 
+    /**
+     * Gets all Flood Reports.
+     * @returns Array of flood report data.
+     */
     static async getAll() {
         return FloodReportModel.dbPoolInstance
             .query(getAllFloodReports)
@@ -81,6 +97,11 @@ class FloodReportModel {
             });
     }
 
+    /**
+     * Finds flood report with provided ID.
+     * @param {string} floodReportID
+     * @returns Flood report model if found, else null
+     */
     static async findByID(floodReportID) {
         const queryResponse = await FloodReportModel.dbPoolInstance.query(
             getFloodReportByID,
@@ -96,10 +117,16 @@ class FloodReportModel {
             state: record.state,
             zipcode: record.zipcode,
             description: record.description,
-            time: record.time,
+            time: record.time.toLocaleString(),
         });
     }
 
+    /**
+     * Updates provided fields for flood report with ID.
+     * @param {string} floodReportID
+     * @param {*} fields
+     * @returns Flood Report Data if successful, else null
+     */
     static async updateByID(floodReportID, fields) {
         const floodReport = await FloodReportModel.findByID(floodReportID);
         if (floodReport === null) {
@@ -112,21 +139,28 @@ class FloodReportModel {
         zipcode = zipcode ?? floodReport.zipcode;
         description = description ?? floodReport.description;
 
-        const queryResponse = FloodReportModel.dbPoolInstance.query(
+        const queryResponse = await FloodReportModel.dbPoolInstance.query(
             updateFloodReportByID,
             [floodReportID, address, city, state, zipcode, description],
         );
-        const record = queryResponse.rows[0];
-        return new FloodReportModel({
-            address: record.address,
-            city: record.city,
-            state: record.state,
-            zipcode: record.zipcode,
-            description: record.description,
-            time: record.time,
-        });
+        if (queryResponse.rowCount === 0) {
+            return null;
+        }
+        return {
+            id: floodReportID,
+            address,
+            city,
+            state,
+            zipcode,
+            description,
+        };
     }
 
+    /**
+     * Deletes Flood Report by ID.
+     * @param {string} floodReportID
+     * @returns true if successful, else false
+     */
     static async deleteByID(floodReportID) {
         const queryResponse = await FloodReportModel.dbPoolInstance.query(
             deleteFloodReportByID,

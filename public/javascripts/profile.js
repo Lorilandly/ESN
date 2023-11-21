@@ -3,9 +3,27 @@ $(document).ready(async () => {
     $('#username').text((await window.user).username);
 });
 
-async function updateProfile(e) { // eslint-disable-line no-unused-vars
-    e.preventDefault();
-    e.stopPropagation();
+function removeEntry(ele) { // eslint-disable-line no-unused-vars
+    const inputBox = $(ele).children('input:first');
+    const key = inputBox.attr('id');
+    $.ajax({
+        url: '/users/profile',
+        method: 'DELETE',
+        data: { key },
+        dataType: 'json',
+        success: () => {
+            $(ele).remove();
+        },
+        error: (err) => {
+            console.error(err);
+            inputBox.addClass('is-invalid');
+        },
+    });
+}
+
+async function updateProfile(event) { // eslint-disable-line no-unused-vars
+    event.preventDefault();
+    event.stopPropagation();
     $('#profileSubmit')
         .prop('disabled', true)
         .append('<span class="spinner-border spinner-border-sm"></span>');

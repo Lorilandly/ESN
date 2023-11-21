@@ -7,7 +7,6 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
         <link href="/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-        <script src="/javascripts/profile.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <link href="/stylesheets/layout.css" rel="stylesheet" type="text/css">
         <link href="/stylesheets/profile.css" rel="stylesheet" type="text/css">
@@ -16,65 +15,66 @@
     <div class="main-container">
         <%- include('./header.ejs') %>
         <div class = "container-fluid" style="overflow-y: auto; height: 100%;">
-            <form onsubmit="updateProfile(event)" id="profileForm">
-                <div class="container">
-                    <h2>Your Name</h2>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Gender</span>
-                        <input type="text" class="form-control">
-                        <button class="btn btn-danger" type="button" id="deleteButton">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Age</span>
-                        <input type="text" class="form-control">
-                        <button class="btn btn-danger" type="button" id="deleteButton">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                    <!-- Profile rows will be dynamically added here -->
+            <div class="container">
+                <h2 id="username">Name</h2>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Gender</span>
+                    <input type="text" form="profileForm" class="form-control">
+                    <button class="btn btn-danger" type="button" id="deleteButton">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+                
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Age</span>
+                    <input type="text" form="profileForm" class="form-control">
+                    <button class="btn btn-danger" type="button" id="deleteButton">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+                <!-- Profile rows will be dynamically added here -->
 
-                    <div class="input-group mb-3 ms-auto" style="width: 35%">
-                        <input type="text" class="form-control" style="background-color: #f8f9fa;">
-                        <button class="btn btn-success" type="button" id="addButton">
-                            <i class="bi bi-plus-lg"></i>
-                        </button>
-                    </div>
+                <div class="input-group mb-3 ms-auto" style="width: 35%">
+                    <input type="text" class="form-control" style="background-color: #f8f9fa;">
+                    <button class="btn btn-success" type="button" id="addButton">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
 
-                    <h2>Emergency Contact</h2>
-                    <div class="row g-3">
-                        <div class="col">
-                            <label for="emctName">Name</label>
-                            <input type="text" class="form-control" id="_emct_name" placeholder="">
-                        </div>
-                        <div class="col">
-                            <label for="_emct_relation">Relationship</label>
-                            <select class="form-select" id="_emct_relation">
-                                <option value="mother">Mother</option>
-                                <option value="father">Father</option>
-                                <option value="partner">Partner</option>
-                                <option value="child">Child</option>
-                                <option value="relative">Other Relatives</option>
-                                <option value="friend">Friend</option>
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="_emct_email" placeholder="">
-                                <label for="_emct_email">Email address</label>
-                                <div class="invalid-feedback">
-                                    Please provide a valid email.
-                                </div>
+                <h3>Emergency Contact</h3>
+                <div class="row g-3">
+                    <div class="col">
+                        <label for="emctName">Name</label>
+                        <input type="text" form="profileForm" class="form-control" id="_emct_name" placeholder="">
+                    </div>
+                    <div class="col">
+                        <label for="_emct_relation">Relationship</label>
+                        <select form="profileForm" class="form-select" id="_emct_relation">
+                            <option value="mother">Mother</option>
+                            <option value="father">Father</option>
+                            <option value="partner">Partner</option>
+                            <option value="child">Child</option>
+                            <option value="relative">Other Relatives</option>
+                            <option value="friend">Friend</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
+                            <input type="email" form="profileForm" class="form-control" id="_emct_email" placeholder="">
+                            <label for="_emct_email">Email address</label>
+                            <div class="invalid-feedback">
+                                Please provide a valid email.
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" id="profileSubmit">Submit </button>
                 </div>
-            </form>
+                <form onsubmit="updateProfile(event)" id="profileForm" class="needs-validation">
+                    <button type="submit" class="btn btn-primary" id="profileSubmit">Submit </button>
+                </form>
+            </div>
         </div>
         <%- include('./footer.ejs') %>
     </div>
+    <script src="/javascripts/profile.js"></script>
 </body>
 </html>

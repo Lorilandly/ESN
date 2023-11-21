@@ -2,7 +2,7 @@
     width: 30%; /* Adjust the percentage as needed */
 }
 
-h2 {
+h2, h3 {
     position: sticky;
     margin-top: 3rem;
     left: 0;

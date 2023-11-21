@@ -1,29 +1,35 @@
-$(document).ready(() => {
-    $('#profile-form').submit((event) => {
-        event.preventDefault();
-        /*
-        $.ajax({
-            url: '/users/status',
-            method: 'PUT',
-            data: { status: $('#status').find(':selected').val() },
-            dataType: 'json',
-            success: () => {
-                location.reload();
-            },
-            error: (err) => {
-                console.error('status update somehow error', err);
-            },
-        });
-        */
-    });
+$(document).ready(async () => {
+    document.getElementById('search-bar').remove();
+    $('#username').text((await window.user).username);
 });
 
 async function updateProfile(e) { // eslint-disable-line no-unused-vars
     e.preventDefault();
+    e.stopPropagation();
     $('#profileSubmit')
         .prop('disabled', true)
         .append('<span class="spinner-border spinner-border-sm"></span>');
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    $('#profileSubmit').prop('disabled', false).empty().text('Submit ');
+    const reqObj = {};
+    const profileForm = document.forms.profileForm;
+    for (let i = 0; i < profileForm.length; i++) {
+        const ele = profileForm[i];
+        if (ele.tagName === 'BUTTON') {
+            continue;
+        }
+        reqObj[ele.id] = ele.value;
+    }
+
+    $.ajax({
+        url: '/users/profile',
+        method: 'PUT',
+        data: reqObj,
+        dataType: 'json',
+        success: () => {
+            location.reload();
+        },
+        error: (err) => {
+            console.error('Profile update error', err);
+        },
+    });
     return false;
 }

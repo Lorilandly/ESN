@@ -1,49 +1,8 @@
 /* global io otherId */
 const socket = io();
 
-function shakeIndicator() {
-    const indicator = document.getElementById('notification');
-    indicator.style.animation = 'shake 0.1s';
-    indicator.style.animationIterationCount = '5';
-
-    indicator.addEventListener('animationend', () => {
-        indicator.style.animation = '';
-    });
-}
-function getCurrentUser() {
-    return new Promise((resolve, reject) => {
-        $.ajax('/users/current', {
-            method: 'GET',
-            datatype: 'json',
-            success: (response) => {
-                resolve(response);
-            },
-            error: (error) => {
-                reject(error);
-            },
-        });
-    });
-}
-
-async function changeReadStatus() {
-    //
-    const receiverId = await getCurrentUser();
-    $.ajax('/messages/private/readStatus', {
-        method: 'PUT',
-        datatype: 'json',
-        data: { receiverId: receiverId.id },
-        success: () => {},
-        error: (error) => {
-            console.error('Failed to update messages read status:', error);
-        },
-    });
-}
-
-function setSearchType(type) {
-    localStorage.setItem('searchType', type);
-}
-
 $(document).ready(() => {
+    window.user = getCurrentUser();
     $.ajax({
         url: '/messages/private/new',
         method: 'GET',
@@ -100,7 +59,7 @@ $(document).ready(() => {
         'create private message',
         async ({ username, time, status, body, userId, receiverId }) => {
             const senderId = userId;
-            const user = await getCurrentUser();
+            const user = await window.user;
             const currentId = user.id;
             // Parsing issue so use == instead of ===, fix later!
             if (currentId === receiverId) {
@@ -135,6 +94,47 @@ $(document).ready(() => {
         showNewMessageWarning(false);
     });
 });
+
+function shakeIndicator() {
+    const indicator = document.getElementById('notification');
+    indicator.style.animation = 'shake 0.1s';
+    indicator.style.animationIterationCount = '5';
+
+    indicator.addEventListener('animationend', () => {
+        indicator.style.animation = '';
+    });
+}
+function getCurrentUser() {
+    return new Promise((resolve, reject) => {
+        $.ajax('/users/current', {
+            method: 'GET',
+            datatype: 'json',
+            success: (response) => {
+                resolve(response);
+            },
+            error: (error) => {
+                reject(error);
+            },
+        });
+    });
+}
+
+function setSearchType(type) {
+    localStorage.setItem('searchType', type);
+}
+
+async function changeReadStatus() {
+    const receiverId = await window.user;
+    $.ajax('/messages/private/readStatus', {
+        method: 'PUT',
+        datatype: 'json',
+        data: { receiverId: receiverId.id },
+        success: () => {},
+        error: (error) => {
+            console.error('Failed to update messages read status:', error);
+        },
+    });
+}
 
 function getStatusColor(status) {
     let color = '';
@@ -178,7 +178,7 @@ async function searchInformation() {
     }
     try {
         userIdOne = otherId;
-        userIdTwo = (await getCurrentUser()).id;
+        userIdTwo = (await window.user).id;
     } catch (err) {
         userIdOne = null;
         userIdTwo = null;

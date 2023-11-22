@@ -73,7 +73,7 @@ class ProfileModel {
 
     async updateProfileEntry() {
         // if key is special emergency one
-        if (this.emergencyEntry()) {
+        if (this.reservedEntry()) {
             try {
                 await ProfileModel.dbPoolInstance.query('BEGIN');
                 await ProfileModel.dbPoolInstance.query(updateEmctEntry, [
@@ -96,10 +96,10 @@ class ProfileModel {
     }
 
     async addProfileEntry() {
-        if (this.key && !this.emergencyEntry()) {
+        if (this.key && !this.reservedEntry()) {
             return ProfileModel.dbPoolInstance.query(addNewKey, [
                 this.userId,
-                this.key,
+                this.key.toLowerCase(),
             ]);
         } else {
             throw new Error('Reserved profile key!');
@@ -108,7 +108,7 @@ class ProfileModel {
 
     async removeProfileEntry() {
         // key cannot be special emergency one
-        if (!this.emergencyEntry()) {
+        if (!this.reservedEntry()) {
             return ProfileModel.dbPoolInstance.query(removeEntry, [
                 this.userId,
                 this.key,
@@ -123,8 +123,8 @@ class ProfileModel {
      *
      * @returns {boolean}
      */
-    emergencyEntry() {
-        if (this.key.startsWith('_emct_')) {
+    reservedEntry() {
+        if (this.key.startsWith('_')) {
             return true;
         } else {
             return false;

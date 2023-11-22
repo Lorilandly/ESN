@@ -16,36 +16,25 @@
         <%- include('./header.ejs') %>
         <div class = "container-fluid" style="overflow-y: auto; height: 100%;">
             <div class="container">
-                <h2 id="username">Name</h2>
+                <div class="row title">
+                    <div class="col">
+                        <h1 id="username">Name</h2>
+                    </div>
+                    <form onsubmit="addEntry(event, this)" class="col mb-3">
+                        <div class="input-group ms-auto" style="width: 70%">
+                            <input type="text" class="form-control" style="background-color: #f8f9fa;">
+                            <button class="btn btn-success" type="submit" id="addButton">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
                 <div id="profileEntryList">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Gender</span>
-                        <input type="text" form="profileForm" class="form-control" id="gender">
-                        <button class="btn btn-danger" type="button" id="deleteButton" onclick="removeEntry(this.parentNode)">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Age</span>
-                        <input type="text" form="profileForm" class="form-control" id="age">
-                        <button class="btn btn-danger" type="button" id="deleteButton" onclick="removeEntry(this.parentNode)">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
                     <!-- Profile rows will be dynamically added here -->
                 </div>
 
-                <form onsubmit="addEntry(event, this)">
-                    <div class="input-group mb-3 ms-auto" style="width: 35%">
-                        <input type="text" class="form-control" style="background-color: #f8f9fa;">
-                        <button class="btn btn-success" type="submit" id="addButton">
-                            <i class="bi bi-plus-lg"></i>
-                        </button>
-                    </div>
-                </form>
-
-                <h3>Emergency Contact</h3>
+                <h3 class="title">Emergency Contact</h3>
                 <div class="row g-3">
                     <div class="col">
                         <label for="emctName">Name</label>

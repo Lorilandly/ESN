@@ -1,13 +1,37 @@
 $(document).ready(async () => {
     document.getElementById('search-bar').remove();
     $('#username').text((await window.user).username);
+    $.ajax({
+        url: '/users/profile',
+        method: 'GET',
+        dataType: 'json',
+        success: displayEntry,
+        error: console.error,
+    });
 });
+
+function displayEntry(data) {
+    data.forEach((entry) => {
+        if (!entry.key.startsWith('_')) {
+            $('#profileEntryList').append(`
+                <div class="input-group mb-3">
+                    <span class="input-group-text">${entry.key}</span>
+                    <input type="text" form="profileForm" class="form-control" id=${entry.key}>
+                    <button class="btn btn-danger" type="button" id="deleteButton" onclick="removeEntry(this.parentNode)">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `);
+        }
+        $(`#${entry.key}`).val(entry.val);
+    });
+}
 
 /* eslint-disable no-unused-vars */
 function addEntry(event, form) {
     event.preventDefault();
     event.stopPropagation();
-    const key = form[0].value;
+    const key = form[0].value.toLowerCase();
     $.ajax({
         url: '/users/profile',
         method: 'POST',
@@ -29,6 +53,7 @@ function addEntry(event, form) {
             $(form[0]).addClass('is-invalid');
         },
     });
+    form.reset();
     return false;
 }
 

@@ -1,8 +1,9 @@
 .input-group .input-group-text {
     width: 30%; /* Adjust the percentage as needed */
+    text-transform:capitalize;
 }
 
-h2, h3 {
+.title {
     position: sticky;
     margin-top: 3rem;
     left: 0;

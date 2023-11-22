@@ -10,7 +10,7 @@ async function getUserProfile(id, withEmergencyContact) {
     return ProfileModel.getUserProfile(id, withEmergencyContact).then(
         (profiles) =>
             profiles.filter((profile) =>
-                withEmergencyContact ? true : !profile.emergencyEntry(),
+                withEmergencyContact ? true : !profile.reservedEntry(),
             ),
     );
 }

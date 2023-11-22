@@ -18,6 +18,7 @@ import performanceTestRouter from './routes/performanceTest.js';
 import usersRouter from './routes/users.js';
 import messagesRouter from './routes/messages.js';
 import searchRouter from './routes/search.js';
+import shareLocationRouter from './routes/shareLocation.js';
 
 import statusRouter from './routes/status.js';
 import { fileURLToPath } from 'url';
@@ -59,5 +60,6 @@ app.use('/newMessages', newMessagesRouter);
 app.use('/users', usersRouter);
 app.use('/messages', messagesRouter);
 app.use('/search', searchRouter);
+app.use('/locations', shareLocationRouter);
 
 export default app;

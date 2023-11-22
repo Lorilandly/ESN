@@ -14,6 +14,7 @@ import {
     handleSocketConnections,
 } from '../controllers/auth.js';
 import { initIOInstanceForChat } from '../controllers/message.js';
+import { initIOInstanceForLocation } from '../controllers/location.js';
 import { Server } from 'socket.io';
 
 /**
@@ -54,6 +55,7 @@ const io = new Server(server);
  * Get test database configs for performance test controller configuration.
  */
 initIOInstanceForChat(io);
+initIOInstanceForLocation(io);
 handleSocketConnections(io);
 
 /**

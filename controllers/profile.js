@@ -22,10 +22,18 @@ async function updateUserProfile(id, updates) {
     });
 }
 
+/**
+ * @param {number} id
+ * @param {string} key
+ */
 async function addUserProfile(id, key) {
     return new ProfileModel(id, key, null).addProfileEntry();
 }
 
+/**
+ * @param {number} id
+ * @param {string} key
+ */
 async function removeUserProfile(id, key) {
     return new ProfileModel(id, key, null).removeProfileEntry();
 }

@@ -122,7 +122,7 @@ router.put(
     '/profile',
     passport.authenticate('jwt', { session: false }),
     (req, res) =>
-        updateUserProfile(req.user.id, req.query)
+        updateUserProfile(req.user.id, req.body)
             .then(() => res.status(200).json({}))
             .catch((err) => {
                 console.error(err);
@@ -135,7 +135,7 @@ router.post(
     '/profile',
     passport.authenticate('jwt', { session: false }),
     (req, res) =>
-        addUserProfile(req.user.id, req.query.key)
+        addUserProfile(req.user.id, req.body.key)
             .then(() => res.status(200).json({}))
             .catch((err) => {
                 console.error(err);
@@ -148,7 +148,7 @@ router.delete(
     '/profile',
     passport.authenticate('jwt', { session: false }),
     (req, res) =>
-        removeUserProfile(req.user.id, req.query.key)
+        removeUserProfile(req.user.id, req.body.key)
             .then(() => res.status(200).json({}))
             .catch((err) => {
                 console.error(err);

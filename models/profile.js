@@ -96,7 +96,7 @@ class ProfileModel {
     }
 
     async addProfileEntry() {
-        if (!this.emergencyEntry()) {
+        if (this.key && !this.emergencyEntry()) {
             return ProfileModel.dbPoolInstance.query(addNewKey, [
                 this.userId,
                 this.key,

@@ -20,8 +20,8 @@
                     <div class="col">
                         <h1 id="username">Name</h2>
                     </div>
-                    <form onsubmit="addEntry(event, this)" class="col mb-3">
-                        <div class="input-group ms-auto" style="width: 70%">
+                    <form onsubmit="addEntry(event, this)" class="col mb-3 needs-validation">
+                        <div class="input-group ms-auto" style="width: 70%; min-width: 150px">
                             <input type="text" class="form-control" style="background-color: #f8f9fa;">
                             <button class="btn btn-success" type="submit" id="addButton">
                                 <i class="bi bi-plus-lg"></i>
@@ -32,6 +32,9 @@
 
                 <div id="profileEntryList">
                     <!-- Profile rows will be dynamically added here -->
+                </div>
+                <div id="profilePlaceholder" class="alert alert-info" role="alert">
+                    <strong>No entries available. Add an entry using the input box above.</strong>
                 </div>
 
                 <h3 class="title">Emergency Contact</h3>

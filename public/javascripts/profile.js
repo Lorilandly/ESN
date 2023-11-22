@@ -11,6 +11,9 @@ $(document).ready(async () => {
 });
 
 function displayEntry(data) {
+    if (data.length) {
+        $('#profilePlaceholder').hide();
+    }
     data.forEach((entry) => {
         if (!entry.key.startsWith('_')) {
             $('#profileEntryList').append(`
@@ -31,6 +34,7 @@ function displayEntry(data) {
 function addEntry(event, form) {
     event.preventDefault();
     event.stopPropagation();
+    $(form[0]).removeClass('is-invalid');
     const key = form[0].value.toLowerCase();
     $.ajax({
         url: '/users/profile',
@@ -38,6 +42,7 @@ function addEntry(event, form) {
         data: { key },
         dataType: 'json',
         success: () => {
+            $('#profilePlaceholder').hide();
             $('#profileEntryList').append(`
                 <div class="input-group mb-3">
                     <span class="input-group-text">${key}</span>
@@ -68,6 +73,9 @@ function removeEntry(ele) {
         dataType: 'json',
         success: () => {
             $(ele).remove();
+            if (!$('#profileEntryList').children().length) {
+                $('#profilePlaceholder').show();
+            }
         },
         error: (err) => {
             console.error(err);

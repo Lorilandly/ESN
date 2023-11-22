@@ -19,14 +19,14 @@ function displayEntry(data) {
             $('#profileEntryList').append(`
                 <div class="input-group mb-3">
                     <span class="input-group-text">${entry.key}</span>
-                    <input type="text" form="profileForm" class="form-control" id=${entry.key}>
+                    <input type="text" form="profileForm" class="form-control" id="${entry.key}">
                     <button class="btn btn-danger" type="button" id="deleteButton" onclick="removeEntry(this.parentNode)">
                         <i class="bi bi-trash"></i>
                     </button>
                 </div>
             `);
         }
-        $(`#${entry.key}`).val(entry.val);
+        $(`[id='${entry.key}']`).val(entry.val);
     });
 }
 
@@ -46,7 +46,7 @@ function addEntry(event, form) {
             $('#profileEntryList').append(`
                 <div class="input-group mb-3">
                     <span class="input-group-text">${key}</span>
-                    <input type="text" form="profileForm" class="form-control" id=${key}>
+                    <input type="text" form="profileForm" class="form-control" id="${key}">
                     <button class="btn btn-danger" type="button" id="deleteButton" onclick="removeEntry(this.parentNode)">
                         <i class="bi bi-trash"></i>
                     </button>

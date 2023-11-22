@@ -1,11 +1,10 @@
-function createSubmitButton(aidRequestId) {
-    const form = document.createElement('form');
-    form.id = 'create-aid-request-form';
-    form.method = 'put';
-    form.action = '/aidRequests/' + aidRequestId;
+function createSubmitButton() {
+    const form = document.getElementById('create-aid-request-form');
+    form.method = 'post';
+    form.action = '/aidRequests';
 
     const submitButton = document.createElement('button');
-    submitButton.textContent = 'Save My Edits';
+    submitButton.textContent = 'Submit Aid Request';
     submitButton.className = 'post-button';
     submitButton.setAttribute('type', 'submit');
 
@@ -15,6 +14,7 @@ function createSubmitButton(aidRequestId) {
 }
 
 $(document).ready(() => {
+    createSubmitButton();
     // create aid request
     $('#create-aid-request-form').submit(async (event) => {
         event.preventDefault();
@@ -31,12 +31,20 @@ $(document).ready(() => {
                 priority: priority,
             },
             dataType: 'json',
-            error: (error) => {
-                console.error('API Error:', error);
+            success: (_) => {
+                window.location.href = '/aidRequestsPage/submitted';
+            },
+            error: (res) => {
+                console.log(res.responseJSON.error);
+                if (res.responseJSON.error === 'Invalid title') {
+                    $('#alert-msg span').text(
+                        'Title length must be between 3 and 10',
+                    );
+                    $('#title').val('');
+                } else {
+                    console.error('API Error:', error);
+                }
             },
         });
-
-        window.location.href = '/aidRequestsPage/submitted';
     });
-
 });

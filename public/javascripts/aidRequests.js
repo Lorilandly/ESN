@@ -5,29 +5,65 @@ function getAidRequestPageTypeFromPath() {
 
 const pageType = getAidRequestPageTypeFromPath();
 
-function showSection(aidRequestPageType) {
+const dropDownMenu = document.getElementById('aid-request-category-menu');
+const selectedSectionText = document.getElementById('dropdown-selected');
+
+function toggleDropDown() {
+    const dropDownIcon = document.getElementById('dropdown-icon');
+    const isOpen = dropDownMenu.classList.contains('dropdown-open');
+    if (isOpen) {
+        dropDownMenu.classList.add('dropdown-close');
+        dropDownMenu.classList.remove('dropdown-open');
+    } else {
+        dropDownMenu.classList.add('dropdown-open');
+        dropDownMenu.classList.remove('dropdown-close');
+    }
+    dropDownIcon.classList.toggle('bi-caret-right');
+}
+
+function showSectionAndToggle(aidRequestPageType, item) {
+    toggleDropDown();
+    showSection(aidRequestPageType, item);
+}
+
+function showSection(aidRequestPageType, item) {
+    var items = document.querySelectorAll('#aid-request-category-menu a');
+    items.forEach((a) => {
+        a.classList.remove('selected');
+    });
+
+    item.classList.add('selected');
+
     switch (aidRequestPageType) {
         case 'all':
+            selectedSectionText.innerText = 'All Aid Requests';
             showAllAidRequests();
             break;
         case 'submitted':
+            selectedSectionText.innerText = 'Submitted Aid Requests';
             showSubmittedAidRequests();
             break;
         case 'accepted':
+            selectedSectionText.innerText = 'Accepted Aid Requests';
             showAcceptedAidRequests();
             break;
     }
 }
 
 function createCreateButton() {
+    const createButtonContainer = document.createElement('div');
+    createButtonContainer.className = 'post-button-container';
+
     const createButton = document.createElement('button');
     createButton.textContent = 'Create Aid Request';
     createButton.className = 'post-button';
 
+    createButtonContainer.appendChild(createButton);
+
     createButton.addEventListener('click', function () {
         window.location.href = '/aidRequestsPage/new';
     });
-    return createButton;
+    return createButtonContainer;
 }
 
 function createViewButton(aidRequestId) {
@@ -39,7 +75,7 @@ function createViewButton(aidRequestId) {
     viewButton.appendChild(viewIcon);
 
     viewButton.addEventListener('click', function () {
-        window.location.href = '/aidRequestsPage/detail/' + aidRequestId;;
+        window.location.href = '/aidRequestsPage/detail/' + aidRequestId;
     });
     return viewButton;
 }
@@ -59,36 +95,14 @@ function createEditButton(aidRequestId) {
     return editButton;
 }
 
-function createCancelButton(aidRequestId) {
-    const cancelButton = document.createElement('button');
-    cancelButton.textContent = 'Cancel Aid Request';
-    cancelButton.setAttribute('class', 'cancel-button');
-
-    cancelButton.addEventListener('click', function () {
-        $.ajax('/aidRequests/', {
-            method: 'DELETE',
-            data: {
-                aidRequestId: aidRequestId
-            },
-            dataType: 'json',
-            error: (error) => {
-                console.error('API Error:', error);
-            },
-        });
-
-        window.location.href = '/aidRequestsPage/submitted';
-    });
-    return cancelButton;
-}
-
 function createResolveButton(aidRequestId) {
     const resolveButton = document.createElement('button');
     resolveButton.setAttribute('class', 'icon-button');
     resolveButton.addEventListener('click', function () {
-        $.ajax('/aidRequests/resolved', {
-            method: 'POST',
+        $.ajax('/aidRequests/resolved/' + aidRequestId, {
+            method: 'PUT',
             data: {
-                aidRequestId: aidRequestId
+                aidRequestId: aidRequestId,
             },
             dataType: 'json',
             error: (error) => {
@@ -106,47 +120,76 @@ function createResolveButton(aidRequestId) {
     return resolveButton;
 }
 
+function showTableHeader(titles) {
+    const aidRequestTable = document.createElement('table');
+    aidRequestTable.id = 'aid-request-table';
+    const aidRequestTableHeaderRow = document.createElement('tr');
+    titles.forEach((title) => {
+        const aidRequestTableHeaderTitle = document.createElement('th');
+        aidRequestTableHeaderTitle.innerText = title;
+        aidRequestTableHeaderRow.appendChild(aidRequestTableHeaderTitle);
+    });
+
+    aidRequestTable.appendChild(aidRequestTableHeaderRow);
+
+    return aidRequestTable;
+}
+
 function showAllAidRequests() {
+    const aidRequestTable = showTableHeader([
+        'Name',
+        'Title',
+        'Priority',
+        'Accepted',
+        'View',
+    ]);
+
     $.ajax('/aidRequests/all', {
         method: 'GET',
         datatype: 'json',
         success: async (res) => {
             const aidRequests = res.aidRequests;
+            console.log(aidRequests);
             const aidRequestPageContainer = document.getElementById(
-                'aid-request-page-container',
+                'aid-request-page-list',
             );
             // Clear previous content
             aidRequestPageContainer.innerHTML = '';
             if (aidRequests && aidRequests.length > 0) {
                 aidRequests.forEach((aidRequest) => {
-                    const aidRequestElement = document.createElement('div');
-                    aidRequestElement.className = 'aid-request';
+                    const aidRequestItem = document.createElement('tr');
+                    aidRequestItem.className = 'aid-request-item';
 
-                    const creatorSpan = document.createElement('span');
+                    const creatorSpan = document.createElement('td');
                     creatorSpan.className = 'aid-request-creator';
                     creatorSpan.textContent = aidRequest.creatorName;
-                    aidRequestElement.appendChild(creatorSpan);
+                    aidRequestItem.appendChild(creatorSpan);
 
-                    const titleSpan = document.createElement('span');
+                    const titleSpan = document.createElement('td');
                     titleSpan.className = 'aid-request-title';
                     titleSpan.textContent = aidRequest.title;
-                    aidRequestElement.appendChild(titleSpan);
+                    aidRequestItem.appendChild(titleSpan);
 
-                    const prioritySpan = document.createElement('span');
+                    const prioritySpan = document.createElement('td');
                     prioritySpan.className = 'aid-request-priority';
                     prioritySpan.textContent = aidRequest.priority;
-                    aidRequestElement.appendChild(prioritySpan);
+                    aidRequestItem.appendChild(prioritySpan);
 
-                    const statusSpan = document.createElement('span');
+                    const statusSpan = document.createElement('td');
                     statusSpan.className = 'aid-request-status';
-                    statusSpan.textContent = aidRequest.status === 'ACCEPTED' ? 'Y' : 'N';
-                    aidRequestElement.appendChild(statusSpan);
+                    statusSpan.textContent =
+                        aidRequest.status === 'ACCEPTED' ? 'Y' : 'N';
+                    aidRequestItem.appendChild(statusSpan);
 
-                    aidRequestElement.appendChild(createViewButton(aidRequest.id));
+                    const buttonSpan = document.createElement('td');
+                    buttonSpan.className = 'aid-request-action';
+                    buttonSpan.appendChild(createViewButton(aidRequest.id));
+                    aidRequestItem.appendChild(buttonSpan);
 
-                    aidRequestPageContainer.appendChild(aidRequestElement);
+                    aidRequestTable.appendChild(aidRequestItem);
                 });
             }
+            aidRequestPageContainer.appendChild(aidRequestTable);
             aidRequestPageContainer.appendChild(createCreateButton());
         },
         error: (res) => {
@@ -156,6 +199,14 @@ function showAllAidRequests() {
 }
 
 function showSubmittedAidRequests() {
+    const aidRequestTable = showTableHeader([
+        'Title',
+        'Priority',
+        'Accepted',
+        'Edit',
+        'Resolve',
+    ]);
+
     $.ajax('/aidRequests/submitted', {
         method: 'GET',
         datatype: 'json',
@@ -163,35 +214,49 @@ function showSubmittedAidRequests() {
             const aidRequests = res.aidRequests;
             console.log(aidRequests);
             if (aidRequests && aidRequests.length > 0) {
-                const aidRequestPageContainer = document.getElementById('aid-request-page-container');
+                const aidRequestPageContainer = document.getElementById(
+                    'aid-request-page-list',
+                );
                 // Clear previous content
                 aidRequestPageContainer.innerHTML = '';
 
                 aidRequests.forEach((aidRequest) => {
-                    const aidRequestElement = document.createElement('div');
-                    aidRequestElement.className = 'aid-request';
+                    const aidRequestItem = document.createElement('tr');
+                    aidRequestItem.className = 'aid-request-item';
 
-                    const titleSpan = document.createElement('span');
+                    const titleSpan = document.createElement('td');
                     titleSpan.className = 'aid-request-title';
                     titleSpan.textContent = aidRequest.title;
-                    aidRequestElement.appendChild(titleSpan);
+                    aidRequestItem.appendChild(titleSpan);
 
-                    const prioritySpan = document.createElement('span');
+                    const prioritySpan = document.createElement('td');
                     prioritySpan.className = 'aid-request-priority';
                     prioritySpan.textContent = aidRequest.priority;
-                    aidRequestElement.appendChild(prioritySpan);
+                    aidRequestItem.appendChild(prioritySpan);
 
-                    const statusSpan = document.createElement('span');
+                    const statusSpan = document.createElement('td');
                     statusSpan.className = 'aid-request-status';
-                    statusSpan.textContent = aidRequest.status === 'ACCEPTED' ? 'Y' : 'N';
-                    aidRequestElement.appendChild(statusSpan);
+                    statusSpan.textContent =
+                        aidRequest.status === 'ACCEPTED' ? 'Y' : 'N';
+                    aidRequestItem.appendChild(statusSpan);
 
-                    aidRequestElement.appendChild(createEditButton(aidRequest.id));
+                    const editSpan = document.createElement('td');
+                    editSpan.className = 'aid-request-edit';
+                    editSpan.appendChild(createEditButton(aidRequest.id));
+                    aidRequestItem.appendChild(editSpan);
+
+                    const resolveSpan = document.createElement('td');
+                    resolveSpan.className = 'aid-request-resolve';
                     if (aidRequest.status === 'ACCEPTED') {
-                        aidRequestElement.appendChild(createResolveButton(aidRequest.id));
+                        resolveSpan.appendChild(
+                            createResolveButton(aidRequest.id),
+                        );
                     }
-                    aidRequestPageContainer.appendChild(aidRequestElement);
+                    aidRequestItem.appendChild(resolveSpan);
+                    aidRequestTable.appendChild(aidRequestItem);
                 });
+
+                aidRequestPageContainer.appendChild(aidRequestTable);
             }
         },
         error: (res) => {
@@ -201,44 +266,60 @@ function showSubmittedAidRequests() {
 }
 
 function showAcceptedAidRequests() {
+    const aidRequestTable = showTableHeader([
+        'Name',
+        'Title',
+        'Priority',
+        'Accepted',
+        'View',
+    ]);
+
     $.ajax('/aidRequests/accepted', {
         method: 'GET',
         datatype: 'json',
         success: async (res) => {
             const aidRequests = res.aidRequests;
+            console.log(aidRequests);
+            const aidRequestPageContainer = document.getElementById(
+                'aid-request-page-list',
+            );
+            // Clear previous content
+            aidRequestPageContainer.innerHTML = '';
             if (aidRequests && aidRequests.length > 0) {
-                const aidRequestPageContainer = document.getElementById('aid-request-page-container');
-                // Clear previous content
-                aidRequestPageContainer.innerHTML = '';
-
                 aidRequests.forEach((aidRequest) => {
-                    const aidRequestElement = document.createElement('div');
-                    aidRequestElement.className = 'aid-request';
+                    const aidRequestItem = document.createElement('tr');
+                    aidRequestItem.className = 'aid-request-item';
 
-                    const creatorSpan = document.createElement('span');
+                    const creatorSpan = document.createElement('td');
                     creatorSpan.className = 'aid-request-creator';
                     creatorSpan.textContent = aidRequest.creatorName;
-                    aidRequestElement.appendChild(creatorSpan);
+                    aidRequestItem.appendChild(creatorSpan);
 
-                    const titleSpan = document.createElement('span');
+                    const titleSpan = document.createElement('td');
                     titleSpan.className = 'aid-request-title';
                     titleSpan.textContent = aidRequest.title;
-                    aidRequestElement.appendChild(titleSpan);
+                    aidRequestItem.appendChild(titleSpan);
 
-                    const prioritySpan = document.createElement('span');
+                    const prioritySpan = document.createElement('td');
                     prioritySpan.className = 'aid-request-priority';
                     prioritySpan.textContent = aidRequest.priority;
-                    aidRequestElement.appendChild(prioritySpan);
+                    aidRequestItem.appendChild(prioritySpan);
 
-                    const statusSpan = document.createElement('span');
+                    const statusSpan = document.createElement('td');
                     statusSpan.className = 'aid-request-status';
-                    statusSpan.textContent = aidRequest.status === 'ACCEPTED' ? 'Y' : 'N';
-                    aidRequestElement.appendChild(statusSpan);
+                    statusSpan.textContent =
+                        aidRequest.status === 'ACCEPTED' ? 'Y' : 'N';
+                    aidRequestItem.appendChild(statusSpan);
 
-                    aidRequestElement.appendChild(createViewButton(aidRequest.id));
+                    const buttonSpan = document.createElement('td');
+                    buttonSpan.className = 'aid-request-action';
+                    buttonSpan.appendChild(createViewButton(aidRequest.id));
+                    aidRequestItem.appendChild(buttonSpan);
 
-                    aidRequestPageContainer.appendChild(aidRequestElement);
+                    aidRequestTable.appendChild(aidRequestItem);
                 });
+
+                aidRequestPageContainer.appendChild(aidRequestTable);
             }
         },
         error: (res) => {
@@ -247,10 +328,22 @@ function showAcceptedAidRequests() {
     });
 }
 
+function getDropdownItemFromPageType(pageType) {
+    switch (pageType) {
+        case 'all':
+            return document.getElementById('all');
+        case 'submitted':
+            return document.getElementById('submitted');
+        case 'accepted':
+            return document.getElementById('accepted');
+    }
+}
+
 $(document).ready(() => {
     // show aid requests based on different page type
     const aidRequestPageType = getAidRequestPageTypeFromPath();
-    showSection(aidRequestPageType);
+    const dropdownItem = getDropdownItemFromPageType(aidRequestPageType);
+    showSection(aidRequestPageType, dropdownItem);
 
     // create aid request
     $('#create-aid-request-form').submit(async (event) => {
@@ -300,5 +393,4 @@ $(document).ready(() => {
 
         window.location.href = '/aidRequestsPage/submitted';
     });
-
 });

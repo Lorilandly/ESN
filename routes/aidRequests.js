@@ -8,8 +8,9 @@ import {
     getAidRequest,
     getSubmittedAidRequests,
     getAcceptedAidRequests,
-    acceptAidRequest,
     resolveAidRequest,
+    acceptAidRequest,
+    validTitle,
 } from '../controllers/aidRequest.js';
 const router = express.Router();
 
@@ -34,6 +35,9 @@ router.get('/all/:aidRequestId', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+    if (!validTitle(req.body.title)) {
+        return res.status(403).json({ error: 'Invalid title' });
+    }
     return createAidRequest({
         title: req.body.title,
         description: req.body.description,
@@ -41,10 +45,15 @@ router.post('/', async (req, res) => {
         creatorId: req.user.id,
         acceptorId: 0,
         status: 'SUBMITTED',
-    }).then(() => res.status(201).json({}));
+    })
+        .then(() => res.status(201).json({}))
+        .catch((err) => {
+            console.error(err);
+            return res.sendStatus(500);
+        });
 });
 
-router.put('/:aidRequestId', async (req, res) => {
+router.put('/all/:aidRequestId', async (req, res) => {
     return updateAidRequest(
         req.body.title,
         req.body.description,
@@ -53,8 +62,8 @@ router.put('/:aidRequestId', async (req, res) => {
     ).then(() => res.status(200).json({}));
 });
 
-router.delete('/', async (req, res) => {
-    return cancelAidRequest(req.query.aidRequestId).then(() =>
+router.delete('/:aidRequestId', async (req, res) => {
+    return cancelAidRequest(req.params.aidRequestId).then(() =>
         res.status(200).json({}),
     );
 });
@@ -78,7 +87,7 @@ router.get('/accepted', async (req, res) => {
 });
 
 router.put('/accepted/:aidRequestId', async (req, res) => {
-    return acceptAidRequest(req.params.aidRequestId).then(() =>
+    return acceptAidRequest(req.params.aidRequestId, req.user.id).then(() =>
         res.status(200).json({}),
     );
 });

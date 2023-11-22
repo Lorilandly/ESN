@@ -14,11 +14,11 @@ router.get('/detail/:aidRequestId', (req, res) => {
 });
 
 router.get('/new', (req, res) => {
-    return res.render('newAidRequest');
+    return res.render('aidRequestCreateForm');
 });
 
 router.get('/edit/:aidRequestId', (req, res) => {
-    return res.render('editAidRequest');
+    return res.render('aidRequestEditForm');
 });
 
 router.get('/submitted', (req, res) => {

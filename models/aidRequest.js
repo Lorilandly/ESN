@@ -22,13 +22,13 @@ FROM aidRequests
 JOIN users ON aidRequests.creator_id = users.id
 ORDER BY 
     CASE aidRequests.status
-        WHEN 'submitted' then 1
-        WHEN 'accepted' then 2
+        WHEN 'SUBMITTED' then 1
+        WHEN 'ACCEPTED' then 2
     END,
     CASE priority
-        WHEN 'high' then 1
-        WHEN 'medium' then 2
-        WHEN 'low' then 3
+        WHEN 'High' then 1
+        WHEN 'Medium' then 2
+        WHEN 'Low' then 3
     END;
 `;
 
@@ -37,13 +37,13 @@ SELECT * FROM aidRequests
 WHERE creator_id = $1
 ORDER BY 
     CASE status
-        WHEN 'submitted' then 1
-        WHEN 'accepted' then 2
+        WHEN 'SUBMITTED' then 1
+        WHEN 'ACCEPTED' then 2
     END,
     CASE priority
-        WHEN 'high' then 1
-        WHEN 'medium' then 2
-        WHEN 'low' then 3
+        WHEN 'High' then 1
+        WHEN 'Medium' then 2
+        WHEN 'Low' then 3
     END;
 `;
 
@@ -54,9 +54,9 @@ JOIN users ON aidRequests.creator_id = users.id
 WHERE acceptor_id = $1
 ORDER BY 
     CASE priority
-        WHEN 'high' then 1
-        WHEN 'medium' then 2
-        WHEN 'low' then 3
+        WHEN 'High' then 1
+        WHEN 'Medium' then 2
+        WHEN 'Low' then 3
     END;
 `;
 
@@ -67,9 +67,9 @@ JOIN users ON aidRequests.creator_id = users.id
 WHERE aidRequests.id = $1
 ORDER BY 
     CASE priority
-        WHEN 'high' then 1
-        WHEN 'medium' then 2
-        WHEN 'low' then 3
+        WHEN 'High' then 1
+        WHEN 'Medium' then 2
+        WHEN 'Low' then 3
     END;
 `;
 
@@ -86,7 +86,7 @@ WHERE id = $2
 `;
 
 const deleteAidRequest = `
-DELELE FROM aidRequests
+DELETE FROM aidRequests
 WHERE id = $1;
 `;
 
@@ -130,8 +130,8 @@ class AidRequestModel {
             title: queryRow.title,
             description: queryRow.description,
             priority: queryRow.priority,
-            creatorId: queryRow.creatorId,
-            acceptorId: queryRow.acceptorId,
+            creatorId: queryRow.creator_id,
+            acceptorId: queryRow.acceptor_id,
             status: queryRow.status,
         };
 
@@ -208,8 +208,11 @@ class AidRequestModel {
     }
 
     static async acceptAidRequest(aidRequestId, acceptorId) {
-        return AidRequestModel.dbPoolInstance
-            .query(acceptAidRequest, [acceptorId, aidRequestId]);
+        console.log(acceptorId);
+        return AidRequestModel.dbPoolInstance.query(acceptAidRequest, [
+            acceptorId,
+            aidRequestId,
+        ]);
     }
 
     static async deleteAidRequest(aidRequestId) {

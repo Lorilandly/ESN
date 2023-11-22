@@ -3,7 +3,7 @@ function getAidRequestIdFromPath() {
     return parseInt(pathSegments[3]);
 }
 
-function createSaveButton(aidRequestId) {
+function createSaveButton() {
     const saveButton = document.createElement('button');
     saveButton.textContent = 'Save My Edits';
     saveButton.className = 'post-button';
@@ -14,32 +14,49 @@ function createSaveButton(aidRequestId) {
     return form;
 }
 
+function createCancelButton(aidRequestId) {
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel Aid Request';
+    cancelButton.className = 'cancel-button';
+
+    cancelButton.addEventListener('click', function () {
+        $.ajax('/aidRequests/' + aidRequestId, {
+            method: 'DELETE',
+            error: (error) => {
+                console.error('API Error:', error);
+            },
+        });
+
+        window.location.href = '/aidRequestsPage/submitted';
+    });
+    return cancelButton;
+}
+
 $(document).ready(() => {
     const aidRequestId = getAidRequestIdFromPath();
 
     $.ajax('/aidRequests/all/' + aidRequestId, {
         method: 'GET',
-        // data: {
-        //     aidRequestId: aidRequestId
-        // },
         dataType: 'json',
         success: async (res) => {
             const aidRequest = res.aidRequest;
-            console.log(aidRequest);
             // get and display aid request detail
             document.getElementById('title').value = aidRequest.title;
-            document.getElementById('description').value = aidRequest.description;
+            document.getElementById('description').value =
+                aidRequest.description;
             document.getElementById('priority').value = aidRequest.priority;
 
-            const saveButton = createSaveButton(aidRequestId);
-            document.getElementById('edit-aid-request-page-body').appendChild(saveButton);
-
+            const saveButton = createSaveButton();
+            const cancelButton = createCancelButton(aidRequestId);
+            document
+                .getElementById('edit-aid-request-page-body')
+                .appendChild(saveButton)
+                .appendChild(cancelButton);
         },
         error: (error) => {
             console.error('API Error:', error);
         },
     });
-
 
     // edit aid request
     $('#edit-aid-request-form').submit(async (event) => {
@@ -51,7 +68,7 @@ $(document).ready(() => {
 
         console.log(priority);
 
-        $.ajax('/aidRequests/' + aidRequestId, {
+        $.ajax('/aidRequests/all/' + aidRequestId, {
             method: 'PUT',
             data: {
                 title: title,
@@ -66,5 +83,4 @@ $(document).ready(() => {
 
         window.location.href = '/aidRequestsPage/submitted';
     });
-
 });

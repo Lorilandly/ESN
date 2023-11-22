@@ -5,6 +5,10 @@ async function createAidRequest(aidRequest) {
     await aidRequestObj.persist();
 }
 
+function validTitle(title) {
+    return title.length >= 3 && title.length <= 10 ? true : false;
+}
+
 async function getAllAidRequests() {
     return await AidRequestModel.getAllAidRequests();
 }
@@ -35,10 +39,7 @@ async function cancelAidRequest(aidRequestId) {
 }
 
 async function acceptAidRequest(aidRequestId, acceptorId) {
-    return await AidRequestModel.acceptAidRequest(
-        aidRequestId,
-        acceptorId,
-    );
+    return await AidRequestModel.acceptAidRequest(aidRequestId, acceptorId);
 }
 
 async function resolveAidRequest(aidRequestId) {
@@ -47,6 +48,7 @@ async function resolveAidRequest(aidRequestId) {
 
 export {
     createAidRequest,
+    validTitle,
     getAllAidRequests,
     getSubmittedAidRequests,
     getAcceptedAidRequests,

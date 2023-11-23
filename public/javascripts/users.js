@@ -1,4 +1,13 @@
 /* global setSearchType */
+function createProfileButton(ele, id) {
+    $(ele).append(
+        $('<\div>').html(`
+            <form action="/profile/${id}" method="get">
+                <button type="submit">Profile</button>
+            </form>
+        `),
+    );
+}
 function createPrivateChatButton(senderId, receiverId) {
     // Create the form element
     const form = document.createElement('form');
@@ -162,6 +171,7 @@ function createUserList(user, currentUser) {
                 createPrivateChatButton(currentUser, user.id),
             );
         }
+        createProfileButton(element, user.id);
         // chatHolder.appendChild(createPrivateChatButton(currentUser, user.id));
         element.appendChild(chatHolder);
         // element.appendChild(createPrivateChatButton(currentUser, user.id));

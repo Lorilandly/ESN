@@ -1,4 +1,5 @@
 import config from 'config';
+import MockedSocket from 'socket.io-mock';
 import DatabaseManager from '../db.js';
 import FloodReportModel from '../models/floodReport.js';
 import {
@@ -33,7 +34,7 @@ beforeEach(async () => {
     } catch (err) {
         console.error(err);
     }
-    initFloodReportController(null, config.get('flood-report'));
+    initFloodReportController(new MockedSocket(), config.get('flood-report'));
 });
 
 test('getAllFloodReports empty when no reports exist', async () => {
@@ -103,16 +104,27 @@ test('updateFloodReportByID returns all errors', async () => {
     expect(gotErrors).toContainEqual(invalidDescriptionMessage);
 });
 
-test('updateFloodReportByID nominal success returns null', async () => {
-    const testInput = {
+test('updateFloodReportByID nominal success returns true', async () => {
+    const testFloodReport = new FloodReportModel({
+        address: '1234 NE 56th St',
+        city: 'Albany',
+        state: 'NY',
+        zipcode: '78900',
+        description: 'Everything will be washed away!',
+        time: new Date(1).toLocaleString(),
+    });
+    testFloodReport.id = await testFloodReport.persist();
+
+    const updateFields = {
         address: '12345',
         city: 'AB',
         state: 'AZ',
         zipcode: '12345',
         description: 'A'.repeat(200),
     };
-    const got = await updateFloodReportByID('0', testInput);
-    expect(got).toBe(null);
+
+    const got = await updateFloodReportByID(testFloodReport.id, updateFields);
+    expect(got).toBe(true);
 });
 
 test('validAddress returns false when lt length 5', async () => {

@@ -97,10 +97,9 @@ class ProfileModel {
 
     async addProfileEntry() {
         if (this.key && !this.reservedEntry()) {
-            return ProfileModel.dbPoolInstance.query(addNewKey, [
-                this.userId,
-                this.key.toLowerCase(),
-            ]).then(() => this);
+            return ProfileModel.dbPoolInstance
+                .query(addNewKey, [this.userId, this.key.toLowerCase()])
+                .then(() => this);
         } else {
             throw new Error('Reserved profile key!');
         }

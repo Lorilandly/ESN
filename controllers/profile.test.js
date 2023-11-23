@@ -41,8 +41,16 @@ beforeAll(async () => {
     await user.persist();
     passport.use('jwt', new MockStrategy({ user }));
     const profile0 = await new ProfileModel(1, 'key', 'val').addProfileEntry();
-    const profile1 = await new ProfileModel(2, 'key', 'val val').addProfileEntry();
-    const profile2 = await new ProfileModel(1, 'key key', '1234').addProfileEntry();
+    const profile1 = await new ProfileModel(
+        2,
+        'key',
+        'val val',
+    ).addProfileEntry();
+    const profile2 = await new ProfileModel(
+        1,
+        'key key',
+        '1234',
+    ).addProfileEntry();
     await new ProfileModel(1, 'keyy', null).addProfileEntry();
     await new ProfileModel(1, '_key', '!@#$%').updateProfileEntry();
     await new ProfileModel(1, '_emct_key', '_val').updateProfileEntry();
@@ -67,7 +75,7 @@ describe('addUserProfile', () => {
     it('should add a new profile entry', async () => {
         await addUserProfile(1, 'new key');
         const profiles = await ProfileModel.getUserProfile(1);
-        const match = profiles.find(profile => profile.key === 'new key');
+        const match = profiles.find((profile) => profile.key === 'new key');
         expect(match).toBeDefined();
     });
     it('should reject adding an invalid profile entry', async () => {
@@ -87,7 +95,9 @@ describe('updateUserProfile', () => {
         const profiles = await ProfileModel.getUserProfile(1);
         // Check if the updated key-value pairs exist in the profiles
         Object.entries(updates).forEach(([key, value]) => {
-            const matchingProfile = profiles.find(profile => profile[key] === value);
+            const matchingProfile = profiles.find(
+                (profile) => profile[key] === value,
+            );
             if (matchingProfile) {
                 expect(matchingProfile.val).toEqual(value);
             }
@@ -103,7 +113,9 @@ describe('updateUserProfile', () => {
         const profiles = await ProfileModel.getUserProfile(1);
         // Check if the updated key-value pairs exist in the profiles
         Object.entries(updates).forEach(([key, value]) => {
-            const matchingProfile = profiles.find(profile => profile[key] === value);
+            const matchingProfile = profiles.find(
+                (profile) => profile[key] === value,
+            );
             if (matchingProfile) {
                 expect(matchingProfile.val).toEqual(value);
             }
@@ -115,7 +127,7 @@ describe('removeUserProfile', () => {
     it('should remove a profile entry', async () => {
         await removeUserProfile(1, 'key key');
         const profiles = await ProfileModel.getUserProfile(1);
-        const match = profiles.find(profile => profile.key === 'keykey');
+        const match = profiles.find((profile) => profile.key === 'keykey');
         expect(match).toBeUndefined();
     });
 

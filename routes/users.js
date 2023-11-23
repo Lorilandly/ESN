@@ -1,6 +1,12 @@
 import express from 'express';
 import passport from 'passport';
 import updateUserStatus from '../controllers/status.js';
+import {
+    getUserProfile,
+    updateUserProfile,
+    addUserProfile,
+    removeUserProfile,
+} from '../controllers/profile.js';
 
 import {
     setJwtCookie,
@@ -82,5 +88,72 @@ router.get('/current', checkUserAuthenticated, async (req, res) => {
     const user = await getUserByName(req.user.username);
     return res.status(200).json(user);
 });
+
+/** Get profile of another user
+ * @argument UserId
+ */
+router.get(
+    '/:id/profile',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) =>
+        getUserProfile(req.params.id, false)
+            .then((profile) => res.status(200).json(profile))
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(400);
+            }),
+);
+
+/** Get current user profile */
+router.get(
+    '/profile',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) =>
+        getUserProfile(req.user.id, true)
+            .then((profile) => res.status(200).json(profile))
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(400);
+            }),
+);
+
+/** Update current user profile */
+router.put(
+    '/profile',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) =>
+        updateUserProfile(req.user.id, req.body)
+            .then(() => res.status(200).json({}))
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(400);
+            }),
+);
+
+/** Add to current user profile */
+router.post(
+    '/profile',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) =>
+        addUserProfile(req.user.id, req.body.key)
+            .then(() => res.status(200).json({}))
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(400);
+            }),
+);
+
+/** Delete from current user profile */
+router.delete(
+    '/profile',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) =>
+        removeUserProfile(req.user.id, req.body.key)
+            .then(() => res.status(200).json({}))
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(400);
+            }),
+);
 
 export default router;

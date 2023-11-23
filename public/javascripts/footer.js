@@ -1,5 +1,3 @@
-/* global getCurrentUser */
-
 $(document).ready(async function () {
     // Capture form submission event
     $('#logout-form').submit((event) => {
@@ -19,6 +17,6 @@ $(document).ready(async function () {
     // find the offcanvas-username element
     const username = document.getElementById('offcanvas-username');
     // set the username to the username element
-    const currentUser = await getCurrentUser();
+    const currentUser = await window.user;
     username.innerHTML = currentUser.username;
 });

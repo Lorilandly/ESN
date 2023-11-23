@@ -110,6 +110,13 @@ describe('Profile usecase tests', () => {
     });
 });
 
+describe('Send help usecase tests', () => {
+    it('should fail on user without emct email', async () => {
+        const res = await request(app).get('/users/help');
+        expect(res.statusCode).toBe(400);
+    });
+});
+
 afterAll(async () => {
     // dismantle db
     const dbManager = DatabaseManager.getInstance();

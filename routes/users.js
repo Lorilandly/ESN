@@ -6,6 +6,7 @@ import {
     updateUserProfile,
     addUserProfile,
     removeUserProfile,
+    sendHelp,
 } from '../controllers/profile.js';
 
 import {
@@ -149,6 +150,18 @@ router.delete(
     passport.authenticate('jwt', { session: false }),
     (req, res) =>
         removeUserProfile(req.user.id, req.body.key)
+            .then(() => res.status(200).json({}))
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(400);
+            }),
+);
+
+router.get(
+    '/help',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) =>
+        sendHelp(req.user)
             .then(() => res.status(200).json({}))
             .catch((err) => {
                 console.error(err);

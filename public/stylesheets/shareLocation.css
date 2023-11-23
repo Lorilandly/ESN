@@ -1,0 +1,106 @@
+.input-container .location-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    margin: 0;
+}
+.input-container .location-form .description {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#address, #city, #state {
+    height: 40px;
+    width: 95%;
+    text-align: left;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#submitLocation {
+    width: 95%;
+    height: 45px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    color: white;
+    background-color: rgb(0, 123, 255);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#submitLocation:hover {
+    background-color: rgb(0, 105, 217); 
+}
+
+
+.location-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-bottom: 10px;
+}
+
+.location {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 5px;
+    width: 95%;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.location-address,
+.location-city,
+.location-state,
+.location-time {
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.location-sender {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+
+.form-status {
+    text-align: center;
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.response {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow-x: hidden;
+    white-space: normal;
+}
+
+.response p {
+    font-size: smaller;
+}
+
+.timestamp {
+    color: grey;
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+    z-index: 1;
+}

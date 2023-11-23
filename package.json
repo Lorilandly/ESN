@@ -7,7 +7,7 @@
         "start": "node ./bin/www",
         "dev": "nodemon ./bin/www",
         "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
-        "test": "node -r dotenv/config --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+        "test": "node -r dotenv/config --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --coverage",
         "lint": "eslint --fix --ext .js ."
     },
     "dependencies": {
@@ -23,6 +23,7 @@
         "http-errors": "~1.6.3",
         "jsonwebtoken": "^9.0.2",
         "morgan": "~1.9.1",
+        "node-fetch": "^3.3.2",
         "nodemon": "^3.0.1",
         "passport": "^0.6.0",
         "passport-jwt": "^4.0.1",

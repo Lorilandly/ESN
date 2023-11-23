@@ -5,7 +5,12 @@ import {
     updateCurrentLocation,
     stopSharingCurrentLocation,
     getAllLocations,
+    getUserLocation
 } from '../controllers/location.js';
+import {
+    respondCurrentLocation,
+    getLocationResponse
+} from '../controllers/response.js';
 
 const router = express.Router();
 
@@ -18,7 +23,6 @@ router.get('/', (req, res) => {
 router.get('/all', async (req, res) => {
     return getAllLocations()
         .then((locations) => {
-            console.log('All locations: ' + JSON.stringify(locations));
             res.status(200).json({ locations });
         })
         .catch((err) => {
@@ -26,6 +30,17 @@ router.get('/all', async (req, res) => {
             return res.sendStatus(500);
         });
 });
+
+router.get('/:id', async (req, res) => {
+    return getUserLocation(req.params.id)
+    .then((curLocation) => {
+        res.status(200).json({ curLocation })
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.sendStatus(500);
+    });
+})
 
 router.post('/', await shareCurrentLocation, async (req, res) => {
     return res.status(201).json({});
@@ -43,17 +58,25 @@ router.put(
 router.delete(
     '/',
     passport.authenticate('jwt', { session: false }),
-    async (req, res) => {
-        try {
-            await stopSharingCurrentLocation(req.user.id, res);
-            // Assuming you have a similar function for handling the response after deleting location
-            // For example: await handleDeleteLocationResponse(req.user.id, res);
-            return res.status(200).json({});
-        } catch (err) {
-            console.error(err);
-            return res.sendStatus(500);
-        }
+    stopSharingCurrentLocation,
+    (req, res) => {
+        return res.status(200).json({});
     },
 );
+
+router.post('/:locationId/respond', 
+    passport.authenticate('jwt', { session: false }), 
+    await respondCurrentLocation, async (req, res) => {
+        return res.status(201).json({});
+});
+
+router.get('/:locationId/responses', 
+    passport.authenticate('jwt', { session: false }),
+    getLocationResponse,
+    (req, res) => {
+        return res.status(200).json({});
+    },
+);
+
 
 export default router;

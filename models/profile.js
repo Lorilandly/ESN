@@ -62,7 +62,6 @@ class ProfileModel {
     /**
      * Get Profile entries of a user.
      * @param {number} userId User ID.
-     * @param {boolean} withEmergencyContact If emergency contact should be included.
      * @returns {Array<Profile>} An array of Profile entry objects.
      */
     static async getUserProfile(userId) {
@@ -93,14 +92,14 @@ class ProfileModel {
                 this.val,
             ]);
         }
+        return this;
     }
 
     async addProfileEntry() {
         if (this.key && !this.reservedEntry()) {
-            return ProfileModel.dbPoolInstance.query(addNewKey, [
-                this.userId,
-                this.key.toLowerCase(),
-            ]);
+            return ProfileModel.dbPoolInstance
+                .query(addNewKey, [this.userId, this.key.toLowerCase()])
+                .then(() => this);
         } else {
             throw new Error('Reserved profile key!');
         }

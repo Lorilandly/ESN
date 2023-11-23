@@ -60,26 +60,6 @@ beforeAll(async () => {
     profile2.updateProfileEntry();
 });
 
-describe('addUserProfile', () => {
-    it('should add a new profile entry', async () => {
-        await addUserProfile(1, 'new key');
-        const profiles = await ProfileModel.getUserProfile(1);
-        const match = profiles.find((profile) => profile.key === 'new key');
-        expect(match).toBeDefined();
-    });
-    it('should add a new profile entry in lower case', async () => {
-        await addUserProfile(1, 'GoodKey');
-        const profiles = await ProfileModel.getUserProfile(1);
-        const match = profiles.find((profile) => profile.key === 'goodkey');
-        expect(match).toBeDefined();
-    });
-    it('should reject adding an invalid profile entry', async () => {
-        expect(async () => {
-            await addUserProfile(1, '_newKey');
-        }).rejects.toThrow();
-    });
-});
-
 describe('updateUserProfile', () => {
     it('should update profile entries', async () => {
         const updates = {
@@ -126,13 +106,13 @@ describe('getUserProfile', () => {
 
     it('should return profiles with emergency contact when withEmergencyContact is true', async () => {
         const profiles = await getUserProfile(1, true);
-        expect(profiles.length).toBe(5); // Assuming 5 mock profiles were returned
+        expect(profiles.length).toBe(6); // Assuming 6 mock profiles were returned
     });
 });
 
 describe('removeUserProfile', () => {
     it('should remove a profile entry', async () => {
-        await removeUserProfile(1, 'key key');
+        await removeUserProfile(2, 'key');
         const profiles = await ProfileModel.getUserProfile(1);
         const match = profiles.find((profile) => profile.key === 'keykey');
         expect(match).toBeUndefined();
@@ -141,6 +121,26 @@ describe('removeUserProfile', () => {
     it('should reject removing an invalid profile entry', async () => {
         expect(async () => {
             await removeUserProfile(1, '_newKey');
+        }).rejects.toThrow();
+    });
+});
+
+describe('addUserProfile', () => {
+    it('should add a new profile entry', async () => {
+        await addUserProfile(1, 'new key');
+        const profiles = await ProfileModel.getUserProfile(1);
+        const match = profiles.find((profile) => profile.key === 'new key');
+        expect(match).toBeDefined();
+    });
+    it('should add a new profile entry in lower case', async () => {
+        await addUserProfile(1, 'GoodKey');
+        const profiles = await ProfileModel.getUserProfile(1);
+        const match = profiles.find((profile) => profile.key === 'goodkey');
+        expect(match).toBeDefined();
+    });
+    it('should reject adding an invalid profile entry', async () => {
+        expect(async () => {
+            await addUserProfile(1, '_newKey');
         }).rejects.toThrow();
     });
 });

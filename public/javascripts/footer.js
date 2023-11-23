@@ -10,14 +10,16 @@ $(document).ready(async function () {
             method: 'GET',
             dataType: 'json',
             success: (data) => {
-                const emctEmail = data.find((entry) => entry.key === '_emct_email');
+                const emctEmail = data.find(
+                    (entry) => entry.key === '_emct_email',
+                );
                 if (emctEmail && emctEmail.val && status === 'EMERGENCY') {
                     $('#helpRequest').modal('show');
                 }
             },
             error: console.error,
         });
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise((resolve) => setTimeout(resolve, 200));
         $.ajax({
             url: '/users/status',
             method: 'PUT',

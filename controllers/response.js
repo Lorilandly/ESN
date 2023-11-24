@@ -18,9 +18,8 @@ async function respondCurrentLocation(req, res) {
         message,
         time,
     });
-
+    await response.persist();
     try {
-        await response.persist();
         ioInstance.emit('response shared', {
             userId,
             sender_name,
@@ -28,10 +27,8 @@ async function respondCurrentLocation(req, res) {
             time,
             location_id,
         });
-        res.status(200).json({ message: 'Response successfully shared' });
     } catch (error) {
         console.error('Error responding to location:', error);
-        res.status(500).send('Error responding to location');
     }
 }
 
@@ -40,10 +37,10 @@ async function getLocationResponse(req, res) {
 
     try {
         const responses = await ResponseModel.getLocationResponse(locationId);
-        res.status(200).json({ responses });
+
     } catch (error) {
         console.error('Error fetching location responses:', error);
-        res.status(500).send('Error fetching responses');
+
     }
 }
 

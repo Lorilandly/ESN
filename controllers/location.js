@@ -9,7 +9,7 @@ function initIOInstanceForLocation(io) {
 
 async function shareCurrentLocation(req, res, next) {
     const userId = req.user.id;
-    
+
     const existingLocations = await LocationModel.getUserLocation(userId);
     if (existingLocations.length > 0) {
         return res.status(409).json({
@@ -24,7 +24,6 @@ async function shareCurrentLocation(req, res, next) {
         const coordinates = await geocodeAddress(address, city, state);
         const latitude = coordinates.latitude;
         const longitude = coordinates.longitude;
-        console.log("coordinates are " + latitude + " , " + longitude);
         const time = new Date(Date.now()).toLocaleString();
     
         const location = new LocationModel({
@@ -50,7 +49,6 @@ async function shareCurrentLocation(req, res, next) {
         });
     } catch (error) {
         if (error.message === 'Address not found') {
-            console.log(" %%% address not found in controllers: share current");
             return res.status(400).json({
                 message: 'Invalid address. Please enter a valid address.'
             });
@@ -66,7 +64,6 @@ async function shareCurrentLocation(req, res, next) {
 async function updateCurrentLocation(req, res, next) {
     const userId = req.user.id;
     const { address, city, state } = req.body;
-
     try {
         const coordinates = await geocodeAddress(address, city, state);
         const latitude = coordinates.latitude;
@@ -112,7 +109,6 @@ async function stopSharingCurrentLocation(req, res, next) {
         ioInstance.emit('location sharing stopped', { userId });
     } catch (error) {
         console.error('Error stopping location sharing:', error);
-        return res.status(500).send('Error stopping location sharing');
     }
 
     return next();

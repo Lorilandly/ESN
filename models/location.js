@@ -76,12 +76,13 @@ class LocationModel {
     static async getAllLocations() {
         return LocationModel.dbPoolInstance
             .query(getAllLocations)
-            .then((queryResponse) =>
+            .then((queryResponse) => {
                 queryResponse.rows.map((row) => {
                     row.time = row.time.toLocaleString();
                     return row;
-                }),
-            );
+                });
+                return queryResponse.rows;
+            });
     }
 
     static async getUserLocation(sender_id) {

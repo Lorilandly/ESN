@@ -1,13 +1,4 @@
 /* global setSearchType */
-function createProfileButton(ele, id) {
-    $(ele).append(
-        $('<\div>').html(`
-            <form action="/profile/${id}" method="get">
-                <button type="submit">Profile</button>
-            </form>
-        `),
-    );
-}
 function createPrivateChatButton(senderId, receiverId) {
     // Create the form element
     const form = document.createElement('form');
@@ -154,6 +145,15 @@ function createUserList(user, currentUser) {
         const loginStatus = document.createElement('div');
         const chatHolder = document.createElement('div');
         chatHolder.className = 'user-list-body-element-chat';
+        const userProfile = document.createElement('form');
+        userProfile.action = `/profile/${user.id}`;
+        userProfile.method = 'GET';
+        const userProfileButton = document.createElement('button');
+        userProfileButton.className = 'btn btn-lite';
+        const userProfileIcon = document.createElement('i');
+        userProfileIcon.className = 'bi bi-person-circle';
+        userProfileButton.appendChild(userProfileIcon);
+        userProfile.appendChild(userProfileButton);
 
         if (user.login_status === 'ONLINE') {
             loginStatus.className = 'user-list-body-element-status-online';
@@ -163,6 +163,7 @@ function createUserList(user, currentUser) {
         loginStatus.id = `user-status-${user.username}`;
         loginStatus.innerHTML = user.login_status;
 
+        element.appendChild(userProfile);
         element.appendChild(name);
         element.appendChild(loginStatus);
 
@@ -171,7 +172,6 @@ function createUserList(user, currentUser) {
                 createPrivateChatButton(currentUser, user.id),
             );
         }
-        createProfileButton(element, user.id);
         // chatHolder.appendChild(createPrivateChatButton(currentUser, user.id));
         element.appendChild(chatHolder);
         // element.appendChild(createPrivateChatButton(currentUser, user.id));

@@ -15,13 +15,18 @@
 <body>
     <div class="main-container">
         <%- include('./header.ejs') %>
-        <ul>
-            <% profile.forEach(profile => { %>
-                <li><%= profile.key %> - <%= profile.val %></li>
-            <% }); %>
-        </ul>
+        <table class="table table-striped container">
+            <tbody>
+                <% profile.forEach(profile => { %>
+                    <tr>
+                        <td scope="row"><%= profile.key %></td>
+                        <td><%= profile.val %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
         <form action="/" method="get">
-            <button type="submit">Back</button>
+            <button type="submit" class="btn btn-secondary">Back</button>
         </form>
         <%- include('./footer.ejs') %>
     </div>

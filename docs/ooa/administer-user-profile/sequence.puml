@@ -1,0 +1,77 @@
+@startuml
+actor Administrator as a
+boundary AdministerProfileBoundary as ab
+control AdministerProfileController as ac
+entity ":UserProfile" as up
+actor User as u
+
+activate a
+activate ab
+a -> ab: 1: administerProfile(username)
+activate ab
+deactivate ab
+
+loop for each profile element
+ab -> ab: 2: displayElement(profileElement)
+activate ab
+deactivate ab
+ab -> ab: 3: displayWayToModify(profileElement)
+activate ab
+deactivate ab
+end loop
+
+a -> ab: 4: proposeChanges(profileElement1, profileElement2...)
+activate ac
+ab -> ac: 5: validateProposedChange(profileElement1, profileElement2...)
+activate ac
+deactivate ac
+ac --> ab: changes valid
+ab -> ab: 6: displayChangesValid()
+activate ab
+deactivate ab
+ab -> ab: 7: requestChangeConfirmation()
+activate ab
+deactivate ab
+
+a -> ab: 8: submitChanges()
+activate ab
+deactivate ab
+ab -> ac: 9a: saveProfileChanges()
+activate ac
+deactivate ac
+deactivate ab
+loop for each changed profile element
+activate up
+ac -> up: 9b: updateElement(profileElement)
+activate up
+deactivate up
+deactivate up
+end loop
+
+alt System Action
+ac -> ac: 10a: systemAction()
+note left
+If Account Status is changed,
+system action is taken in 
+accordance with the Active/Inactive
+rule. (See Below)
+
+If Privilege Level is changed,
+system action is taken in accordance
+with the Privilege Rule.
+end note
+activate ac
+deactivate ac
+
+else Account Status Updated and Set To Inactive
+activate u
+ac -> u: 10b: logoutWithMessage()
+activate u
+deactivate u
+end
+deactivate u
+deactivate ac
+
+deactivate a
+
+@enduml

@@ -1,0 +1,27 @@
+@startuml
+
+
+class AdministerProfileBoundary <<Boundary>> {
+    + administerProfile(username)
+    + displayElement(profileElement)
+    + displayWayToModify(profileElement)
+    + proposeChanges(profileElement1, profileElement2...)
+    + displayChangesValid()
+    + requestChangeConfirmation()
+    + submitChanges()
+}
+
+class AdministerProfileController <<Controller>> {
+    + validateProposedChange(profileElement1, profileElement2...)
+    + saveProfileChanges()
+    + systemAction()
+}
+
+entity UserProfile {
+    + updateElement(profileElement)
+}
+
+AdministerProfileBoundary "1" -- "1" AdministerProfileController
+AdministerProfileController -- "0..*" UserProfile
+
+@enduml

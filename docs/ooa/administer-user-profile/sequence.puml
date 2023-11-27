@@ -6,12 +6,7 @@ entity ":UserProfile" as up
 boundary LoggedInUserBoundary as lu
 actor User as u
 
-activate a
 activate ab
-activate ac
-activate up
-activate lu
-activate u
 
 a -> ab: 1a: administerProfile(username)
 activate ab
@@ -19,12 +14,12 @@ deactivate ab
 
 ab -> ac: 1b: findUserProfile(username)
 activate ac
-deactivate ac
 loop Until profile matching username is found
 ac -> up: 1c: checkUsername(username)
 activate up
 deactivate up
 end loop
+deactivate ac
 
 ab -> ab: 2a: displayAccountStatus()
 activate ab
@@ -115,7 +110,6 @@ deactivate ab
 
 ab -> ac: 9: saveProfileChanges()
 activate ac
-deactivate ac
 
 alt  Update each changed profile element
 ac -> up: 9a: updateAccountStatus(newAccountStatus)
@@ -157,12 +151,11 @@ The logged out user
 can see the logout 
 message.
 end note
-
+deactivate ac
 deactivate up
 deactivate ab
 deactivate u
 deactivate ac
 deactivate lu
-deactivate a
 
 @enduml

@@ -1,6 +1,7 @@
 /* global socket setSearchType */
 
 $(document).ready(() => {
+    document.getElementById('public-chat').classList.add('text-primary');
     // Set Search Bar Title to Search Public Messages
     $('#searchModalLabel').html('Search Public Messages');
     setSearchType('public');

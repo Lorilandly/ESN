@@ -1,21 +1,7 @@
 /* global socket setSearchType */
 
 $(document).ready(() => {
-    // Capture form submission event
-    $('#logout-form').submit((event) => {
-        event.preventDefault();
-        $.ajax('/users/logout', {
-            method: 'PUT',
-            datatype: 'json',
-            success: () => {
-                location.href = '/';
-            },
-            error: (res) => {
-                console.error('Login error:', res);
-            },
-        });
-    });
-
+    document.getElementById('public-chat').classList.add('text-primary');
     // Set Search Bar Title to Search Public Messages
     $('#searchModalLabel').html('Search Public Messages');
     setSearchType('public');

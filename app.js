@@ -12,13 +12,13 @@ import welcomeRouter from './routes/welcome.js';
 import publicWallRouter from './routes/publicWall.js';
 import privateChatRouter from './routes/privateChat.js';
 import performanceTestRouter from './routes/performanceTest.js';
+import profileRouter from './routes/profile.js';
 
 /* API */
 import usersRouter from './routes/users.js';
 import messagesRouter from './routes/messages.js';
 import searchRouter from './routes/search.js';
 
-import statusRouter from './routes/status.js';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -51,7 +51,7 @@ app.use('/welcome', welcomeRouter);
 app.use('/publicWall', publicWallRouter);
 app.use('/privateChat', privateChatRouter);
 app.use('/performanceTest', performanceTestRouter);
-app.use('/status', statusRouter);
+app.use('/profile', profileRouter);
 
 /* API */
 app.use('/users', usersRouter);

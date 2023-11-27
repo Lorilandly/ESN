@@ -3,29 +3,105 @@ actor Administrator as a
 boundary AdministerProfileBoundary as ab
 control AdministerProfileController as ac
 entity ":UserProfile" as up
+boundary LoggedInUserBoundary as lu
 actor User as u
 
 activate a
 activate ab
-a -> ab: 1: administerProfile(username)
-activate ab
-deactivate ab
-
-loop for each profile element
-ab -> ab: 2: displayElement(profileElement)
-activate ab
-deactivate ab
-ab -> ab: 3: displayWayToModify(profileElement)
-activate ab
-deactivate ab
-end loop
-
-a -> ab: 4: proposeChanges(profileElement1, profileElement2...)
 activate ac
-ab -> ac: 5: validateProposedChange(profileElement1, profileElement2...)
+activate up
+activate lu
+activate u
+
+a -> ab: 1a: administerProfile(username)
+activate ab
+deactivate ab
+
+ab -> ac: 1b: findUserProfile(username)
 activate ac
 deactivate ac
-ac --> ab: changes valid
+loop Until profile matching username is found
+ac -> up: 1c: checkUsername(username)
+activate up
+deactivate up
+end loop
+
+ab -> ab: 2a: displayAccountStatus()
+activate ab
+deactivate ab
+
+ab -> ab: 2b: displayPrivilegeLevel()
+activate ab
+deactivate ab
+
+ab -> ab: 2c: displayUsername()
+activate ab
+deactivate ab
+
+note over ab
+NOTE: User's password not 
+to be displayed on screen.
+end note
+
+ab -> ab: 3a: displayWayToModifyAccountStatus()
+activate ab
+deactivate ab
+
+ab -> ab: 3b: displayWayToModifyPrivilegeLevel()
+activate ab
+deactivate ab
+
+ab -> ab: 3c: displayWayToModifyUsername()
+activate ab
+deactivate ab
+
+ab -> ab: 3d: displayWayToModifyPassword()
+activate ab
+deactivate ab
+
+alt Administrator elects to change one or more profile elements
+a -> ab: 4a: proposeChangeToAccountStatus(newStatus)
+activate ab
+deactivate ab
+else
+a -> ab: 4b: proposeChangeToPrivilegeLevel(newLevel)
+activate ab
+deactivate ab
+else
+a -> ab: 4c: proposeChangeToUsername(newUsername)
+activate ab
+deactivate ab
+else
+a -> ab: 4d: proposeChangeToPassword(newPassword)
+activate ab
+deactivate ab
+end
+
+alt Each proposed change is validated
+ab -> ac: 5a: validateProposedAccountStatus(newStatus)
+activate ac
+deactivate ac
+else
+ab -> ac: 5b: validateProposedPrivilegeLevel(newLevel)
+activate ac
+deactivate ac
+else
+ab -> ac: 5c: validateProposedUsername(newUsername)
+activate ac
+deactivate ac
+ac -> ac: 5c2: validateWithUsernameRule(newUsername)
+activate ac
+deactivate ac
+else
+ab -> ac: 5d: validateProposedPassword(newPassword)
+activate ac
+deactivate ac
+ac -> ac: 5d2: validateWithPasswordRule(newPassword)
+activate ac
+deactivate ac
+end
+
+ac --> ab: proposed changes are valid
 ab -> ab: 6: displayChangesValid()
 activate ab
 deactivate ab
@@ -36,42 +112,57 @@ deactivate ab
 a -> ab: 8: submitChanges()
 activate ab
 deactivate ab
-ab -> ac: 9a: saveProfileChanges()
+
+ab -> ac: 9: saveProfileChanges()
 activate ac
 deactivate ac
-deactivate ab
-loop for each changed profile element
-activate up
-ac -> up: 9b: updateElement(profileElement)
-activate up
-deactivate up
-deactivate up
-end loop
 
-alt System Action
-ac -> ac: 10a: systemAction()
-note left
+alt  Update each changed profile element
+ac -> up: 9a: updateAccountStatus(newAccountStatus)
+activate up
+deactivate up
+else
+ac -> up: 9b: updatePrivilegeLevel(newPrivilegeLevel)
+activate up
+deactivate up
+else
+ac -> up: 9c: updateUsername(newUsername)
+activate up
+deactivate up
+else
+ac -> up: 9d: updatePassword(newPassword)
+activate up
+deactivate up
+end
+
+alt Account Status Updated and Set To Inactive
+note over ac
 If Account Status is changed,
 system action is taken in 
 accordance with the Active/Inactive
-rule. (See Below)
+rule. (Shown here)
 
 If Privilege Level is changed,
 system action is taken in accordance
 with the Privilege Rule.
 end note
-activate ac
-deactivate ac
 
-else Account Status Updated and Set To Inactive
-activate u
-ac -> u: 10b: logoutWithMessage()
-activate u
-deactivate u
+ac -> lu: 10: logoutWithMessage()
+activate lu
+deactivate lu
 end
+u --> lu
+note right
+The logged out user
+can see the logout 
+message.
+end note
+
+deactivate up
+deactivate ab
 deactivate u
 deactivate ac
-
+deactivate lu
 deactivate a
 
 @enduml

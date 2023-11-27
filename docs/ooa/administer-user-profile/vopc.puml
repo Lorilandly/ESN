@@ -1,24 +1,38 @@
 @startuml
 
-
 class AdministerProfileBoundary <<Boundary>> {
-    + administerProfile(username)
-    + displayElement(profileElement)
-    + displayWayToModify(profileElement)
-    + proposeChanges(profileElement1, profileElement2...)
+    + administerProfile(string username)
+    + displayAccountStatus()
+    + displayPrivilegeLevel()
+    + displayUsername()
+    + displayWayToModifyAccountStatus()
+    + displayWayToModifyPrivilegeLevel()
+    + displayWayToModifyUsername()
+    + displayWayToModifyPassword()
+    + proposeChangeToAccountStatus(string newStatus)
+    + proposeChangeToPrivilegeLevel(string newLevel)
+    + proposeChangeToUsername(string newUsername)
+    + proposeChangeToPassword(string newPassword)
     + displayChangesValid()
     + requestChangeConfirmation()
     + submitChanges()
 }
 
 class AdministerProfileController <<Controller>> {
-    + validateProposedChange(profileElement1, profileElement2...)
+    + findUserProfile(string username)
+    + validateProposedAccountStatus(string newStatus)
+    + validateProposedPrivilegeLevel(string newLevel)
+    + validateProposedUsername(string newUsername)
+    + validateProposedPassword(string newPassword)
     + saveProfileChanges()
     + systemAction()
 }
 
 entity UserProfile {
-    + updateElement(profileElement)
+    + updateAccountStatus(string newAccountStatus)
+    + updatePrivilegeLevel(string newLevel)
+    + updateUsername(string newUsername)
+    + updatePassword(string newPassword)
 }
 
 AdministerProfileBoundary "1" -- "1" AdministerProfileController

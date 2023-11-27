@@ -35,7 +35,12 @@ entity UserProfile {
     + updatePassword(string newPassword)
 }
 
+class LoggedInUserBoundary <<Boundary>> {
+    + logoutWithMessage()
+}
+
 AdministerProfileBoundary "1" -- "1" AdministerProfileController
-AdministerProfileController -- "0..*" UserProfile
+AdministerProfileController "1" -- "1..*" UserProfile
+AdministerProfileController "1" -- "0..*" LoggedInUserBoundary
 
 @enduml

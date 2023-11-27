@@ -4,6 +4,7 @@ import MessageModel from './models/message.js';
 import StatusModel from './models/status.js';
 import PostModel from './models/post.js';
 import ReplyModel from './models/reply.js';
+import ProfileModel from './models/profile.js';
 
 class DatabaseManager {
     static instance;
@@ -36,6 +37,7 @@ class DatabaseManager {
         await StatusModel.initModel(db);
         await PostModel.initModel(db);
         await ReplyModel.initModel(db);
+        await ProfileModel.initModel(db);
     }
 
     /* Connect to Postgres db and initalize a connection pool */

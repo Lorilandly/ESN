@@ -19,11 +19,11 @@ async function createMessage(req, res, next) {
     const readStatus = 'UNREAD';
     const message = new MessageModel({
         senderId: userId,
-        receiverId: receiverId,
-        body: body,
-        time: time,
-        status: status,
-        readStatus: readStatus,
+        receiverId,
+        body,
+        time,
+        status,
+        readStatus,
     });
     await message.persist();
 

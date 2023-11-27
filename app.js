@@ -11,7 +11,6 @@ import joinRouter from './routes/join.js';
 import welcomeRouter from './routes/welcome.js';
 import publicWallRouter from './routes/publicWall.js';
 import privateChatRouter from './routes/privateChat.js';
-import newMessagesRouter from './routes/newMessages.js';
 import performanceTestRouter from './routes/performanceTest.js';
 import profileRouter from './routes/profile.js';
 
@@ -53,7 +52,6 @@ app.use('/publicWall', publicWallRouter);
 app.use('/privateChat', privateChatRouter);
 app.use('/performanceTest', performanceTestRouter);
 app.use('/profile', profileRouter);
-app.use('/newMessages', newMessagesRouter);
 
 /* API */
 app.use('/users', usersRouter);

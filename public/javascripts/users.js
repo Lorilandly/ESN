@@ -1,4 +1,4 @@
-/* global setSearchType */
+/* global setSearchType getCurrentUser */
 function createPrivateChatButton(senderId, receiverId) {
     // Create the form element
     const form = document.createElement('form');
@@ -19,21 +19,6 @@ function createPrivateChatButton(senderId, receiverId) {
     // Append the button to the form
     form.appendChild(chatButton);
     return form;
-}
-
-function getCurrentUser() {
-    return new Promise((resolve, reject) => {
-        $.ajax('/users/current', {
-            method: 'GET',
-            datatype: 'json',
-            success: (response) => {
-                resolve(response);
-            },
-            error: (error) => {
-                reject(error);
-            },
-        });
-    });
 }
 
 $(document).ready(() => {

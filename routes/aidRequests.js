@@ -10,8 +10,8 @@ import {
     getAcceptedAidRequests,
     resolveAidRequest,
     acceptAidRequest,
-    validTitle,
 } from '../controllers/aidRequest.js';
+import AidRequestModel from '../models/aidRequest.js';
 const router = express.Router();
 
 router.use(passport.authenticate('jwt', { session: false }));
@@ -35,7 +35,7 @@ router.get('/all/:aidRequestId', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    if (!validTitle(req.body.title)) {
+    if (!AidRequestModel.validTitle(req.body.title)) {
         return res.status(403).json({ error: 'Invalid title' });
     }
     return createAidRequest({

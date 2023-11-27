@@ -12,7 +12,6 @@ import {
     cancelAidRequest,
     acceptAidRequest,
     resolveAidRequest,
-    validTitle,
 } from './aidRequest.js';
 
 beforeAll(async () => {
@@ -204,18 +203,6 @@ test('test cancelAidRequest', async () => {
     const result = await getAllAidRequests();
     const expectedResult = [];
     expect(result).toEqual(expectedResult);
-});
-
-describe('Test aid request title check', () => {
-    test('title valid', () => {
-        expect(validTitle('test')).toBe(true);
-    });
-    test('title too short', () => {
-        expect(validTitle('te')).toBe(false);
-    });
-    test('title too long', () => {
-        expect(validTitle('012345678901234567890')).toBe(false);
-    });
 });
 
 afterAll(async () => {

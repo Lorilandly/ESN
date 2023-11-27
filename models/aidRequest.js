@@ -220,6 +220,10 @@ class AidRequestModel {
             aidRequestId,
         ]);
     }
+
+    static validTitle(title) {
+        return title.length >= 3 && title.length <= 10 ? true : false;
+    }
 }
 
 export default AidRequestModel;

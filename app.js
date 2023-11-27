@@ -12,6 +12,7 @@ import welcomeRouter from './routes/welcome.js';
 import publicWallRouter from './routes/publicWall.js';
 import privateChatRouter from './routes/privateChat.js';
 import performanceTestRouter from './routes/performanceTest.js';
+import lostAndFoundRouter from './routes/lostAndFound.js';
 import profileRouter from './routes/profile.js';
 
 /* API */
@@ -51,6 +52,7 @@ app.use('/welcome', welcomeRouter);
 app.use('/publicWall', publicWallRouter);
 app.use('/privateChat', privateChatRouter);
 app.use('/performanceTest', performanceTestRouter);
+app.use('/lostAndFounds', lostAndFoundRouter);
 app.use('/profile', profileRouter);
 
 /* API */

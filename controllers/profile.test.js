@@ -55,9 +55,9 @@ beforeEach(async () => {
     await new ProfileModel(1, 'keyy', null).addProfileEntry();
     await new ProfileModel(1, '_key', '!@#$%').updateProfileEntry();
     await new ProfileModel(1, '_emct_key', '_val').updateProfileEntry();
-    profile0.updateProfileEntry();
-    profile1.updateProfileEntry();
-    profile2.updateProfileEntry();
+    await profile0.updateProfileEntry();
+    await profile1.updateProfileEntry();
+    await profile2.updateProfileEntry();
 });
 
 describe('updateUserProfile', () => {

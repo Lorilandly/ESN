@@ -109,8 +109,6 @@
     background-color: black;
 }
 
-.cancel-button {}
-
 #aid-request-table {
     width: 100%;
     font-size: 1.25rem;
@@ -141,14 +139,4 @@ th {
     #aid-request-table {
         font-size: 1rem;
     }
-}
-
-button {
-    background: none;
-    color: inherit;
-    border: none;
-    padding: 0;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
 }

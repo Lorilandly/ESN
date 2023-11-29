@@ -6,7 +6,7 @@ function getAidRequestIdFromPath() {
 function createSaveButton() {
     const saveButton = document.createElement('button');
     saveButton.textContent = 'Save My Edits';
-    saveButton.className = 'post-button';
+    saveButton.className = 'save-button';
     saveButton.setAttribute('type', 'submit');
 
     const form = document.getElementById('edit-aid-request-form');
@@ -66,14 +66,12 @@ $(document).ready(() => {
         const description = $('#description').val();
         const priority = $('#priority').val();
 
-        console.log(priority);
-
         $.ajax('/aidRequests/all/' + aidRequestId, {
             method: 'PUT',
             data: {
-                title: title,
-                description: description,
-                priority: priority,
+                title,
+                description,
+                priority,
             },
             dataType: 'json',
             error: (error) => {

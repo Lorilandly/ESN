@@ -5,7 +5,7 @@ function createSubmitButton() {
 
     const submitButton = document.createElement('button');
     submitButton.textContent = 'Submit Aid Request';
-    submitButton.className = 'post-button';
+    submitButton.className = 'submit-button';
     submitButton.setAttribute('type', 'submit');
 
     form.appendChild(submitButton);
@@ -26,23 +26,22 @@ $(document).ready(() => {
         $.ajax('/aidRequests', {
             method: 'POST',
             data: {
-                title: title,
-                description: description,
-                priority: priority,
+                title,
+                description,
+                priority,
             },
             dataType: 'json',
             success: (_) => {
                 window.location.href = '/aidRequestsPage/submitted';
             },
             error: (res) => {
-                console.log(res.responseJSON.error);
                 if (res.responseJSON.error === 'Invalid title') {
                     $('#alert-msg span').text(
                         'Title length must be between 3 and 10',
                     );
                     $('#title').val('');
                 } else {
-                    console.error('API Error:', error);
+                    console.error('API Error:', res);
                 }
             },
         });

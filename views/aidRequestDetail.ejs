@@ -20,12 +20,17 @@
     ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="/bootstrap-icons/bootstrap-icons.css" />
-    <link href="/stylesheets/layout.css" rel="stylesheet" type="text/css" />
     <link
         href="/stylesheets/aidRequestDetail.css"
         rel="stylesheet"
         type="text/css"
     />
+    <link
+        href="/stylesheets/aidRequestForm.css"
+        rel="stylesheet"
+        type="text/css"
+    />
+    <link href="/stylesheets/layout.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -33,11 +38,11 @@
         <%- include('./header.ejs') %>
         <div class="aid-request-detail">
             <div
-                class="aid-request-detail-header"
+                class="aid-request-form-header"
                 id="aid-request-detail-header"
             >
-                <div class="aid-request-detail-header">Aid Request Detail</div>
-                <div class="aid-request-detail-header-back-icon">
+                <div class="aid-request-form-header">Aid Request Detail</div>
+                <div class="aid-request-form-header-back-icon">
                     <button onclick="window.history.back();">
                         <i class="bi bi-arrow-left"></i>
                     </button>

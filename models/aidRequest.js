@@ -208,7 +208,6 @@ class AidRequestModel {
     }
 
     static async acceptAidRequest(aidRequestId, acceptorId) {
-        console.log(acceptorId);
         return AidRequestModel.dbPoolInstance.query(acceptAidRequest, [
             acceptorId,
             aidRequestId,
@@ -222,7 +221,7 @@ class AidRequestModel {
     }
 
     static validTitle(title) {
-        return title.length >= 3 && title.length <= 10 ? true : false;
+        return !!(title.length >= 3 && title.length <= 10);
     }
 }
 

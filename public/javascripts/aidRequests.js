@@ -3,8 +3,6 @@ function getAidRequestPageTypeFromPath() {
     return pathSegments[2];
 }
 
-const pageType = getAidRequestPageTypeFromPath();
-
 const dropDownMenu = document.getElementById('aid-request-category-menu');
 const selectedSectionText = document.getElementById('dropdown-selected');
 
@@ -27,7 +25,7 @@ function showSectionAndToggle(aidRequestPageType, item) {
 }
 
 function showSection(aidRequestPageType, item) {
-    var items = document.querySelectorAll('#aid-request-category-menu a');
+    const items = document.querySelectorAll('#aid-request-category-menu a');
     items.forEach((a) => {
         a.classList.remove('selected');
     });
@@ -89,7 +87,6 @@ function createEditButton(aidRequestId) {
     editButton.appendChild(editIcon);
 
     editButton.addEventListener('click', function () {
-        // console.log(aidRequestId);
         window.location.href = '/aidRequestsPage/edit/' + aidRequestId;
     });
     return editButton;
@@ -102,7 +99,7 @@ function createResolveButton(aidRequestId) {
         $.ajax('/aidRequests/resolved/' + aidRequestId, {
             method: 'PUT',
             data: {
-                aidRequestId: aidRequestId,
+                aidRequestId,
             },
             dataType: 'json',
             error: (error) => {
@@ -135,6 +132,54 @@ function showTableHeader(titles) {
     return aidRequestTable;
 }
 
+function showCommonColumns(aidRequestItem, aidRequest) {
+    const titleSpan = document.createElement('td');
+    titleSpan.className = 'aid-request-title';
+    titleSpan.textContent = aidRequest.title;
+    aidRequestItem.appendChild(titleSpan);
+
+    const prioritySpan = document.createElement('td');
+    prioritySpan.className = 'aid-request-priority';
+    prioritySpan.textContent = aidRequest.priority;
+    aidRequestItem.appendChild(prioritySpan);
+
+    const statusSpan = document.createElement('td');
+    statusSpan.className = 'aid-request-status';
+    statusSpan.textContent = aidRequest.status === 'ACCEPTED' ? 'Y' : 'N';
+    aidRequestItem.appendChild(statusSpan);
+}
+
+function showAidRequestsBody(res, aidRequestTable) {
+    const aidRequests = res.aidRequests;
+    const aidRequestPageContainer = document.getElementById(
+        'aid-request-page-list',
+    );
+    // Clear previous content
+    aidRequestPageContainer.innerHTML = '';
+    if (aidRequests && aidRequests.length > 0) {
+        aidRequests.forEach((aidRequest) => {
+            const aidRequestItem = document.createElement('tr');
+            aidRequestItem.className = 'aid-request-item';
+
+            const creatorSpan = document.createElement('td');
+            creatorSpan.className = 'aid-request-creator';
+            creatorSpan.textContent = aidRequest.creatorName;
+            aidRequestItem.appendChild(creatorSpan);
+
+            showCommonColumns(aidRequestItem, aidRequest);
+
+            const buttonSpan = document.createElement('td');
+            buttonSpan.className = 'aid-request-action';
+            buttonSpan.appendChild(createViewButton(aidRequest.id));
+            aidRequestItem.appendChild(buttonSpan);
+
+            aidRequestTable.appendChild(aidRequestItem);
+        });
+    }
+    aidRequestPageContainer.appendChild(aidRequestTable);
+    aidRequestPageContainer.appendChild(createCreateButton());
+}
+
 function showAllAidRequests() {
     const aidRequestTable = showTableHeader([
         'Name',
@@ -148,49 +193,7 @@ function showAllAidRequests() {
         method: 'GET',
         datatype: 'json',
         success: async (res) => {
-            const aidRequests = res.aidRequests;
-            console.log(aidRequests);
-            const aidRequestPageContainer = document.getElementById(
-                'aid-request-page-list',
-            );
-            // Clear previous content
-            aidRequestPageContainer.innerHTML = '';
-            if (aidRequests && aidRequests.length > 0) {
-                aidRequests.forEach((aidRequest) => {
-                    const aidRequestItem = document.createElement('tr');
-                    aidRequestItem.className = 'aid-request-item';
-
-                    const creatorSpan = document.createElement('td');
-                    creatorSpan.className = 'aid-request-creator';
-                    creatorSpan.textContent = aidRequest.creatorName;
-                    aidRequestItem.appendChild(creatorSpan);
-
-                    const titleSpan = document.createElement('td');
-                    titleSpan.className = 'aid-request-title';
-                    titleSpan.textContent = aidRequest.title;
-                    aidRequestItem.appendChild(titleSpan);
-
-                    const prioritySpan = document.createElement('td');
-                    prioritySpan.className = 'aid-request-priority';
-                    prioritySpan.textContent = aidRequest.priority;
-                    aidRequestItem.appendChild(prioritySpan);
-
-                    const statusSpan = document.createElement('td');
-                    statusSpan.className = 'aid-request-status';
-                    statusSpan.textContent =
-                        aidRequest.status === 'ACCEPTED' ? 'Y' : 'N';
-                    aidRequestItem.appendChild(statusSpan);
-
-                    const buttonSpan = document.createElement('td');
-                    buttonSpan.className = 'aid-request-action';
-                    buttonSpan.appendChild(createViewButton(aidRequest.id));
-                    aidRequestItem.appendChild(buttonSpan);
-
-                    aidRequestTable.appendChild(aidRequestItem);
-                });
-            }
-            aidRequestPageContainer.appendChild(aidRequestTable);
-            aidRequestPageContainer.appendChild(createCreateButton());
+            showAidRequestsBody(res, aidRequestTable);
         },
         error: (res) => {
             console.error('Error:', res);
@@ -212,7 +215,6 @@ function showSubmittedAidRequests() {
         datatype: 'json',
         success: async (res) => {
             const aidRequests = res.aidRequests;
-            console.log(aidRequests);
             if (aidRequests && aidRequests.length > 0) {
                 const aidRequestPageContainer = document.getElementById(
                     'aid-request-page-list',
@@ -224,21 +226,7 @@ function showSubmittedAidRequests() {
                     const aidRequestItem = document.createElement('tr');
                     aidRequestItem.className = 'aid-request-item';
 
-                    const titleSpan = document.createElement('td');
-                    titleSpan.className = 'aid-request-title';
-                    titleSpan.textContent = aidRequest.title;
-                    aidRequestItem.appendChild(titleSpan);
-
-                    const prioritySpan = document.createElement('td');
-                    prioritySpan.className = 'aid-request-priority';
-                    prioritySpan.textContent = aidRequest.priority;
-                    aidRequestItem.appendChild(prioritySpan);
-
-                    const statusSpan = document.createElement('td');
-                    statusSpan.className = 'aid-request-status';
-                    statusSpan.textContent =
-                        aidRequest.status === 'ACCEPTED' ? 'Y' : 'N';
-                    aidRequestItem.appendChild(statusSpan);
+                    showCommonColumns(aidRequestItem, aidRequest);
 
                     const editSpan = document.createElement('td');
                     editSpan.className = 'aid-request-edit';
@@ -278,49 +266,7 @@ function showAcceptedAidRequests() {
         method: 'GET',
         datatype: 'json',
         success: async (res) => {
-            const aidRequests = res.aidRequests;
-            console.log(aidRequests);
-            const aidRequestPageContainer = document.getElementById(
-                'aid-request-page-list',
-            );
-            // Clear previous content
-            aidRequestPageContainer.innerHTML = '';
-            if (aidRequests && aidRequests.length > 0) {
-                aidRequests.forEach((aidRequest) => {
-                    const aidRequestItem = document.createElement('tr');
-                    aidRequestItem.className = 'aid-request-item';
-
-                    const creatorSpan = document.createElement('td');
-                    creatorSpan.className = 'aid-request-creator';
-                    creatorSpan.textContent = aidRequest.creatorName;
-                    aidRequestItem.appendChild(creatorSpan);
-
-                    const titleSpan = document.createElement('td');
-                    titleSpan.className = 'aid-request-title';
-                    titleSpan.textContent = aidRequest.title;
-                    aidRequestItem.appendChild(titleSpan);
-
-                    const prioritySpan = document.createElement('td');
-                    prioritySpan.className = 'aid-request-priority';
-                    prioritySpan.textContent = aidRequest.priority;
-                    aidRequestItem.appendChild(prioritySpan);
-
-                    const statusSpan = document.createElement('td');
-                    statusSpan.className = 'aid-request-status';
-                    statusSpan.textContent =
-                        aidRequest.status === 'ACCEPTED' ? 'Y' : 'N';
-                    aidRequestItem.appendChild(statusSpan);
-
-                    const buttonSpan = document.createElement('td');
-                    buttonSpan.className = 'aid-request-action';
-                    buttonSpan.appendChild(createViewButton(aidRequest.id));
-                    aidRequestItem.appendChild(buttonSpan);
-
-                    aidRequestTable.appendChild(aidRequestItem);
-                });
-
-                aidRequestPageContainer.appendChild(aidRequestTable);
-            }
+            showAidRequestsBody(res, aidRequestTable);
         },
         error: (res) => {
             console.error('Error:', res);
@@ -356,34 +302,9 @@ $(document).ready(() => {
         $.ajax('/aidRequests/', {
             method: 'POST',
             data: {
-                title: title,
-                description: description,
-                priority: priority,
-            },
-            dataType: 'json',
-            error: (error) => {
-                console.error('API Error:', error);
-            },
-        });
-
-        window.location.href = '/aidRequestsPage/submitted';
-    });
-
-    // edit aid request
-    $('#edit-aid-request-form').submit(async (event) => {
-        event.preventDefault();
-
-        const title = $('#title').val();
-        const description = $('#description').val();
-        const priority = $('#priority').val();
-
-        $.ajax('/aidRequests', {
-            method: 'PUT',
-            data: {
-                title: title,
-                description: description,
-                priority: priority,
-                aidRequestId: aidRequestId,
+                title,
+                description,
+                priority,
             },
             dataType: 'json',
             error: (error) => {

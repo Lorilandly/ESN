@@ -1,0 +1,71 @@
+.aid-request-form {
+    width: 100%;
+    height: calc(100% - 120px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-size: 1.25rem;
+}
+
+.aid-request-form-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100vw;
+    height: 60px;
+    border: 1px solid black;
+}
+
+.aid-request-form-header-back-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    margin-left: 10px;
+    transform: translate(-50%, -50%);
+}
+
+.aid-request-form-header-back-icon i {
+    font-size: 1.25rem;
+}
+
+.aid-request-form-body {
+    display: flex;
+    margin-top: 30px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.inner-aid-request-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.inner-aid-request-form div {
+    padding: 0.5rem 1rem;
+    width: 100%
+}
+
+.inner-aid-request-form .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.inner-aid-request-form label {
+    text-align: left;
+}
+
+button {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}

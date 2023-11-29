@@ -44,8 +44,8 @@ $(document).ready(() => {
             const currentUser = await getCurrentUser();
             // don't show accept button if it is current user's own aid request
             if (
-                aidRequest.creatorName != currentUser.username &&
-                aidRequest.status != 'ACCEPTED'
+                aidRequest.creatorName !== currentUser.username &&
+                aidRequest.status !== 'ACCEPTED'
             ) {
                 const acceptButton = createAcceptButton(aidRequestId);
                 document

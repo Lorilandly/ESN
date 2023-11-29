@@ -1,0 +1,49 @@
+@startuml postL&A
+
+actor Citizen as c
+boundary LostAndFoundBoundary as lfv
+control LostAndFoundController as lfc
+entity ":Post" as p
+boundary "other : LostAndFoundBoundary" as o
+
+c -> lfv : openLostAndFoundPage()
+activate lfv
+lfv -> lfc : getUnresolvedPosts()
+activate lfc
+loop
+    lfc -> p : getTitle()
+    activate p
+    lfc -> p : getSender()
+    lfc -> p : getTimeStamp()
+    deactivate p
+    p --> lfc : title, sender, timestamp
+end
+lfc --> lfv : title, sender, timestamp
+
+
+lfv -> lfv : displayUnresolvedPosts()
+activate lfv
+deactivate lfv
+
+c -> lfv : createNewPost()
+lfv -> lfv : displayNewPostView()
+activate lfv
+deactivate lfv
+
+c -> lfv : fillPostForm()
+lfv -> lfc : createPost(title, body)
+
+lfc -> p : createPost(title, body, sender, timestamp)
+activate p
+deactivate p
+lfc -> lfv : updatePostList(title, sender, timestamp)
+deactivate lfv
+lfc -> o : updatePostList(title, sender, timestamp)
+deactivate lfc
+activate o
+deactivate o
+
+note left
+    Citizens can now see the new post on the list
+end note
+@enduml

@@ -1,0 +1,21 @@
+@startuml
+class ProfileController {
+    + sendHelp()
+}
+entity Profile {
+    + getEmergencyContact()
+}
+class StatusBoundary {
+    + changeCitizenStatus()
+    + displaySendHelpConfirmation()
+    + confirmSendHelp()
+}
+class emailServerBoundary {
+    + sendEmail()
+}
+
+
+ProfileController "1" -- "1" StatusBoundary
+ProfileController "1" -- "0..*" Profile
+ProfileController "1" -- "1" emailServerBoundary
+@enduml

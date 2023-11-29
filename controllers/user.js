@@ -15,8 +15,8 @@ async function create(username, password) {
     );
     const user = new UserModel({
         username: username.toLowerCase(),
-        passwordHash: passwordHash,
-        salt: salt,
+        passwordHash,
+        salt,
         loginStatus: 'OFFLINE',
         status: 'UNDEFINED',
         statusTime: new Date(Date.now()).toLocaleString(),

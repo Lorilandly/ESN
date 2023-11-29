@@ -1,0 +1,107 @@
+.post-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: calc(100% - 120px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    align-items: center;
+}
+
+.back-button{
+    position: absolute;
+    left: 0;
+    margin-left: 10px;
+    text-align: center;
+}
+
+.back-button button{
+    border: none;
+    background: none;
+    color: white;
+    font-size: 30px;
+}
+
+.post{
+    width: 100%;
+    padding: 10px;
+    background-color: white;
+    border-bottom: 1px solid #cccccc;
+    border-top: 1px solid #cccccc;
+}
+
+.post .post-header{
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+}
+
+.post .post-header .post-sender{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.post .post-header .post-time{
+    font-size: 15px;
+    color: #999999;
+}
+
+.post .post-body{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.post .post-reply-btn{
+    float: right;
+    border: none;
+    background: none;
+    color: #999999;
+}
+
+.reply-container{
+    background-color: #eeeeee;
+    width: 100%;
+    border-top: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
+}
+
+.reply{
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.reply .reply-sender{
+    font-weight: bold;
+}
+
+.reply .reply-misc{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+}
+
+.reply .reply-misc .reply-time{
+    font-size: 12px;
+    color: #999999;
+    margin-right: 10px;
+}
+
+.reply .reply-misc .reply-btn{
+    font-size: 12px;
+    color: #999999;
+    cursor: pointer;
+}
+
+textarea{
+    height: 100px;
+}
+
+button{
+    border: none;
+    background: none;
+}
+

@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,29 +10,25 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="/bootstrap-icons/bootstrap-icons.css">
     <link href="/stylesheets/layout.css" rel="stylesheet" type="text/css">
+    <title>Profile</title>
 </head>
-
 <body>
     <div class="main-container">
         <%- include('./header.ejs') %>
-        <div class="alert-container" id="alert-container">
-            <span class="notification">You received new messages!</span>
-            <form action="/newMessages" class="new-message-button" method="GET">
-                <button class="form-button">View</button>
-            </form>
-        </div>
-        <div class="message-container" id="message-container">
-        </div>
-        <div class="input-container">
-            <form class="message-form" id="messageForm">
-                <textarea class="message-input" id="message"></textarea>
-                <button class="post-button" type="submit">Post</button>
-            </form>
-        </div>
+        <table class="table table-striped container">
+            <tbody>
+                <% profile.forEach(profile => { %>
+                    <tr>
+                        <td scope="row"><%= profile.key %></td>
+                        <td><%= profile.val %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <form action="/" method="get">
+            <button type="submit" class="btn btn-secondary">Back</button>
+        </form>
         <%- include('./footer.ejs') %>
-        
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="/javascripts/alert.js"></script>
-    <script src="/javascripts/privateChat.js"></script>
 </body>
+</html>

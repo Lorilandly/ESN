@@ -1,0 +1,48 @@
+@startuml postL&A
+
+actor Citizen as c
+boundary LostAndFoundBoundary as lfv
+control LostAndFoundController as lfc
+entity ":Post" as p
+boundary "other : LostAndFoundBoundary" as o
+
+c -> lfv : openMyLostAndFound()
+activate lfv
+lfv -> lfc : getMyLostAndFoundPost()
+activate lfc
+loop
+    lfc -> p : getTitle()
+    activate p
+    lfc -> p : getSender()
+    lfc -> p : getTimeStamp()
+    deactivate p
+    p --> lfc : title, sender, timestamp
+end
+
+lfv -> lfv : displayMyLostAndFoundPost()
+activate lfv
+deactivate lfv
+
+c -> lfv : resolveLostAndFoundPost()
+
+lfv -> lfc : resolvePost()
+lfc -> p : resolvePost()
+
+activate p
+deactivate lfc
+
+deactivate p
+
+
+
+lfv -> lfv : updatePostList()
+lfv -> o : updatePostList()
+
+activate o
+deactivate o
+
+note left
+    Citizens can no longer see the resolved post in Unresolved Post List
+end note
+
+@enduml

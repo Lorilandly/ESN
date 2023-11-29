@@ -1,0 +1,45 @@
+@startuml
+
+actor Citizen as c
+boundary ProfileBoundary as pb
+actor "other:Citizen" as oc
+boundary "other:ProfileBoundary" as opb
+control ProfileController as pc
+entity Profile as p
+
+c -> pb: 1: accessUpdateProfilePage()
+activate pb
+pb -> pc: 2: getCurrentProfile()
+activate pc
+pc -> p: 3: getProfile()
+activate p
+p --> pb: age, gender, emergency contact, etc.
+deactivate p
+deactivate pc
+pb -> pb: 4: displayUpdateProfilePageWithCurrentProfile()
+activate pb
+deactivate pb
+c -> pb: 5: updateProfile()
+pb -> pc: 6: storeProfile()
+activate pc
+pc -> p: 7: setProfile()
+activate p
+deactivate p
+deactivate pc
+deactivate pb
+
+oc -> opb: 8: AccessCitizenProfile()
+activate opb
+opb -> pc: 9: getCitizenProfile()
+activate pc
+pc -> p: 10: getProfile()
+activate p
+p --> opb: age, gender, etc.
+deactivate p
+deactivate pc
+opb -> opb: 11: displayCitizenProfile()
+activate opb
+deactivate opb
+deactivate opb
+
+@enduml

@@ -16,6 +16,8 @@ import {
 import { initIOInstanceForChat } from '../controllers/message.js';
 import { initIOInstanceForLocation } from '../controllers/location.js';
 import { initIOInstanceForResponse } from '../controllers/response.js';
+import { initIOInstanceForPost } from '../controllers/post.js';
+import { initIOInstanceForReply } from '../controllers/reply.js';
 import { Server } from 'socket.io';
 
 /**
@@ -58,6 +60,8 @@ const io = new Server(server);
 initIOInstanceForChat(io);
 initIOInstanceForLocation(io);
 initIOInstanceForResponse(io);
+initIOInstanceForPost(io);
+initIOInstanceForReply(io);
 handleSocketConnections(io);
 
 /**

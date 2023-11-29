@@ -19,7 +19,7 @@ router.get('/update/:floodReportID', async (req, res) => {
     if (!floodReport) {
         return res.sendStatus(404);
     }
-    return res.render('updateFloodReport', {
+    return res.render('floodReportForm', {
         id: floodReportID,
         address: floodReport.address,
         city: floodReport.city,
@@ -27,11 +27,21 @@ router.get('/update/:floodReportID', async (req, res) => {
         zipcode: floodReport.zipcode,
         description: floodReport.description,
         states: stateOptions,
+        updateExisting: true,
     });
 });
 
 router.get('/create', (_, res) => {
-    return res.render('createFloodReport', { states: stateOptions });
+    return res.render('floodReportForm', {
+        id: '',
+        address: '',
+        city: '',
+        state: '',
+        zipcode: '',
+        description: '',
+        states: stateOptions,
+        updateExisting: false,
+    });
 });
 
 export default router;

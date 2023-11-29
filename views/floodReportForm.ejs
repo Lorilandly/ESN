@@ -16,42 +16,54 @@
     <body>
         <div class="main-container">
             <%- include('./header.ejs') %>
-            <form class="flood-report-form" id="flood-report-form">
+            <form class="flood-report-form" id="flood-report-form" flood-report-id="<%= id %>">
                 <label for="address">Address</label>
                 <br>
-                <input type="text" id="address" name="address" minlength="5" maxlength="100" required>
+                <input type="text" id="address" name="address" value="<%= address %>" minlength="5" maxlength="100" required>
                 <br>
 
                 <label for="city">City</label>
                 <br>
-                <input type="text" id="city" name="city" minlength="2" maxlength="50" required>
+                <input type="text" id="city" name="city" value="<%= city %>" minlength="2" maxlength="50" required>
                 <br>
         
                 <label for="state">State</label>
                 <br>
                 <select id="state" name="state" required>
-                    <option value="" disabled selected>---</option>
-                    <% states.forEach(function(state) { %>
-                        <option value="<%= state.abbreviation %>"><%= state.name %></option>
+                    <% states.forEach(function(s) { %>
+                        <% if (s.abbreviation === state) { %>
+                            <option value="<%= state %>" selected><%= s.name %></option>
+                        <% } else { %>
+                            <option value="<%= s.abbreviation %>"><%= s.name %></option>
+                        <% } %>
                     <% }); %>
                 </select>
                 <br>
 
                 <label for="zipcode">Zipcode</label>
                 <br>
-                <input type="text" id="zipcode" name="zipcode" pattern="[0-9]{5}" title="Zipcode must be exactly 5 numeric digits" required required>
+                <input type="text" id="zipcode" name="zipcode" value="<%= zipcode %>" pattern="[0-9]{5}" title="Zipcode must be exactly 5 numeric digits" required required>
                 <br>
         
                 <label for="description">Description</label>
                 <br>
-                <textarea id="description" name="description" maxlength="200" rows="4"></textarea>
+                <textarea id="description" name="description" maxlength="200" rows="4"><%= description %></textarea>
                 <br>
         
+                <% if (updateExisting) { %>
+                <button type="submit" class="post-button">Update</button>
+                <%} else { %>
                 <button type="submit" class="post-button">Submit</button>
+                <% } %>
             </form>
             <%- include('./footer.ejs') %>
         </div>
         <script src="/javascripts/alert.js"></script>
+
+        <% if (updateExisting) { %>
+        <script src="/javascripts/editFloodReportForm.js"></script>
+        <%} else { %>
         <script src="/javascripts/floodReportForm.js"></script>
+        <% } %>
     </body>
 </html>

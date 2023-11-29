@@ -28,6 +28,11 @@ class AdministerProfileController <<Controller>> {
     + systemAction()
 }
 
+entity User {
+    + checkUsername(string username)
+    + getProfile()
+}
+
 entity UserProfile {
     + updateAccountStatus(string newAccountStatus)
     + updatePrivilegeLevel(string newLevel)
@@ -40,7 +45,8 @@ class LoggedInUserBoundary <<Boundary>> {
 }
 
 AdministerProfileBoundary "1" -- "1" AdministerProfileController
-AdministerProfileController "1" -- "1..*" UserProfile
+AdministerProfileController "1" -- "1..*" User
+User "1" -- "1" UserProfile
 AdministerProfileController "1" -- "0..*" LoggedInUserBoundary
 
 @enduml

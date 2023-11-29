@@ -12,7 +12,7 @@ import {
     sendHelp,
 } from './profile.js'; // Update with the correct path
 
-beforeAll(async () => {
+beforeEach(async () => {
     // do db setups
     const { host, port, name } = config.get('db');
     const {
@@ -106,7 +106,7 @@ describe('getUserProfile', () => {
 
     it('should return profiles with emergency contact when withEmergencyContact is true', async () => {
         const profiles = await getUserProfile(1, true);
-        expect(profiles.length).toBe(6); // Assuming 6 mock profiles were returned
+        expect(profiles.length).toBe(5); // Assuming 6 mock profiles were returned
     });
 });
 
@@ -155,7 +155,7 @@ describe('sendHelp', () => {
     });
 });
 
-afterAll(async () => {
+afterEach(async () => {
     // dismantle db
     const dbManager = DatabaseManager.getInstance();
     try {

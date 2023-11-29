@@ -1,0 +1,113 @@
+.post-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: calc(100% - 200px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    align-items: center;
+}
+
+.post-create-btn{
+    height: 60px;
+    width: calc(100% - 20px);
+    margin: 10px;
+    border-radius: 5px;
+    background-color: black;
+    border: 1px solid #ccc;
+    color: white;
+    font-weight: bold;
+}
+
+.lost-and-found{
+    left: 0;
+    position: absolute;
+    margin-left: 10px;
+    text-align: center;
+}
+
+.lost-and-found .lost-and-found-text{
+    color: white;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.post{
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    width: 100%;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #eeeeee;
+}
+
+.post .post-title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.post .post-title .bi{
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.post .post-title .post-title-text{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.post .post-time{
+    color: #747474;
+}
+
+.modal-body .post-title{
+    font-size: 20px;
+}
+
+.modal-body input{
+    margin-bottom: 10px;
+}
+
+.modal-body textarea{
+    margin-bottom: 10px;
+    height: 100px;
+}
+
+button{
+    border: none;
+    background: none;
+}
+
+.post .unresolved{
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+    width: fit-content;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.post .resolved{
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+    width: fit-content;
+    padding: 5px;
+}
+
+.resolve-div-wrap{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.resolve-div-wrap .bi{
+    cursor: pointer;
+    font-size: 20px;
+}

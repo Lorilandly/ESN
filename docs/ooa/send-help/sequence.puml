@@ -1,0 +1,31 @@
+@startuml
+
+actor Citizen as c
+boundary statusBoundary as sb
+control profileController as pc
+entity Profile as p
+boundary emailServerBoundary as eb
+actor emailServer as e
+
+c -> sb: 1: changeCitizenStatus()
+activate sb
+sb -> sb: 2: displaySendHelpConfirmation()
+activate sb
+deactivate sb
+c -> sb: 3: confirmSendHelp()
+sb -> pc: 4: sendHelp()
+activate pc
+pc -> p: 5: getEmergencyContact()
+activate p
+deactivate p
+pc -> eb: 6: sendEmail()
+activate eb
+eb -> e: 7: deliverEmail()
+activate e
+deactivate e
+deactivate eb
+deactivate pc
+deactivate sb
+
+
+@enduml

@@ -1,0 +1,24 @@
+@startuml
+
+class postBoundary{
+    openPost()
+    replyPost()
+    submitReplyForm()
+    displayPost()
+    displayReplyForm()
+    updatePost(reply, sender, timestamp)
+}
+
+class postController{
+    createReply(reply)
+    getPost()
+}
+
+entity Post{
+    createReply(reply, sender, timestamp)
+}
+
+postBoundary "1" -- "1" postController
+postController "1" -- "0..*" Post
+
+@enduml

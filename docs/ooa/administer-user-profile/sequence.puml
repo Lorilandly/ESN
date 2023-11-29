@@ -1,0 +1,166 @@
+@startuml
+actor Administrator as a
+boundary AdministerProfileBoundary as ab
+control AdministerProfileController as ac
+entity ":User" as us
+entity ":UserProfile" as up
+boundary LoggedInUserBoundary as lu
+actor User as u
+
+activate ab
+
+a -> ab: 1a: administerProfile(username)
+activate ab
+deactivate ab
+
+ab -> ac: 1b: findUserProfile(username)
+activate ac
+loop Until profile matching username is found
+ac -> us: 1c: checkUsername(username)
+activate us
+deactivate us
+end loop
+
+ac -> us: 1d: getProfile()
+activate us
+deactivate us
+deactivate ac
+
+ab -> ab: 2a: displayAccountStatus()
+activate ab
+deactivate ab
+
+ab -> ab: 2b: displayPrivilegeLevel()
+activate ab
+deactivate ab
+
+ab -> ab: 2c: displayUsername()
+activate ab
+deactivate ab
+
+note over ab
+NOTE: User's password not 
+to be displayed on screen.
+end note
+
+ab -> ab: 3a: displayWayToModifyAccountStatus()
+activate ab
+deactivate ab
+
+ab -> ab: 3b: displayWayToModifyPrivilegeLevel()
+activate ab
+deactivate ab
+
+ab -> ab: 3c: displayWayToModifyUsername()
+activate ab
+deactivate ab
+
+ab -> ab: 3d: displayWayToModifyPassword()
+activate ab
+deactivate ab
+
+alt Administrator elects to change one or more profile elements
+a -> ab: 4a: proposeChangeToAccountStatus(newStatus)
+activate ab
+deactivate ab
+else
+a -> ab: 4b: proposeChangeToPrivilegeLevel(newLevel)
+activate ab
+deactivate ab
+else
+a -> ab: 4c: proposeChangeToUsername(newUsername)
+activate ab
+deactivate ab
+else
+a -> ab: 4d: proposeChangeToPassword(newPassword)
+activate ab
+deactivate ab
+end
+
+alt Each proposed change is validated
+ab -> ac: 5a: validateProposedAccountStatus(newStatus)
+activate ac
+deactivate ac
+else
+ab -> ac: 5b: validateProposedPrivilegeLevel(newLevel)
+activate ac
+deactivate ac
+else
+ab -> ac: 5c: validateProposedUsername(newUsername)
+activate ac
+deactivate ac
+ac -> ac: 5c2: validateWithUsernameRule(newUsername)
+activate ac
+deactivate ac
+else
+ab -> ac: 5d: validateProposedPassword(newPassword)
+activate ac
+deactivate ac
+ac -> ac: 5d2: validateWithPasswordRule(newPassword)
+activate ac
+deactivate ac
+end
+
+ac --> ab: proposed changes are valid
+ab -> ab: 6: displayChangesValid()
+activate ab
+deactivate ab
+ab -> ab: 7: requestChangeConfirmation()
+activate ab
+deactivate ab
+
+a -> ab: 8: submitChanges()
+activate ab
+deactivate ab
+
+ab -> ac: 9: saveProfileChanges()
+activate ac
+
+alt  Update each changed profile element
+ac -> up: 9a: updateAccountStatus(newAccountStatus)
+activate up
+deactivate up
+else
+ac -> up: 9b: updatePrivilegeLevel(newPrivilegeLevel)
+activate up
+deactivate up
+else
+ac -> up: 9c: updateUsername(newUsername)
+activate up
+deactivate up
+else
+ac -> up: 9d: updatePassword(newPassword)
+activate up
+deactivate up
+end
+
+alt Account Status Updated and Set To Inactive
+note over ac
+If Account Status is changed,
+system action is taken in 
+accordance with the Active/Inactive
+rule. (Shown here)
+
+If Privilege Level is changed,
+system action is taken in accordance
+with the Privilege Rule.
+end note
+
+ac -> lu: 10: logoutWithMessage()
+activate lu
+deactivate lu
+end
+u --> lu
+note right
+The logged out user
+can see the logout 
+message.
+end note
+deactivate ac
+deactivate up
+deactivate ab
+deactivate u
+deactivate ac
+deactivate lu
+
+@enduml

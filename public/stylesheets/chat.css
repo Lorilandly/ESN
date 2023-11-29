@@ -41,7 +41,7 @@
 
 .input-container .message-form .message-input {
     height: 140px;
-    width: 95%;
+    width: 100%;
     text-align: left;
     vertical-align: top;
     resize: none;

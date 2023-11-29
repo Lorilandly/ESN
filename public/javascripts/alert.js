@@ -1,19 +1,4 @@
-/* global socket  */
-
-function getCurrentUser() {
-    return new Promise((resolve, reject) => {
-        $.ajax('/users/current', {
-            method: 'GET',
-            datatype: 'json',
-            success: (response) => {
-                resolve(response);
-            },
-            error: (error) => {
-                reject(error);
-            },
-        });
-    });
-}
+/* global socket getCurrentUser */
 
 $(document).ready(() => {
     $.ajax({

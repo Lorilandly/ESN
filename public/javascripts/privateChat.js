@@ -1,4 +1,4 @@
-/* global socket setSearchType */
+/* global socket setSearchType getCurrentUser */
 
 function getReceiverIdFromPath() {
     const pathSegments = window.location.pathname.split('/');
@@ -7,37 +7,7 @@ function getReceiverIdFromPath() {
 
 const otherId = getReceiverIdFromPath();
 
-function getCurrentUser() {
-    return new Promise((resolve, reject) => {
-        $.ajax('/users/current', {
-            method: 'GET',
-            datatype: 'json',
-            success: (response) => {
-                resolve(response);
-            },
-            error: (error) => {
-                reject(error);
-            },
-        });
-    });
-}
-
 $(document).ready(async () => {
-    // Capture form submission event
-    $('#logout-form').submit((event) => {
-        event.preventDefault(); // Prevent the default form submission
-        $.ajax('/users/logout', {
-            method: 'PUT',
-            datatype: 'json',
-            success: () => {
-                location.href = '/';
-            },
-            error: (res) => {
-                console.error('Login error:', res);
-            },
-        });
-    });
-
     // Set Search Bar Title to Search Private Messages
     $('#searchModalLabel').html('Search Private Messages');
     setSearchType('private');

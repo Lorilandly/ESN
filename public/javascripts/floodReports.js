@@ -2,7 +2,8 @@
 
 function constructBaseFloodReport() {
     const floodReport = document.createElement('div');
-    floodReport.className = 'flood-report';
+    floodReport.className = 'message';
+    floodReport.style.position = 'relative';
 
     const cancelButton = document.createElement('button');
     cancelButton.className = 'cancel-flood-report-button';

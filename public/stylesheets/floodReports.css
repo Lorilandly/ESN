@@ -7,34 +7,22 @@
     align-items: center;
 }
 
-.flood-report {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background-color: #eeeeee;
-    padding: 10px;
-    margin-bottom: 5px;
-    width: 95%;
-    border-radius: 5px;
-    position: relative;
-}
-
-.flood-report .time-reported-header {
+.time-reported-header {
     font-size: 1.2rem;
     font-weight: bold;
 }
 
-.flood-report .location-header {
+.location-header {
     font-size: 1.2rem;
     font-weight: bold;
 }
 
-.flood-report .description-header {
+.description-header {
     font-size: 1.2rem;
     font-weight: bold;
 }
 
-.flood-report .cancel-flood-report-button {
+.cancel-flood-report-button {
     color: red;
     font-size: x-large;
     position: absolute;
@@ -43,7 +31,7 @@
     border: none;
 }
 
-.flood-report .update-flood-report-button {
+.update-flood-report-button {
     color: black;
     font-size: x-large;
     position: absolute;

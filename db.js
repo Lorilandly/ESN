@@ -2,6 +2,9 @@ import pg from 'pg';
 import UserModel from './models/user.js';
 import MessageModel from './models/message.js';
 import StatusModel from './models/status.js';
+import PostModel from './models/post.js';
+import ReplyModel from './models/reply.js';
+import ProfileModel from './models/profile.js';
 import AidRequestModel from './models/aidRequest.js';
 
 class DatabaseManager {
@@ -33,6 +36,9 @@ class DatabaseManager {
         await UserModel.initModel(db);
         await MessageModel.initModel(db);
         await StatusModel.initModel(db);
+        await PostModel.initModel(db);
+        await ReplyModel.initModel(db);
+        await ProfileModel.initModel(db);
         await AidRequestModel.initModel(db);
     }
 

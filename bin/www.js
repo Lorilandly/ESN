@@ -14,6 +14,8 @@ import {
     handleSocketConnections,
 } from '../controllers/auth.js';
 import { initIOInstanceForChat } from '../controllers/message.js';
+import { initIOInstanceForPost } from '../controllers/post.js';
+import { initIOInstanceForReply } from '../controllers/reply.js';
 import { Server } from 'socket.io';
 
 /**
@@ -54,6 +56,8 @@ const io = new Server(server);
  * Get test database configs for performance test controller configuration.
  */
 initIOInstanceForChat(io);
+initIOInstanceForPost(io);
+initIOInstanceForReply(io);
 handleSocketConnections(io);
 
 /**

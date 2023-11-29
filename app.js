@@ -11,9 +11,10 @@ import joinRouter from './routes/join.js';
 import welcomeRouter from './routes/welcome.js';
 import publicWallRouter from './routes/publicWall.js';
 import privateChatRouter from './routes/privateChat.js';
-import newMessagesRouter from './routes/newMessages.js';
 import performanceTestRouter from './routes/performanceTest.js';
 import aidRequestsPageRouter from './routes/aidRequestsPage.js';
+import lostAndFoundRouter from './routes/lostAndFound.js';
+import profileRouter from './routes/profile.js';
 
 /* API */
 import usersRouter from './routes/users.js';
@@ -21,7 +22,6 @@ import messagesRouter from './routes/messages.js';
 import searchRouter from './routes/search.js';
 import aidRequestsRouter from './routes/aidRequests.js';
 
-import statusRouter from './routes/status.js';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -54,9 +54,9 @@ app.use('/welcome', welcomeRouter);
 app.use('/publicWall', publicWallRouter);
 app.use('/privateChat', privateChatRouter);
 app.use('/performanceTest', performanceTestRouter);
-app.use('/status', statusRouter);
-app.use('/newMessages', newMessagesRouter);
 app.use('/aidRequestsPage', aidRequestsPageRouter);
+app.use('/lostAndFounds', lostAndFoundRouter);
+app.use('/profile', profileRouter);
 
 /* API */
 app.use('/users', usersRouter);

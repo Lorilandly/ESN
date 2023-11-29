@@ -1,0 +1,22 @@
+@startuml
+
+class lostAndFoundBoundary{
+    openLostAndFoundPage()
+    createNewPost()
+    fillPostForm()
+    updatePostList(title, sender, timestamp)
+}
+
+class lostAndFoundController{
+    getUnresolvedPosts()
+    createPost(title, body)
+}
+
+entity Post{
+    createPost(title, body, sender, timestamp)
+}
+
+lostAndFoundBoundary "1" -- "1" lostAndFoundController
+lostAndFoundController "1" -- "0..*" Post
+
+@enduml

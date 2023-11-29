@@ -54,8 +54,6 @@ app.use('/welcome', welcomeRouter);
 app.use('/publicWall', publicWallRouter);
 app.use('/privateChat', privateChatRouter);
 app.use('/performanceTest', performanceTestRouter);
-app.use('/status', statusRouter);
-app.use('/newMessages', newMessagesRouter);
 app.use('/location-settings', viewLocationRouter);
 app.use('/lostAndFounds', lostAndFoundRouter);
 app.use('/profile', profileRouter);

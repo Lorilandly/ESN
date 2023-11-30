@@ -37,7 +37,7 @@ $(document).ready(() => {
             error: (res) => {
                 if (res.responseJSON.error === 'Invalid title') {
                     $('#alert-msg span').text(
-                        'Title length must be between 3 and 10',
+                        'Title must be between 3 and 10 characters',
                     );
                     $('#title').val('');
                 } else {

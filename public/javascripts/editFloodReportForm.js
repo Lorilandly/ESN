@@ -2,20 +2,15 @@ $('#flood-report-form').submit((event) => {
     event.preventDefault();
 
     const floodReportID = $('#flood-report-form').attr('flood-report-id');
-    const address = $('#address').val();
-    const city = $('#city').val();
-    const state = $('#state').val();
-    const zipcode = $('#zipcode').val();
-    const description = $('#description').val();
 
     $.ajax('/floodReports/' + floodReportID, {
         method: 'PUT',
         data: {
-            address,
-            city,
-            state,
-            zipcode,
-            description,
+            address: $('#address').val(),
+            city: $('#city').val(),
+            state: $('#state').val(),
+            zipcode: $('#zipcode').val(),
+            description: $('#description').val(),
         },
         dataType: 'json',
         success: (_) => {

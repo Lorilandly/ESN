@@ -62,11 +62,11 @@ async function createFloodReport(req, res, next) {
 }
 
 async function getAllFloodReports() {
-    return await FloodReportModel.getAll();
+    return FloodReportModel.getAll();
 }
 
 async function getFloodReportByID(floodReportID) {
-    return await FloodReportModel.findByID(floodReportID);
+    return FloodReportModel.findByID(floodReportID);
 }
 
 async function updateFloodReportByID(floodReportID, fields) {

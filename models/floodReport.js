@@ -146,14 +146,15 @@ class FloodReportModel {
         if (queryResponse.rowCount === 0) {
             return null;
         }
-        return {
-            id: floodReportID,
+        const updatedReport = new FloodReportModel({
             address,
             city,
             state,
             zipcode,
             description,
-        };
+        });
+        updatedReport.id = floodReportID;
+        return updatedReport;
     }
 
     /**

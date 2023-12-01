@@ -1,0 +1,54 @@
+.flood-reports-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    align-items: center;
+}
+
+.time-reported-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.location-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.description-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.cancel-flood-report-button {
+    color: red;
+    font-size: x-large;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    border: none;
+}
+
+.update-flood-report-button {
+    color: black;
+    font-size: x-large;
+    position: absolute;
+    top: 5px;
+    right: 40px;
+    border: none;
+}
+
+.create-flood-report-button {
+    position: fixed;
+    bottom: 90px;
+    right: 40px;
+    outline: 0;
+    color: black;
+    font-size: xx-large;
+}
+
+form{
+    margin: 0;
+}

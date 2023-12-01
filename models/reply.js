@@ -28,10 +28,10 @@ const getAllReplyFromPost = `
     LEFT JOIN users AS u2 ON r2.sender_id = u2.id
     WHERE r1.post_id = $1
     ORDER BY r1.time ASC;
-`
+`;
 
 class ReplyModel {
-    constructor({senderId, postId, replyId, body, time}){
+    constructor({ senderId, postId, replyId, body, time }) {
         this.senderId = senderId;
         this.postId = postId;
         this.replyId = replyId;
@@ -59,7 +59,7 @@ class ReplyModel {
     static async getAllReplyFromPost(postId) {
         return ReplyModel.dbPoolInstance
             .query(getAllReplyFromPost, [postId])
-            .then((queryResponse) => 
+            .then((queryResponse) =>
                 queryResponse.rows.map((row) => {
                     row.time = row.time.toLocaleString();
                     return row;

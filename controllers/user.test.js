@@ -33,6 +33,7 @@ beforeAll(async () => {
         privilege: null,
     });
     await user1.persist();
+
     passport.use('jwt', new MockStrategy({ user1 }));
 
     const user2 = new UserModel({

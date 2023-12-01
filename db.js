@@ -4,6 +4,7 @@ import MessageModel from './models/message.js';
 import StatusModel from './models/status.js';
 import LocationModel from './models/location.js';
 import ResponseModel from './models/response.js';
+import FloodReportModel from './models/floodReport.js';
 import PostModel from './models/post.js';
 import ReplyModel from './models/reply.js';
 import ProfileModel from './models/profile.js';
@@ -39,6 +40,7 @@ class DatabaseManager {
         await StatusModel.initModel(db);
         await LocationModel.initModel(db);
         await ResponseModel.initModel(db);
+        await FloodReportModel.initModel(db);
         await PostModel.initModel(db);
         await ReplyModel.initModel(db);
         await ProfileModel.initModel(db);

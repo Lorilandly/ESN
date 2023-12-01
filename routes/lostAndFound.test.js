@@ -52,16 +52,16 @@ beforeAll(async () => {
         resolved: false,
     }).persist();
     passport.use('jwt', new MockStrategy({ user }));
-})
+});
 
-describe("Lost and found usecase tests", () => {
+describe('Lost and found usecase tests', () => {
     // Positive tests
     test('get all unresolved posts', async () => {
         const res = await request(app)
             .get('/lostAndFounds/unresolved');
         expect(res.statusCode).toBe(200);
         expect(res.body.posts.length).toBe(1);
-        expect(res.body.posts[0].title).toBe("test title");
+        expect(res.body.posts[0].title).toBe('test title');
     });
 
     test('create a post', async () => {
@@ -74,33 +74,33 @@ describe("Lost and found usecase tests", () => {
         expect(res.statusCode).toBe(201);
     });
 
-    test('create a reply to post', async() => {
+    test('create a reply to post', async () => {
         const res = await request(app)
-            .post("/lostAndFounds/posts/1/response")
+            .post('/lostAndFounds/posts/1/response')
             .send({
-                body: "test reply",
-                postID : 1,
-                replyID : 0,
+                body: 'test reply',
+                postID: 1,
+                replyID: 0,
             });
         expect(res.statusCode).toBe(201);
     });
 
-    test('retrieve post info', async() => {
+    test('retrieve post info', async () => {
         const res = await request(app)
-            .get("/lostAndFounds/posts/1/info");
+            .get('/lostAndFounds/posts/1/info');
         expect(res.statusCode).toBe(200);
-        expect(res.body.post[0].title).toBe("test title");
-        expect(res.body.post[0].body).toBe("test body");
-        expect(res.body.post[0].sender_name).toBe("testUser");
-        expect(res.body.replies[0].body).toBe("test reply");
-        expect(res.body.replies[0].replyee_name).toBe("No replyee");
+        expect(res.body.post[0].title).toBe('test title');
+        expect(res.body.post[0].body).toBe('test body');
+        expect(res.body.post[0].sender_name).toBe('testUser');
+        expect(res.body.replies[0].body).toBe('test reply');
+        expect(res.body.replies[0].replyee_name).toBe('No replyee');
     });
 
-    test('resolve a post', async() => {
+    test('resolve a post', async () => {
         const res = await request(app)
-            .post("/lostAndFounds/myPosts/status")
+            .post('/lostAndFounds/myPosts/status')
             .send({
-                postID : 1,
+                postID: 1,
             });
         expect(res.statusCode).toBe(201);
     });
@@ -108,25 +108,24 @@ describe("Lost and found usecase tests", () => {
     // Negative tests
     test('get posts info with invalid postID', async () => {
         const res = await request(app)
-            .get('/lostAndFounds/posts/0/info')
+            .get('/lostAndFounds/posts/0/info');
         expect(res.statusCode).toBe(500);
     });
     test('get post page with invalid postID', async () => {
         const res = await request(app)
-            .get('/lostAndFounds/posts/0')
+            .get('/lostAndFounds/posts/0');
         expect(res.statusCode).toBe(500);
     });
-    test('reply to a post with invalid postID', async() => {
+    test('reply to a post with invalid postID', async () => {
         const res = await request(app)
-            .post("/lostAndFounds/posts/0/response")
+            .post('/lostAndFounds/posts/0/response')
             .send({
-                body: "test reply",
-                postID : 0,
-                replyID : 0,
+                body: 'test reply',
+                postID: 0,
+                replyID: 0,
             });
         expect(res.statusCode).toBe(500);
     });
-
 });
 
 afterAll(async () => {

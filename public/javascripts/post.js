@@ -3,7 +3,7 @@
 $(document).ready(() => {
     document.getElementById('search-bar').remove();
     const backButton = document.createElement('form');
-    backButton.action = "/lostAndFounds";
+    backButton.action = '/lostAndFounds';
     backButton.className = 'back-button';
     backButton.method = 'GET';
     backButton.innerHTML = `
@@ -12,23 +12,22 @@ $(document).ready(() => {
     document.getElementsByClassName('header')[0].appendChild(backButton);
     getPostInformation();
 
-    socket.on("create new reply", ({postID}) => {
+    socket.on('create new reply', ({ postID }) => {
         const thisPostID = parseInt(getPostID());
-        if (postID == thisPostID){
+        if (postID == thisPostID) {
             refreshPost();
         }
     });
-})
+});
 
-function getPostID(){
+function getPostID() {
     const url = window.location.href;
     const urlSplit = url.split('/');
     const postid = parseInt(urlSplit[urlSplit.length - 1]);
     return postid;
-
 }
 
-function getPostInformation(){
+function getPostInformation() {
     const postID = getPostID();
     $.ajax('/lostAndFounds/posts/' + postID + '/info', {
         method: 'GET',
@@ -45,9 +44,9 @@ function getPostInformation(){
     });
 }
 
-function updatePostInfo(postInfo){
+function updatePostInfo(postInfo) {
     document.getElementsByClassName('header-text')[0].innerHTML = postInfo.title;
-    
+
     const postDiv = document.getElementsByClassName('post')[0];
     postDiv.id = postInfo.id;
     postDiv.innerHTML = `
@@ -70,16 +69,15 @@ function updatePostInfo(postInfo){
     `;
 }
 
-function updateReplies(replies){
+function updateReplies(replies) {
     replies.forEach(reply => {
         const replyDiv = document.createElement('div');
         let replySender = '';
         replyDiv.className = 'reply';
-        const replyInfo = JSON.stringify({replyID: reply.id, senderName: reply.sender_name});
-        if (reply.replyee_name === 'No replyee'){
+        const replyInfo = JSON.stringify({ replyID: reply.id, senderName: reply.sender_name });
+        if (reply.replyee_name === 'No replyee') {
             replySender = reply.sender_name;
-        }
-        else{
+        } else {
             replySender = reply.sender_name + ' -> ' + reply.replyee_name;
         }
         replyDiv.innerHTML = `
@@ -99,16 +97,16 @@ function updateReplies(replies){
             </div>
         `;
         document.getElementById('reply-container').appendChild(replyDiv);
-    })
+    });
 }
 
-async function createPostReply(){
+async function createPostReply() {
     const postID = getPostID();
     const replyBody = document.getElementById('post-reply-textarea');
     const replyID = 0;
-    const senderID = (await getCurrentUser())["id"];
+    const senderID = (await getCurrentUser()).id;
     // if replyBody is empty, return
-    if (replyBody.value.length === 0){
+    if (replyBody.value.length === 0) {
         alert('Reply message cannot be empty');
         return;
     }
@@ -117,9 +115,9 @@ async function createPostReply(){
         url: '/lostAndFounds/posts/' + postID + '/response',
         method: 'POST',
         data: {
-            postID: postID,
-            replyID: replyID,
-            senderID: senderID,
+            postID,
+            replyID,
+            senderID,
             body: replyBody.value,
         },
         dataType: 'json',
@@ -136,7 +134,7 @@ async function createPostReply(){
     modalInstance.hide();
 }
 
-function changeReplyInfo(replyInfo){
+function changeReplyInfo(replyInfo) {
     console.log(replyInfo);
     const replyReplyModal = document.getElementById('replyReplyModal');
     replyReplyModal.getElementsByClassName('modal-title')[0].innerHTML = 'Reply to ' + replyInfo.senderName;
@@ -144,12 +142,12 @@ function changeReplyInfo(replyInfo){
     replyReplyModalButton.id = replyInfo.replyID;
 }
 
-async function createReplyReply(replyID){
+async function createReplyReply(replyID) {
     const postID = getPostID();
     const replyBody = document.getElementById('reply-reply-textarea');
-    const senderID = (await getCurrentUser())["id"];
+    const senderID = (await getCurrentUser()).id;
     // if replyBody is empty, return
-    if (replyBody.value.length === 0){
+    if (replyBody.value.length === 0) {
         alert('Reply message cannot be empty');
         return;
     }
@@ -157,9 +155,9 @@ async function createReplyReply(replyID){
         url: '/lostAndFounds/posts/' + postID + '/response',
         method: 'POST',
         data: {
-            postID: postID,
-            replyID: replyID,
-            senderID: senderID,
+            postID,
+            replyID,
+            senderID,
             body: replyBody.value,
         },
         dataType: 'json',
@@ -177,7 +175,7 @@ async function createReplyReply(replyID){
     modalInstance.hide();
 }
 
-function refreshPost(){
+function refreshPost() {
     // clear post container
     document.getElementsByClassName('post')[0].innerHTML = '';
     // clear reply container

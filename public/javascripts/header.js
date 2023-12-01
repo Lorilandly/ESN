@@ -30,18 +30,18 @@ $(document).ready(() => {
                         messageHtml += `
                         <form class = "message-form message-alert" action = '/privateChat/${senderId}' method = 'GET'>
                             <button type="submit" class="btn btn-${getStatusColor(
-                                message.status,
-                            )}" onclick="clearMessage(this)">
+        message.status,
+    )}" onclick="clearMessage(this)">
                                 <div class="message-title">
                                     <span class="message-sender-name">${
-                                        message.sender_name
-                                    }</span>
+    message.sender_name
+}</span>
                                     <span class="message-time">${
-                                        message.time
-                                    }</span>
+    message.time
+}</span>
                                     <span class="message-status">${
-                                        message.status
-                                    }</span>
+    message.status
+}</span>
                                 </div>
                                 <div class="message-body">
                                     <span>${message.body}</span>
@@ -69,8 +69,8 @@ $(document).ready(() => {
                 const messageHtml = `
                 <form class = "message-form message-alert" action = '/privateChat/${senderId}' method = 'GET'>
                     <button type="submit" class="btn btn-${getStatusColor(
-                        status,
-                    )}" onclick="clearMessage(this)">
+        status,
+    )}" onclick="clearMessage(this)">
                         <div class="message-title">
                             <span class="message-sender-name">${username}</span>
                             <span class="message-time">${time}</span>

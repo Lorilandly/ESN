@@ -1,0 +1,21 @@
+@startuml
+
+class CancelFloodReportBoundary {
+    accessFloodReportPage()
+    displayFloodReports()
+    cancelFloodReport()
+    askToConfirmAreaSafety()
+    confirmAreaSafety()
+}
+
+class CancelFloodReportController {
+    cancelFloodReport(floodReportId)
+}
+entity FloodReport {
+    deleteIfIdEquals(floodReportId)
+}
+
+CancelFloodReportBoundary "1" -- "1" CancelFloodReportController
+CancelFloodReportController "1" -- "0..*" FloodReport
+
+@enduml

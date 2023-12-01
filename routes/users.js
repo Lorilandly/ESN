@@ -86,8 +86,12 @@ router.put(
 );
 
 router.get('/current', checkUserAuthenticated, async (req, res) => {
-    const user = await getUserByName(req.user.username);
-    return res.status(200).json(user);
+    return getUserByName(req.user.username)
+        .then((user) => res.status(200).json(user))
+        .catch((error) => {
+            console.error(error);
+            return res.sendStatus(400);
+        });
 });
 
 /** Get profile of another user

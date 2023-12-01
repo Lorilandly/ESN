@@ -134,8 +134,10 @@ class AidRequestModel {
             acceptorId: queryRow.acceptor_id,
             status: queryRow.status,
         };
+        let model = new AidRequestModel(params);
+        model.id = queryRow.id;
 
-        return new AidRequestModel(params);
+        return model;
     }
 
     static async getAllAidRequests() {
@@ -145,7 +147,6 @@ class AidRequestModel {
                 queryResponse.rows.map((row) => {
                     const obj = AidRequestModel.queryToModel(row);
                     obj.creatorName = row.username;
-                    obj.id = row.id;
                     return obj;
                 }),
             );
@@ -155,11 +156,7 @@ class AidRequestModel {
         return AidRequestModel.dbPoolInstance
             .query(getSubmittedAidRequests, [creatorId])
             .then((queryResponse) =>
-                queryResponse.rows.map((row) => {
-                    const obj = AidRequestModel.queryToModel(row);
-                    obj.id = row.id;
-                    return obj;
-                }),
+                queryResponse.rows.map((row) => AidRequestModel.queryToModel(row)),
             );
     }
 
@@ -170,7 +167,6 @@ class AidRequestModel {
                 queryResponse.rows.map((row) => {
                     const obj = AidRequestModel.queryToModel(row);
                     obj.creatorName = row.username;
-                    obj.id = row.id;
                     return obj;
                 }),
             );
@@ -186,7 +182,6 @@ class AidRequestModel {
                     const row = queryResponse.rows[0];
                     const aidRequest = AidRequestModel.queryToModel(row);
                     aidRequest.creatorName = row.username;
-                    aidRequest.id = row.id;
                     return aidRequest;
                 }
             });

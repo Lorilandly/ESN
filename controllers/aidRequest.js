@@ -6,23 +6,23 @@ async function createAidRequest(aidRequest) {
 }
 
 async function getAllAidRequests() {
-    return await AidRequestModel.getAllAidRequests();
+    return AidRequestModel.getAllAidRequests();
 }
 
 async function getSubmittedAidRequests(creatorId) {
-    return await AidRequestModel.getSubmittedAidRequests(creatorId);
+    return AidRequestModel.getSubmittedAidRequests(creatorId);
 }
 
 async function getAcceptedAidRequests(acceptorId) {
-    return await AidRequestModel.getAcceptedAidRequests(acceptorId);
+    return AidRequestModel.getAcceptedAidRequests(acceptorId);
 }
 
 async function getAidRequest(aidRequestId) {
-    return await AidRequestModel.getAidRequest(aidRequestId);
+    return AidRequestModel.getAidRequest(aidRequestId);
 }
 
 async function updateAidRequest(title, description, priority, aidRequestId) {
-    return await AidRequestModel.updateAidRequest(
+    return AidRequestModel.updateAidRequest(
         title,
         description,
         priority,
@@ -31,15 +31,15 @@ async function updateAidRequest(title, description, priority, aidRequestId) {
 }
 
 async function cancelAidRequest(aidRequestId) {
-    return await AidRequestModel.deleteAidRequest(aidRequestId);
+    return AidRequestModel.deleteAidRequest(aidRequestId);
 }
 
 async function acceptAidRequest(aidRequestId, acceptorId) {
-    return await AidRequestModel.acceptAidRequest(aidRequestId, acceptorId);
+    return AidRequestModel.acceptAidRequest(aidRequestId, acceptorId);
 }
 
 async function resolveAidRequest(aidRequestId) {
-    return await AidRequestModel.deleteAidRequest(aidRequestId);
+    return AidRequestModel.deleteAidRequest(aidRequestId);
 }
 
 export {

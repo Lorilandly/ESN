@@ -1,0 +1,31 @@
+@startuml
+actor Citizen as c
+boundary ReportFloodBoundary as rb
+control ReportFloodController as rf
+entity ":FloodReport" as fr
+
+c -> rb: 1: accessFloodReportPage()
+activate rb
+rb -> rb: 2: displayFloodReports()
+activate rb
+deactivate rb
+c -> rb: 3: createFloodReport()
+rb -> rb: 4: displayFloodReportForm()
+c -> rb: 5: submitFloodReport(location, description)
+rb -> rf: 6.1: createFloodReport(location, description)
+activate rf
+rf -> fr: 6.2: create(location, description, timestamp) 
+activate fr
+deactivate fr
+rf --> rb: 6.3: newFloodReport
+deactivate rf
+rb -> rb: 6.4 displayFloodReports()
+note left
+The new flood report
+is visible to all
+citizens.
+end note
+activate rb
+deactivate rb
+deactivate rb
+@enduml

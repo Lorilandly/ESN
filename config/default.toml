@@ -16,10 +16,13 @@ name = "sb2-project-performance"
 client = ""
 
 [share-status-db]
-host = "localhost"               # the database hosting address
-port = 5432                      # the database port
+host = "localhost"             # the database hosting address
+port = 5432                    # the database port
 name = "sb2ProjectShareStatus"
 client = ""
 
 [auth] # auth service config data
 reservedUsernamesRegistry = "config/reserved_usernames.txt"
+
+[flood-report] # flood reporting config data
+stateAbbreviations = "config/us_states.txt"

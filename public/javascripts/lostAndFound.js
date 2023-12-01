@@ -3,7 +3,7 @@
 let onUnresolvedPage = true;
 
 $(document).ready(async () => {
-    const userID = (await getCurrentUser())["id"];
+    const userID = (await getCurrentUser()).id;
     document.getElementById('search-bar').remove();
     const myLostAndFound = document.createElement('div');
     myLostAndFound.className = 'lost-and-found';
@@ -16,22 +16,21 @@ $(document).ready(async () => {
     getAllUnresolvedPosts();
 
     socket.on('create new lost and found post', () => {
-        if (onUnresolvedPage){
+        if (onUnresolvedPage) {
             refreshPostList();
-        }
-        else{
+        } else {
             refreshMyPostList();
         }
-    })
+    });
 
-    socket.on('resolve lost and found post', ({userId}) => {
-        if (userID != userId && onUnresolvedPage){
+    socket.on('resolve lost and found post', ({ userId }) => {
+        if (userID != userId && onUnresolvedPage) {
             refreshPostList();
         }
-    })
-})
+    });
+});
 
-function getAllUnresolvedPosts(){
+function getAllUnresolvedPosts() {
     $.ajax({
         url: '/lostAndFounds/unresolved',
         method: 'GET',
@@ -65,27 +64,27 @@ function getAllUnresolvedPosts(){
 async function createPost() {
     const postTitle = document.getElementById('create-post-title');
     // if postTitle is empty, return
-    if (postTitle.value.length === 0){
+    if (postTitle.value.length === 0) {
         alert('Post title cannot be empty');
         return;
     }
     // if postTitle is more than 50 characters, return
-    if (postTitle.value.length > 50){
+    if (postTitle.value.length > 50) {
         alert('Post title must be less than 50 characters');
         return;
     }
     const postBody = document.getElementById('create-post-body');
     // if postBody is empty, return
-    if (postBody.value.length === 0){
+    if (postBody.value.length === 0) {
         alert('Post message cannot be empty');
         return;
     }
-    const userID = (await getCurrentUser())["id"];
+    const userID = (await getCurrentUser()).id;
     $.ajax({
         url: '/lostAndFounds',
         method: 'POST',
         data: {
-            userID: userID,
+            userID,
             title: postTitle.value,
             message: postBody.value,
         },
@@ -103,7 +102,7 @@ async function createPost() {
     modalInstance.hide();
 }
 
-function openPost(postid){
+function openPost(postid) {
     $.ajax({
         url: '/lostAndFounds/posts/' + postid,
         method: 'GET',
@@ -114,25 +113,25 @@ function openPost(postid){
         error: (error) => {
             console.error('Failed to fetch messages:', error);
         },
-    })
+    });
 }
 
-function refreshPostList(){
+function refreshPostList() {
     // Clear post container
     document.getElementById('post-container').innerHTML = '';
     // Refresh messages
     getAllUnresolvedPosts();
 }
 
-async function refreshMyPostList(){
+async function refreshMyPostList() {
     document.getElementById('post-container').innerHTML = '';
-    const userID = (await getCurrentUser())["id"];
+    const userID = (await getCurrentUser()).id;
     openMyPosts(userID);
 }
 
-async function backToUnresolved(){
+async function backToUnresolved() {
     onUnresolvedPage = true;
-    const userID = (await getCurrentUser())["id"];
+    const userID = (await getCurrentUser()).id;
     document.getElementsByClassName('header-text')[0].innerHTML = 'Unresolved Posts';
     // remove my-lost-and-found button
     document.getElementById('lost-and-found').remove();
@@ -146,37 +145,36 @@ async function backToUnresolved(){
     refreshPostList();
 }
 
-function openMyPosts(userID){
-    if (onUnresolvedPage){
+function openMyPosts(userID) {
+    if (onUnresolvedPage) {
         document.getElementById('my-lost-and-found').remove();
         document.getElementsByClassName('header-text')[0].innerHTML = 'My Posts';
     }
     onUnresolvedPage = false;
-    if (!document.getElementById('lost-and-found')){
+    if (!document.getElementById('lost-and-found')) {
         const unresolved = document.createElement('div');
         unresolved.className = 'lost-and-found';
-        unresolved.id = "lost-and-found";
+        unresolved.id = 'lost-and-found';
         unresolved.innerHTML = `
             <button class="bi bi-arrow-left" style="color:white" onclick="backToUnresolved()"></button>
         `;
-    document.getElementsByClassName('header')[0].appendChild(unresolved);
+        document.getElementsByClassName('header')[0].appendChild(unresolved);
     };
-    
 
     $.ajax({
         url: '/lostAndFounds/myPosts',
         method: 'GET',
         dataType: 'json',
         data: {
-            userID: userID,
+            userID,
         },
-        success(response){
+        success(response) {
             document.getElementById('post-container').innerHTML = '';
             const posts = response.posts;
             posts.forEach(post => {
                 const postDiv = document.createElement('div');
                 postDiv.className = 'post';
-                if(post.resolved){
+                if (post.resolved) {
                     const resolveDivWrap = document.createElement('div');
                     resolveDivWrap.className = 'resolve-div-wrap';
                     resolveDivWrap.innerHTML = `
@@ -184,10 +182,9 @@ function openMyPosts(userID){
                         <form action="/lostAndFounds/posts/${post.id}" method="GET">
                             <button class="bi bi-arrow-right-short" type="submit">
                         </button>
-                    `
+                    `;
                     postDiv.appendChild(resolveDivWrap);
-                }
-                else{
+                } else {
                     const resolveDivWrap = document.createElement('div');
                     resolveDivWrap.className = 'resolve-div-wrap';
                     resolveDivWrap.innerHTML = `
@@ -195,7 +192,7 @@ function openMyPosts(userID){
                         <form action="/lostAndFounds/posts/${post.id}" method="GET">
                             <button class="bi bi-arrow-right-short" type="submit">
                         </button>
-                    `
+                    `;
                     postDiv.appendChild(resolveDivWrap);
                 }
                 postDiv.innerHTML += `
@@ -212,10 +209,10 @@ function openMyPosts(userID){
         error: (error) => {
             console.error('Failed to fetch messages:', error);
         },
-    })
+    });
 }
 
-function resolvePost(postid){
+function resolvePost(postid) {
     $.ajax({
         url: '/lostAndFounds/myPosts/status',
         method: 'POST',
@@ -229,5 +226,5 @@ function resolvePost(postid){
         error: (error) => {
             console.error('Failed to fetch messages:', error);
         },
-    })
+    });
 }

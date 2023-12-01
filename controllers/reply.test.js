@@ -78,7 +78,7 @@ beforeAll(async () => {
 
     await reply1.persist();
     await reply2.persist();
-})
+});
 
 // Positive tests
 
@@ -88,14 +88,14 @@ test('test getAllReplyFromPost', async () => {
     expect(reply[0].sender_name).toBe('testUser2');
     expect(reply[0].body).toBe('test body');
     expect(reply[0].time).toBe(new Date(1).toLocaleString());
-    expect(reply[0].replyee_name).toBe("testUser");
+    expect(reply[0].replyee_name).toBe('testUser');
     expect(reply[1].sender_name).toBe('testUser');
     expect(reply[1].body).toBe('test body');
     expect(reply[1].time).toBe(new Date(1).toLocaleString());
-    expect(reply[1].replyee_name).toBe("No replyee");
-})
+    expect(reply[1].replyee_name).toBe('No replyee');
+});
 
-test("test createReply", async () => {
+test('test createReply', async () => {
     const req = {
         user: {
             id: 1,
@@ -111,11 +111,11 @@ test("test createReply", async () => {
     await createReply(req, res, next);
     const reply = await getAllReplyFromPost(1);
     expect(reply.length).toBe(3);
-})
+});
 
 // Negative tests
 
-test("test createReply with no message", async () => {
+test('test createReply with no message', async () => {
     const req = {
         user: {
             id: 1,
@@ -134,11 +134,10 @@ test("test createReply with no message", async () => {
 
 afterAll(async () => {
     const dbManager = DatabaseManager.getInstance();
-    try{
+    try {
         await dbManager.deactivateTestDB();
         await dbManager.DBPool.end();
-    }
-    catch(err){
+    } catch (err) {
         console.error(err);
     }
 });

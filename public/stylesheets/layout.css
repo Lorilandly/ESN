@@ -8,6 +8,10 @@ body {
     height: 100%;
 }
 
+.bi {
+    color: black;
+}
+
 .main-container{
     display: flex;
     flex-direction: column;
@@ -114,6 +118,7 @@ body {
     background-color: inherit;
     border: none;
     padding: 0;
+    color: black;
 }
 
 .offcanvas{

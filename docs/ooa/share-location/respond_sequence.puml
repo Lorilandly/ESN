@@ -1,0 +1,56 @@
+@startuml
+
+actor Citizen as c
+boundary ShareLocationBoundary as sb
+control ShareLocationController as sc
+entity ":Location" as lo
+boundary "other: ShareLocationBoundary" as osb
+
+c -> sb: 1: viewSharedLocations()
+activate sb
+sb -> sc: 2: getSharedLocations()
+activate sc
+sc -> lo: 3.1: getAddress()
+activate lo
+deactivate lo
+sc -> lo: 3.2: getCity()
+activate lo
+deactivate lo
+sc -> lo: 3.3: getState()
+activate lo
+deactivate lo
+sc -> lo: 3.4: getSenderName()
+activate lo
+deactivate lo
+sc -> lo: 3.5: getTimestamp()
+activate lo
+deactivate lo
+lo --> sc:
+sc --> sb:
+deactivate sc
+sb -> sb: 4. displaySharedLocations()
+activate sb
+deactivate sb
+deactivate sb
+deactivate sb
+
+c -> sb: 5: replyShareLocation()
+activate sb
+sb -> sc: 6: postReply(message)
+activate sc
+sc -> lo: 7: createReply(message, sender, timestamp)
+activate lo
+deactivate lo
+sc -> sb: 8: updateShareLocation(message, sender, timestamp)
+activate sb
+deactivate sb
+sc -> osb: 8: updateShareLocation(message, sender, timestamp)
+activate osb
+deactivate osb
+deactivate sc
+note right of sb
+The new current location reply is now visible to all other Citizens.
+end note
+deactivate sb
+
+@enduml

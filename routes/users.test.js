@@ -38,7 +38,7 @@ beforeAll(async () => {
     passport.use('jwt', new MockStrategy({ user }));
     await new ProfileModel(2, '_emct_key', '_val').updateProfileEntry();
     const profile0 = await new ProfileModel(1, 'key', 'val').addProfileEntry();
-    profile0.updateProfileEntry();
+    await profile0.updateProfileEntry();
 });
 
 describe('Share Status usecases tests', () => {

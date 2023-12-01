@@ -1,0 +1,21 @@
+.save-button {
+    position: fixed;
+    bottom: 114px;
+    padding: 0.75rem;
+    width: 100%;
+    border: none;
+    text-decoration: none;
+    color: white;
+    background-color: black;
+}
+
+.cancel-button {
+    position: fixed;
+    bottom: 60px;
+    left: 0;
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    color: white;
+    background-color: red;
+}

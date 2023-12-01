@@ -8,6 +8,7 @@ import FloodReportModel from './models/floodReport.js';
 import PostModel from './models/post.js';
 import ReplyModel from './models/reply.js';
 import ProfileModel from './models/profile.js';
+import AidRequestModel from './models/aidRequest.js';
 
 class DatabaseManager {
     static instance;
@@ -44,6 +45,7 @@ class DatabaseManager {
         await PostModel.initModel(db);
         await ReplyModel.initModel(db);
         await ProfileModel.initModel(db);
+        await AidRequestModel.initModel(db);
     }
 
     /* Connect to Postgres db and initalize a connection pool */

@@ -14,6 +14,7 @@ import privateChatRouter from './routes/privateChat.js';
 import performanceTestRouter from './routes/performanceTest.js';
 import viewLocationRouter from './routes/viewLocation.js';
 import floodNoticeRouter from './routes/floodNotices.js';
+import aidRequestsPageRouter from './routes/aidRequestsPage.js';
 import lostAndFoundRouter from './routes/lostAndFound.js';
 import profileRouter from './routes/profile.js';
 
@@ -23,6 +24,7 @@ import messagesRouter from './routes/messages.js';
 import searchRouter from './routes/search.js';
 import shareLocationRouter from './routes/shareLocation.js';
 import floodReportRouter from './routes/floodReport.js';
+import aidRequestsRouter from './routes/aidRequests.js';
 
 import { fileURLToPath } from 'url';
 
@@ -58,6 +60,7 @@ app.use('/privateChat', privateChatRouter);
 app.use('/performanceTest', performanceTestRouter);
 app.use('/location-settings', viewLocationRouter);
 app.use('/floodNotices', floodNoticeRouter);
+app.use('/aidRequestsPage', aidRequestsPageRouter);
 app.use('/lostAndFounds', lostAndFoundRouter);
 app.use('/profile', profileRouter);
 
@@ -67,5 +70,6 @@ app.use('/messages', messagesRouter);
 app.use('/search', searchRouter);
 app.use('/locations', shareLocationRouter);
 app.use('/floodReports', floodReportRouter);
+app.use('/aidRequests', aidRequestsRouter);
 
 export default app;

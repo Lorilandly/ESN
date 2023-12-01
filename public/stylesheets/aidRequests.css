@@ -1,0 +1,142 @@
+.aid-request-page {
+    width: 100%;
+    height: calc(100% - 120px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.aid-request-page-header {
+    font-size: 1.2rem;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    cursor: pointer;
+}
+
+.aid-request-page-header div {
+    text-align: center;
+    flex-direction: column;
+}
+
+.aid-request-category-menu {
+    position: fixed;
+    top: 120px;
+    background-color: white;
+    flex-direction: column;
+    width: 100%;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-select {
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border: 1px solid black;
+}
+
+.dropdown-icon-container {
+    position: absolute;
+    right: 0;
+    margin-right: 10px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.dropdown-icon-container i {
+    font-size: 1rem;
+}
+
+.dropdown-open {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    visibility: visible;
+    border: 1px solid black;
+    opacity: 1;
+    transition: visibility 0s, opacity 0.2s linear;
+}
+
+.dropdown-close {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.aid-request-category-menu a {
+    display: block;
+    color: black;
+    text-decoration: none;
+    padding: 0.75rem;
+    transition: all 0.5s ease-in;
+}
+
+.aid-request-category-menu a.selected,
+.aid-request-category-menu a:hover {
+    background-color: rgb(13,
+            110,
+            253);
+    color: white
+}
+
+.aid-request-page-list {
+    width: 100%;
+    height: calc(100% - 60px);
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.post-button-container {
+    position: fixed;
+    bottom: 60px;
+    flex-direction: column;
+    text-align: center;
+    width: 100%;
+    font-size: 1.25rem;
+}
+
+.post-button {
+    padding: 0.75rem;
+    width: 100%;
+    border: none;
+    text-decoration: none;
+    color: white;
+    background-color: black;
+}
+
+#aid-request-table {
+    width: 100%;
+    font-size: 1.25rem;
+}
+
+#aid-request-table tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+#aid-request-table tr:hover {
+    background-color: #ddd;
+}
+
+tr,
+td,
+th {
+    padding: 0.75rem;
+}
+
+@media screen and (max-width: 500px) {
+
+    tr,
+    td,
+    th {
+        padding: 0.5rem;
+    }
+
+    #aid-request-table {
+        font-size: 1rem;
+    }
+}

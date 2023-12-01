@@ -105,6 +105,8 @@ class MessageModel {
         ]);
     }
 
+    // TODO: rename getAllPublicMessages -> getAllPublic()
+    // e.g. messageModel.getAllPublicMessages is redundant, messageModel.getAllPublic()
     static async getAllPublicMessages() {
         return MessageModel.dbPoolInstance
             .query(getAllPublicMessages)

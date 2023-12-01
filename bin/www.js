@@ -13,6 +13,7 @@ import {
     initAuthController,
     handleSocketConnections,
 } from '../controllers/auth.js';
+import { initFloodReportController } from '../controllers/floodReport.js';
 import { initIOInstanceForChat } from '../controllers/message.js';
 import { initIOInstanceForPost } from '../controllers/post.js';
 import { initIOInstanceForReply } from '../controllers/reply.js';
@@ -59,6 +60,7 @@ initIOInstanceForChat(io);
 initIOInstanceForPost(io);
 initIOInstanceForReply(io);
 handleSocketConnections(io);
+initFloodReportController(io, config.get('flood-report'));
 
 /**
  * Listen on provided port, on all network interfaces.

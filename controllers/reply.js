@@ -11,7 +11,7 @@ async function createReply(req, res, next) {
     const postID = req.body.postID;
     const time = new Date(Date.now()).toLocaleString();
     const body = req.body.body;
-    if (body.length === 0){
+    if (body.length === 0) {
         return new Error('Reply body cannot be empty');
     };
 
@@ -20,15 +20,14 @@ async function createReply(req, res, next) {
         senderId: userID,
         postId: postID,
         replyId: replyID,
-        body: body,
-        time: time,
+        body,
+        time,
     });
 
     await reply.persist();
-    try{
-        ioInstance.emit('create new reply', {postID: postID});
-    }
-    catch(err){
+    try {
+        ioInstance.emit('create new reply', { postID });
+    } catch (err) {
     }
     return next();
 }

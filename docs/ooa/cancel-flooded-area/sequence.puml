@@ -1,0 +1,32 @@
+@startuml
+actor Citizen as c
+boundary CancelFloodReportBoundary as rb
+control CancelFloodReportController as rf
+entity ":FloodReport" as fr
+
+c -> rb: 1: accessFloodReportPage()
+activate rb
+rb -> rb: 2: displayFloodReports()
+activate rb
+deactivate rb
+c -> rb: 3: cancelFloodReport()
+rb -> rb: 4: askToConfirmAreaSafety()
+c -> rb: 5: confirmAreaSafety()
+rb -> rf: 6.1: cancelFloodReport(floodReportId)
+activate rf
+loop for each flood report
+rf -> fr: deleteIfIdEquals(floodReportId)
+activate fr
+end loop
+deactivate fr
+rf --> rb
+deactivate rf
+rb -> rb: 6.4 displayFloodReports()
+note left
+The flood report
+is deleted from view.
+end note
+activate rb
+deactivate rb
+deactivate rb
+@enduml

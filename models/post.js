@@ -44,9 +44,8 @@ const resolvePost = `
     WHERE id = $1;
 `;
 
-
 class PostModel {
-    constructor({senderId, title, body, time, resolved}) {
+    constructor({ senderId, title, body, time, resolved }) {
         this.senderId = senderId;
         this.title = title;
         this.body = body;
@@ -62,7 +61,7 @@ class PostModel {
     }
 
     async persist() {
-        return PostModel.dbPoolInstance.query(insertPost,[
+        return PostModel.dbPoolInstance.query(insertPost, [
             this.senderId,
             this.title,
             this.body,
@@ -74,7 +73,7 @@ class PostModel {
     static async getAllUnresolvedPosts() {
         return PostModel.dbPoolInstance
             .query(getAllUnresolvedPosts)
-            .then((queryResponse) => 
+            .then((queryResponse) =>
                 queryResponse.rows.map((row) => {
                     row.time = row.time.toLocaleString();
                     return row;
@@ -86,10 +85,10 @@ class PostModel {
             });
     }
 
-    static async getPostInfo(postId){
+    static async getPostInfo(postId) {
         return PostModel.dbPoolInstance
             .query(getPostInfo, [postId])
-            .then((queryResponse) => 
+            .then((queryResponse) =>
                 queryResponse.rows.map((row) => {
                     row.time = row.time.toLocaleString();
                     return row;
@@ -97,10 +96,10 @@ class PostModel {
             );
     }
 
-    static async getMyPosts(userId){
+    static async getMyPosts(userId) {
         return PostModel.dbPoolInstance
             .query(getMyPosts, [userId])
-            .then((queryResponse) => 
+            .then((queryResponse) =>
                 queryResponse.rows.map((row) => {
                     row.time = row.time.toLocaleString();
                     return row;
@@ -108,7 +107,7 @@ class PostModel {
             );
     }
 
-    static async resolvePost(postId){
+    static async resolvePost(postId) {
         return PostModel.dbPoolInstance
             .query(resolvePost, [postId]);
     }

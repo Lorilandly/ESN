@@ -137,11 +137,10 @@ test('test createPost empty title', async () => {
 
 afterAll(async () => {
     const dbManager = DatabaseManager.getInstance();
-    try{
+    try {
         await dbManager.deactivateTestDB();
         await dbManager.DBPool.end();
-    }
-    catch(err){
+    } catch (err) {
         console.error(err);
     }
 });

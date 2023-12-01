@@ -12,6 +12,7 @@ import welcomeRouter from './routes/welcome.js';
 import publicWallRouter from './routes/publicWall.js';
 import privateChatRouter from './routes/privateChat.js';
 import performanceTestRouter from './routes/performanceTest.js';
+import floodNoticeRouter from './routes/floodNotices.js';
 import lostAndFoundRouter from './routes/lostAndFound.js';
 import profileRouter from './routes/profile.js';
 
@@ -19,6 +20,7 @@ import profileRouter from './routes/profile.js';
 import usersRouter from './routes/users.js';
 import messagesRouter from './routes/messages.js';
 import searchRouter from './routes/search.js';
+import floodReportRouter from './routes/floodReport.js';
 
 import { fileURLToPath } from 'url';
 
@@ -52,6 +54,7 @@ app.use('/welcome', welcomeRouter);
 app.use('/publicWall', publicWallRouter);
 app.use('/privateChat', privateChatRouter);
 app.use('/performanceTest', performanceTestRouter);
+app.use('/floodNotices', floodNoticeRouter);
 app.use('/lostAndFounds', lostAndFoundRouter);
 app.use('/profile', profileRouter);
 
@@ -59,5 +62,6 @@ app.use('/profile', profileRouter);
 app.use('/users', usersRouter);
 app.use('/messages', messagesRouter);
 app.use('/search', searchRouter);
+app.use('/floodReports', floodReportRouter);
 
 export default app;

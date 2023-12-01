@@ -21,7 +21,6 @@ $(document).ready(() => {
         async ({ username, time, status, body, userId, receiverId }) => {
             const user = await getCurrentUser();
             const currentId = user.id;
-            // Parsing issue so use == instead of ===, fix later!
             if (currentId === receiverId) {
                 $('#alert-container').addClass('visible');
             }

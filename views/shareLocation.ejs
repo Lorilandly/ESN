@@ -16,41 +16,43 @@
         
     <div class="main-container">
         <%- include('./header.ejs') %>
-        <div id="map"></div>
+        <div class="wrap-container">
+            <div id="map"></div>
 
-        <div class="input-container">
-            <form class="location-form" id="locationForm">
-                <div class="description">Share & View Current Locations That Seek Help!</div>
-                <input type="text" id="address" name="address" required placeholder="Street Address">
-                <input type="text" id="city" name="city" required placeholder="City">
-                <input type="text" id="state" name="state" required placeholder="State">
-                <button type="submit" id="submitLocation">Submit</button>
-            </form>
-        </div>
-
-        <div class="location-container" id="locationList"></div>
-
-                <!-- Respond to Location Modal -->
-                <div class="modal fade" id="respondModal" tabindex="-1" aria-labelledby="respondModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="respondModalLabel">Respond to Location</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="respondForm">
-                                    <input type="hidden" id="respondLocationId">
-                                    <div class="mb-3">
-                                        <label for="responseMessage" class="form-label">Your Response</label>
-                                        <textarea class="form-control" id="responseMessage" required></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Submit Response</button>
-                                </form>
+            <div class="input-container">
+                <form class="location-form" id="locationForm">
+                    <div class="description">Share & View Current Locations That Seek Help!</div>
+                    <input type="text" id="address" name="address" required placeholder="Street Address">
+                    <input type="text" id="city" name="city" required placeholder="City">
+                    <input type="text" id="state" name="state" required placeholder="State">
+                    <button type="submit" id="submitLocation">Submit</button>
+                </form>
+            </div>
+    
+            <div class="location-container" id="locationList"></div>
+    
+                    <!-- Respond to Location Modal -->
+                    <div class="modal fade" id="respondModal" tabindex="-1" aria-labelledby="respondModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="respondModalLabel">Respond to Location</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="respondForm">
+                                        <input type="hidden" id="respondLocationId">
+                                        <div class="mb-3">
+                                            <label for="responseMessage" class="form-label">Your Response</label>
+                                            <textarea class="form-control" id="responseMessage" required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Submit Response</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+        </div>
         <%- include('./footer.ejs') %>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

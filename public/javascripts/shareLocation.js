@@ -1,4 +1,7 @@
 $(document).ready(() => {
+    document.getElementById('search-bar').remove();
+    document.getElementsByClassName('header-text')[0].innerHTML = 'View Locations';
+    
     $('#locationForm').on('submit', function (e) {
         e.preventDefault();
         submitLocationData();

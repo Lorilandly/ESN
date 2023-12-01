@@ -1,6 +1,9 @@
 $(document).ready(() => {
     fetchUserLocation();
 
+    document.getElementById('search-bar').remove();
+    document.getElementsByClassName('header-text')[0].innerHTML = 'Edit Locations';
+
     $('#editLocationBtn').click(() => {
         $('#editLocationModal').modal('show');
     });

@@ -2,6 +2,8 @@ import pg from 'pg';
 import UserModel from './models/user.js';
 import MessageModel from './models/message.js';
 import StatusModel from './models/status.js';
+import LocationModel from './models/location.js';
+import ResponseModel from './models/response.js';
 import FloodReportModel from './models/floodReport.js';
 import PostModel from './models/post.js';
 import ReplyModel from './models/reply.js';
@@ -36,6 +38,8 @@ class DatabaseManager {
         await UserModel.initModel(db);
         await MessageModel.initModel(db);
         await StatusModel.initModel(db);
+        await LocationModel.initModel(db);
+        await ResponseModel.initModel(db);
         await FloodReportModel.initModel(db);
         await PostModel.initModel(db);
         await ReplyModel.initModel(db);

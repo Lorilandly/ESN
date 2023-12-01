@@ -1,0 +1,37 @@
+@startuml
+
+actor Citizen as c
+boundary ShareLocationBoundary as sb
+control ShareLocationController as sc
+entity ":Location" as nlo
+
+c -> sb: 1: accessLocationSettings()
+activate sb
+sb -> sb: 2: displayLocationOptions()
+activate sb
+deactivate sb
+c -> sb: 3: createShareLocation()
+sb -> sb: 4: displayLocationInputField()
+activate sb
+deactivate sb
+deactivate sb
+c -> sb: 5: submitShareLocation(address,city,state)
+activate sb
+sb -> sc: 6.1: createShareLocation(sender,address,city,state,timestamp)
+activate sc
+sc -> nlo: 6.2: createShareLocation(sender,address,city,state,timestamp)
+activate nlo
+nlo --> sc: new Current Location
+deactivate nlo
+sc --> sb: new Current Location
+deactivate sc
+sb -> sb: 5: displayNewCurrentLocation()
+activate sb
+deactivate sb
+deactivate sb
+note right of sb
+The new current location is now visible to all other Citizens.
+end note
+deactivate sb
+
+@enduml

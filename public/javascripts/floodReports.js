@@ -10,6 +10,7 @@ function constructBaseFloodReport() {
 
     const cancelIcon = document.createElement('i');
     cancelIcon.className = 'bi bi-x-circle';
+    cancelIcon.style.color = 'red';
     cancelButton.appendChild(cancelIcon);
 
     const updateButton = document.createElement('button');

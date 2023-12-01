@@ -1,0 +1,30 @@
+@startuml
+
+skinparam ClassAttributeIconSize 0
+
+class ShareLocationBoundary <<Boundary>> {
+    + viewSharedLocations()
+    + getSharedLocations()
+    + displaySharedLocations()
+    + replyShareLocation()
+    + postReply(message)
+    + updateShareLocation(message,sender,timestamp)
+}
+
+class ShareLocationController <<Controller>> {
+    + postReply(message,sender,timestamp)
+    + updateShareLocation(message,sender,timestamp)
+}
+
+class Location <<Entity>> {
+    + createReply(message,sender,timestamp)
+    + getAddress()
+    + getCity()
+    + getState()
+    + getSenderName()
+    + getTimestamp()
+}
+
+ShareLocationBoundary "1" -- "1" ShareLocationController 
+ShareLocationController "1" -- "0..*" Location 
+

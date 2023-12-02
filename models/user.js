@@ -90,6 +90,12 @@ ORDER BY
   username;
 `;
 
+const updateUserByID = `
+UPDATE users
+SET username = $2, password_hash = $3, salt = $4, privilege = $5, account_status = $6
+WHERE id = $1;
+`;
+
 /*
  * User Model - provides interface for inserting and reading users from the database.
  */
@@ -218,6 +224,51 @@ class UserModel {
                     return queryResponse.rows;
                 }
             });
+    }
+
+    /**
+     * Updates provided fields for user with ID.
+     * @param {string} userID
+     * @param {*} fields
+     * @returns User Data if successful, else null
+     */
+    static async updateByID(userID, fields) {
+        const user = await UserModel.findByID(userID);
+        if (userID === null) {
+            return null;
+        }
+        let { username, passwordHash, salt, privilegeLevel, accountStatus } =
+            fields;
+
+        username = username ?? user.username;
+        passwordHash = passwordHash ?? user.passwordHash;
+        salt = salt ?? user.salt;
+        privilegeLevel = privilegeLevel ?? user.privilege;
+        accountStatus = accountStatus ?? user.accountStatus;
+
+        const queryResponse = await UserModel.dbPoolInstance.query(
+            updateUserByID,
+            [
+                userID,
+                username,
+                passwordHash,
+                salt,
+                privilegeLevel,
+                accountStatus,
+            ],
+        );
+        if (queryResponse.rowCount === 0) {
+            return null;
+        }
+        const updatedUser = new UserModel({
+            username,
+            passwordHash,
+            salt,
+            privilegeLevel,
+            accountStatus,
+        });
+        updatedUser.id = userID;
+        return updatedUser;
     }
 }
 

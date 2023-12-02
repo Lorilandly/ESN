@@ -37,15 +37,13 @@ async function getLocationResponse(req, res) {
 
     try {
         const responses = await ResponseModel.getLocationResponse(locationId);
-
     } catch (error) {
         console.error('Error fetching location responses:', error);
-
     }
 }
 
 export {
     initIOInstanceForResponse,
     respondCurrentLocation,
-    getLocationResponse
+    getLocationResponse,
 };

@@ -8,7 +8,7 @@ $(document).ready(() => {
         $('#editLocationModal').modal('show');
     });
 
-    $('#editLocationForm').submit(function(e) {
+    $('#editLocationForm').submit(function (e) {
         e.preventDefault();
         updateLocation();
     });
@@ -28,7 +28,6 @@ $(document).ready(() => {
             console.error('Could not find the location element for user:', data.userId);
         }
     });
-
 });
 
 async function fetchUserLocation() {
@@ -52,7 +51,7 @@ async function fetchUserLocation() {
         error: (error) => {
             console.error('Error fetching location:', error);
             $('#currentLocation').html('<p>Error fetching location.</p>');
-        }
+        },
     });
 }
 
@@ -69,7 +68,7 @@ async function updateLocation() {
         data: {
             address,
             city,
-            state
+            state,
         },
         success: () => {
             $('#editLocationModal').modal('hide');
@@ -78,12 +77,11 @@ async function updateLocation() {
         error: (xhr, status, error) => {
             if (xhr.status === 400) {
                 alert(xhr.responseJSON.message);
-            }
-            else {
+            } else {
                 console.error('Error updating location:', error);
                 alert('Failed to update location.');
             }
-        }
+        },
     });
 }
 
@@ -99,6 +97,6 @@ function deleteLocation() {
         error: (error) => {
             console.error('Error deleting location:', error);
             alert('Failed to delete location.');
-        }
+        },
     });
 }

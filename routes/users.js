@@ -9,13 +9,18 @@ import {
     sendHelp,
 } from '../controllers/profile.js';
 
-import { getUserProfileElements } from '../controllers/profileElement.js';
+import {
+    getUserProfileElements,
+    updateUserProfileElements,
+    userNotFound,
+} from '../controllers/profileElement.js';
 
 import {
     setJwtCookie,
     validateNewCredentials,
     deauthenticateUser,
     checkUserAuthenticated,
+    requireAdminPrivileges,
 } from '../controllers/auth.js';
 import { create, getAllUsers, getUserByName } from '../controllers/user.js';
 const router = express.Router();
@@ -184,6 +189,28 @@ router.get(
             .catch((err) => {
                 console.error(err);
                 return res.sendStatus(400);
+            }),
+);
+
+router.put(
+    '/:id',
+    passport.authenticate('jwt', { session: false }),
+    requireAdminPrivileges,
+    (req, res) =>
+        updateUserProfileElements(req.params.id, req.body)
+            .then((action) => {
+                if (action.updated) {
+                    return res.status(200).json({});
+                } else {
+                    if (action.reason === userNotFound) {
+                        return res.sendStatus(404);
+                    }
+                    return res.status(400).json(action.errors);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(500);
             }),
 );
 

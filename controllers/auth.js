@@ -198,6 +198,29 @@ async function validateNewCredentials(req, res, next) {
     return next();
 }
 
+// Should be used after jwt is decoded to enforce admin privileges
+async function requireAdminPrivileges(req, res, next) {
+    if (req.user.privilege !== 'ADMIN') {
+        return res.send(401).json({
+            error: 'You do not have the privileges to access this resource.',
+        });
+    }
+    return next();
+}
+
+// Should be used after jwt is decoded to enforce coordinator privileges
+async function requireCoordinatorPrivileges(req, res, next) {
+    if (
+        req.user.privilege !== 'ADMIN' &&
+        req.user.privilege !== 'COORDINATOR'
+    ) {
+        return res.send(401).json({
+            error: 'You do not have the privileges to access this resource.',
+        });
+    }
+    return next();
+}
+
 export {
     initAuthController,
     setJwtCookie,
@@ -208,4 +231,6 @@ export {
     reservedUsernames,
     validPassword,
     validUsername,
+    requireAdminPrivileges,
+    requireCoordinatorPrivileges,
 };

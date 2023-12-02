@@ -8,7 +8,7 @@ import {
     shareCurrentLocation,
     updateCurrentLocation,
     getAllLocations,
-    getUserLocation
+    getUserLocation,
 } from './location.js';
 
 beforeAll(async () => {
@@ -98,7 +98,7 @@ test('test getAllLocations', async () => {
             latitude: '37.40330330',
             longitude: '-121.92754740',
             time: new Date(1).toLocaleString(),
-        }
+        },
     ];
     expect(result).toEqual(expectedResult);
 });
@@ -115,7 +115,7 @@ test('test getUserLocation', async () => {
             latitude: '36.01225685',
             longitude: '-78.95004593',
             time: new Date(1).toLocaleString(),
-        }
+        },
     ];
     expect(result).toEqual(expectedResult);
 });

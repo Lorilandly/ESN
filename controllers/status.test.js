@@ -32,6 +32,7 @@ beforeAll(async () => {
         status: 'OK',
         statusTime: null,
         privilege: null,
+        accountStatus: null,
     });
     await user1.persist();
     passport.use('jwt', new MockStrategy({ user1 }));

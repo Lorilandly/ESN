@@ -37,6 +37,7 @@ beforeAll(async () => {
         status: 'OK',
         statusTime: null,
         privilege: null,
+        accountStatus: null,
     });
     await user1.persist();
     passport.use('jwt', new MockStrategy({ user1 }));
@@ -69,8 +70,8 @@ beforeAll(async () => {
         address: '500 S Lasalle St',
         city: 'Durham',
         state: 'NC',
-        latitude: 37.40330330,
-        longitude: -121.92754740,
+        latitude: 37.4033033,
+        longitude: -121.9275474,
         time: new Date(1),
     });
     await location2.persist();

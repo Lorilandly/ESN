@@ -116,6 +116,7 @@ describe('Test search rules for CitizenNameSearchContext', () => {
                     status: 'OK',
                     statusTime: null,
                     privilege: null,
+                    accountStatus: null,
                 }),
             ],
         };
@@ -142,6 +143,7 @@ describe('Test search rules for CitizenStatusSearchContext', () => {
                     status: 'OK',
                     statusTime: null,
                     privilege: null,
+                    accountStatus: null,
                 }),
             ],
         };

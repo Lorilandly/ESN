@@ -31,6 +31,7 @@ beforeAll(async () => {
         status: 'OK',
         statusTime: null,
         privilege: null,
+        accountStatus: null,
     });
     await user1.persist();
 
@@ -66,6 +67,7 @@ test('test getUserByName', async () => {
     const result = await getUserByName('testUser');
     const expectedResult = {
         id: 1,
+        accountStatus: null,
         loginStatus: 'OFFLINE',
         passwordHash: null,
         privilege: null,
@@ -78,11 +80,11 @@ test('test getUserByName', async () => {
 });
 
 test('test create', async () => {
-    await create('adminUser', '1234');
-    const result = await getUserByName('adminuser');
-    expect(result.username).toEqual('adminuser');
+    await create('normalUser', '1234');
+    const result = await getUserByName('normaluser');
+    expect(result.username).toEqual('normaluser');
     expect(result.loginStatus).toEqual('OFFLINE');
-    expect(result.privilege).toEqual('SUPERDUPERADMIN');
+    expect(result.privilege).toEqual('CITIZEN');
 });
 
 afterAll(async () => {

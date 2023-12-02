@@ -20,7 +20,8 @@ async function create(username, password) {
         loginStatus: 'OFFLINE',
         status: 'UNDEFINED',
         statusTime: new Date(Date.now()).toLocaleString(),
-        privilege: 'SUPERDUPERADMIN',
+        privilege: 'CITIZEN',
+        accountStatus: 'ACTIVE',
     });
     return user.persist();
 }

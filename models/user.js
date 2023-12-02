@@ -1,3 +1,15 @@
+/**
+ * A few suggestions:
+ * TODO: Rename status -> emergency_status
+ * TODO: Rename status_time -> emergency_status_last_updated
+ *
+ * Description of different status fields:
+ * login_status -> 'ONLINE' or 'OFFLINE'
+ * status -> 'UNDEFINED', 'HELP', 'OK'
+ * status_time -> 'TIMESTAMP' (last time emergency_status was updated)
+ * account_status -> 'ACTIVE' or 'INACTIVE' -> default is 'ACTIVE'
+ * privilege -> 'ADMINISTRATOR', 'COORDINATOR', 'CITIZEN' -> default is citizen
+ */
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -7,19 +19,25 @@ CREATE TABLE IF NOT EXISTS users (
     login_status TEXT,
     status TEXT,
     status_time TIMESTAMP,
-    privilege TEXT
+    privilege TEXT,
+    account_status TEXT
 );
 `;
 
 const insertUser = `
-INSERT INTO users (username, password_hash, salt, login_status, status, status_time, privilege)
-VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO users (username, password_hash, salt, login_status, status, status_time, privilege, account_status)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING id;
 `;
 
 const selectUserByName = `
 SELECT * FROM users
 WHERE username = $1;
+`;
+
+const selectUserByID = `
+SELECT * FROM users
+WHERE id = $1;
 `;
 
 const getAllUserStatusesOrdered = `
@@ -74,7 +92,6 @@ ORDER BY
 
 /*
  * User Model - provides interface for inserting and reading users from the database.
- * TODO: have a Model interface
  */
 class UserModel {
     constructor({
@@ -85,6 +102,7 @@ class UserModel {
         status,
         statusTime,
         privilege,
+        accountStatus,
     }) {
         this.username = username;
         this.passwordHash = passwordHash;
@@ -93,6 +111,7 @@ class UserModel {
         this.status = status;
         this.statusTime = statusTime;
         this.privilege = privilege;
+        this.accountStatus = accountStatus;
     }
 
     static dbPoolInstance = null;
@@ -111,6 +130,7 @@ class UserModel {
             this.status,
             this.statusTime,
             this.privilege,
+            this.accountStatus,
         ]);
         return res.rows[0].id;
     }
@@ -143,6 +163,20 @@ class UserModel {
             });
     }
 
+    static async findByID(id) {
+        return UserModel.dbPoolInstance
+            .query(selectUserByID, [id])
+            .then((queryResponse) => {
+                if (queryResponse.rowCount === 0) {
+                    return null;
+                } else {
+                    const row = queryResponse.rows[0];
+                    const user = UserModel.queryToModel(row);
+                    return user;
+                }
+            });
+    }
+
     static async searchByName(query) {
         return UserModel.dbPoolInstance
             .query(searchByNameSQL, [query])
@@ -168,6 +202,7 @@ class UserModel {
             status: queryRow.status,
             statusTime: queryRow.status_time,
             privilege: queryRow.privilege,
+            accountStatus: queryRow.account_status,
         };
 
         return new UserModel(params);

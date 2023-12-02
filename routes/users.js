@@ -9,6 +9,8 @@ import {
     sendHelp,
 } from '../controllers/profile.js';
 
+import { getUserProfileElements } from '../controllers/profileElement.js';
+
 import {
     setJwtCookie,
     validateNewCredentials,
@@ -167,6 +169,18 @@ router.get(
     (req, res) =>
         sendHelp(req.user)
             .then(() => res.status(200).json({}))
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(400);
+            }),
+);
+
+router.get(
+    '/:id',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) =>
+        getUserProfileElements(req.params.id)
+            .then((profile) => res.status(200).json(profile))
             .catch((err) => {
                 console.error(err);
                 return res.sendStatus(400);

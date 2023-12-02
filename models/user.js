@@ -8,7 +8,7 @@
  * status -> 'UNDEFINED', 'HELP', 'OK'
  * status_time -> 'TIMESTAMP' (last time emergency_status was updated)
  * account_status -> 'ACTIVE' or 'INACTIVE' -> default is 'ACTIVE'
- * privilege -> 'ADMINISTRATOR', 'COORDINATOR', 'CITIZEN' -> default is citizen
+ * privilege -> 'ADMIN', 'COORDINATOR', 'CITIZEN' -> default is citizen
  */
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (

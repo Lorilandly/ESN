@@ -63,6 +63,28 @@ function initAuthController(config) {
     } catch (error) {
         console.error('Failed to parse reserved usernames:', error);
     }
+    // Initial administrator rule dictates that the admin user should exist "out of the box"
+    createDefaultAdministrator()
+        .then(() => console.log('Default administrator created'))
+        .catch((err) =>
+            console.error(`Default administrator not (re-)created: ${err}`),
+        );
+}
+
+async function createDefaultAdministrator() {
+    const salt = crypto.randomBytes(16);
+    const passwordHash = crypto.pbkdf2Sync('admin', salt, 310000, 32, 'sha256');
+    const user = new UserModel({
+        username: 'esnadmin',
+        passwordHash,
+        salt,
+        loginStatus: 'OFFLINE',
+        status: 'OK',
+        statusTime: new Date(Date.now()).toLocaleString(),
+        privilege: 'ADMIN',
+        accountStatus: 'ACTIVE',
+    });
+    return user.persist();
 }
 
 // Function to handle Socket.IO connections and user status updates

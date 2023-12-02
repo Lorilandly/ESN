@@ -29,11 +29,6 @@ const serverPort = normalizePort(config.get('server.port'));
 app.set('port', serverPort);
 
 /**
- * Configure controllers
- */
-initAuthController(config.get('auth'));
-
-/**
  * Get database configs and connect to database.
  */
 const dbManager = DatabaseManager.getInstance();
@@ -58,6 +53,7 @@ const io = new Server(server);
 /**
  * Get test database configs for performance test controller configuration.
  */
+initAuthController(config.get('auth'));
 initIOInstanceForChat(io);
 initIOInstanceForLocation(io);
 initIOInstanceForResponse(io);

@@ -1,13 +1,12 @@
 import UserModel from '../models/user.js';
-
 import { validUsername, validPassword } from './auth.js';
+
+const invalidProfileChanges = 'Invalid profile changes';
+const userNotFound = 'User not found';
 
 function getUserProfileElements(userID) {
     return UserModel.findByID(userID).then((user) => buildUserProfile(user));
 }
-
-const invalidProfileChanges = 'Invalid profile changes';
-const userNotFound = 'User not found';
 
 /**
  * Updates the provided fields on the user identified by userID, if possible.
@@ -82,6 +81,8 @@ async function validProfileChanges(fields) {
     }
     if (fields.privilegeLevel && !validPrivilegeLevel(fields.privilegeLevel)) {
         errors.push('Invalid privilege level');
+        // TODO: if privileges of an admin are being revoked, check that
+        // there is at least one more admin in the system (See At-least-one-administrator rule)
     }
     if (fields.username && !validUsername(fields.username)) {
         errors.push('Invalid username');

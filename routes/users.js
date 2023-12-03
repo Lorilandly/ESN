@@ -101,6 +101,10 @@ router.get('/current', checkUserAuthenticated, async (req, res) => {
         });
 });
 
+router.get('/profile/all', (req, res) => {
+    return res.render('adminUsers');
+});
+
 /** Get profile of another user
  * @argument UserId
  */

@@ -1,3 +1,5 @@
+/* global socket */
+
 $(document).ready(() => {
     document.getElementById('search-bar').remove();
     document.getElementsByClassName('header-text')[0].innerHTML = 'View Locations';

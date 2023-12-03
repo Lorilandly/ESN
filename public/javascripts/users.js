@@ -43,7 +43,7 @@ $(document).ready(() => {
     searchSelect.appendChild(searchOption2);
     document.getElementById('search-input-body').appendChild(searchInput);
     document.getElementById('search-input-body').appendChild(searchSelect);
-
+    document.getElementsByClassName('header-text')[0].innerHTML = 'Active Users';
     searchSelect.addEventListener('change', (event) => {
         // Remove the search-input element
         document

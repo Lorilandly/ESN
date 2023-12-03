@@ -2,6 +2,7 @@
 
 $(document).ready(async function () {
     // Capture form submission event
+    await displayAdminOption();
     $('#status-form').submit(async (event) => {
         event.preventDefault();
         const status = $('#status').find(':selected').val();
@@ -80,4 +81,12 @@ function sendHelp(event) {
         },
         error: console.error,
     });
+}
+
+async function displayAdminOption() {
+    const user = await window.user;
+    if (user.privilege !== 'ADMIN') {
+        // remove the admin button
+        document.getElementById('admin-option').remove();
+    }
 }

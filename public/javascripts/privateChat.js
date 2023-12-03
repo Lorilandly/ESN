@@ -17,7 +17,7 @@ $(document).ready(async () => {
     searchInput.setAttribute('class', 'form-control');
     searchInput.setAttribute('placeholder', 'Search Private Messages');
     document.getElementById('search-input-body').appendChild(searchInput);
-
+    document.getElementsByClassName('header-text')[0].innerHTML = 'Private Chat';
     // Fetch and render all messages
     $.ajax({
         url: '/messages/private',

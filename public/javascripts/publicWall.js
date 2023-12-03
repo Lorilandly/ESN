@@ -11,7 +11,7 @@ $(document).ready(() => {
     searchInput.setAttribute('class', 'form-control');
     searchInput.setAttribute('placeholder', 'Search Public Messages');
     document.getElementById('search-input-body').appendChild(searchInput);
-
+    document.getElementsByClassName('header-text')[0].innerHTML = 'Public Chat';
     // Fetch and render all messages
     $.ajax({
         url: '/messages/public',

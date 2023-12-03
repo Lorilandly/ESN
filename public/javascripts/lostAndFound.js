@@ -1,4 +1,4 @@
-/* global socket */
+/* global socket getCurrentUser bootstrap */
 
 let onUnresolvedPage = true;
 
@@ -24,7 +24,7 @@ $(document).ready(async () => {
     });
 
     socket.on('resolve lost and found post', ({ userId }) => {
-        if (userID != userId && onUnresolvedPage) {
+        if (userID !== userId && onUnresolvedPage) {
             refreshPostList();
         }
     });

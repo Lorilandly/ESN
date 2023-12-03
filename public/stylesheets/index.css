@@ -82,6 +82,7 @@
     line-height: 60px;
     font-size: 20px;
     width: 15%;
+    cursor: pointer;
 }
 
 .user-list-body .user-list-body-element .user-list-body-element-chat .user-list-body-element-chat-form{

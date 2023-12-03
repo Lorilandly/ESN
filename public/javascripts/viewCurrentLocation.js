@@ -1,3 +1,5 @@
+/* global socket getCurrentUser */
+
 $(document).ready(() => {
     fetchUserLocation();
 

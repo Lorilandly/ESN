@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import UserModel from '../models/user.js';
 import { validUsername, validPassword } from './auth.js';
 
@@ -19,7 +20,7 @@ function getUserProfileElements(userID) {
  * }
  */
 async function updateUserProfileElements(userID, fields) {
-    const change = await validProfileChanges(fields);
+    const change = await validProfileChanges(userID, fields);
     if (!change.valid) {
         return {
             updated: false,
@@ -29,7 +30,7 @@ async function updateUserProfileElements(userID, fields) {
     }
 
     // create new passwordHash and salt, if updated
-    if (fields.password) {
+    if ('password' in fields) {
         fields.salt = crypto.randomBytes(16);
         fields.passwordHash = crypto.pbkdf2Sync(
             fields.password,
@@ -74,25 +75,36 @@ function buildUserProfile(user) {
  *      errors: array,   // indicates which errors occurred during validation
  * }
  */
-async function validProfileChanges(fields) {
+async function validProfileChanges(userID, fields) {
     const errors = [];
-    if (fields.accountStatus && !validAccountStatus(fields.accountStatus)) {
+    if (
+        'accountStatus' in fields &&
+        !validAccountStatus(fields.accountStatus)
+    ) {
         errors.push('Invalid account status');
     }
-    if (fields.privilegeLevel && !validPrivilegeLevel(fields.privilegeLevel)) {
+    if (
+        'privilegeLevel' in fields &&
+        !validPrivilegeLevel(fields.privilegeLevel)
+    ) {
         errors.push('Invalid privilege level');
         // TODO: if privileges of an admin are being revoked, check that
         // there is at least one more admin in the system (See At-least-one-administrator rule)
     }
-    if (fields.username && !validUsername(fields.username)) {
-        errors.push('Invalid username');
-    } else {
-        const user = await UserModel.findByName(fields.username);
-        if (user !== null) {
-            errors.push('Username already taken');
+    if ('username' in fields) {
+        const username = validUsername(fields.username);
+        if (username) {
+            const user = await UserModel.findByName(fields.username);
+            if (user !== null && user.id !== parseInt(userID)) {
+                errors.push('Username already taken');
+            }
+            // enforce case sensitivity, as with other usenames
+            fields.username = username;
+        } else {
+            errors.push('Invalid username');
         }
     }
-    if (fields.password && !validPassword(fields.password)) {
+    if ('password' in fields && !validPassword(fields.password)) {
         errors.push('Invalid password');
     }
     if (errors.length !== 0) {

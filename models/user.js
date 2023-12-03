@@ -178,6 +178,9 @@ class UserModel {
                 } else {
                     const row = queryResponse.rows[0];
                     const user = UserModel.queryToModel(row);
+                    user.passwordHash = row.password_hash;
+                    user.salt = row.salt;
+                    user.id = row.id;
                     return user;
                 }
             });

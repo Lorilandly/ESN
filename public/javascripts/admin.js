@@ -42,24 +42,21 @@ function fetchAllUsers() {
 }
 
 function editUser(user) {
-    $.ajax(
-        '/users/' + user.id,
-        {
-            method: 'GET',
-            datatype: 'json',
-            success: (res) => {
-                // clear the modal
-                document.getElementById('edit-user-name').value = '';
-                document.getElementById('edit-user-privilege').value = '';
-                document.getElementById('edit-user-acc-status').value = '';
-                document.getElementById('edit-user-password').value = '';
-                populateEditUserModal(res, user.id);
-            },
-            error: (res) => {
-                console.error('Error:', res);
-            },
+    $.ajax('/users/' + user.id, {
+        method: 'GET',
+        datatype: 'json',
+        success: (res) => {
+            // clear the modal
+            document.getElementById('edit-user-name').value = '';
+            document.getElementById('edit-user-privilege').value = '';
+            document.getElementById('edit-user-acc-status').value = '';
+            document.getElementById('edit-user-password').value = '';
+            populateEditUserModal(res, user.id);
         },
-    );
+        error: (res) => {
+            console.error('Error:', res);
+        },
+    });
 }
 
 function populateEditUserModal(user, userID) {
@@ -74,19 +71,19 @@ function populateEditUserModal(user, userID) {
 }
 
 function updateUserProfile(userID) {
-    const username = document.getElementById('edit-user-name').value;
-    const privilegeLevel = document.getElementById('edit-user-privilege').value;
-    const accountStatus = document.getElementById('edit-user-acc-status').value;
+    const profileData = {
+        username: document.getElementById('edit-user-name').value,
+        accountStatus: document.getElementById('edit-user-acc-status').value,
+        privilegeLevel: document.getElementById('edit-user-privilege').value,
+    };
     const password = document.getElementById('edit-user-password').value;
+    if (password) {
+        profileData.password = password;
+    }
     $.ajax('/users/' + userID, {
         method: 'PUT',
         datatype: 'json',
-        data: {
-            username,
-            privilegeLevel,
-            accountStatus,
-            password,
-        },
+        data: profileData,
         success: (res) => {
             // close modal
             $('#editUserProfileModal').modal('hide');
@@ -98,6 +95,5 @@ function updateUserProfile(userID) {
             // display error message
             alert(res.responseJSON[0]);
         },
-    },
-    );
+    });
 }

@@ -96,6 +96,16 @@ SET username = $2, password_hash = $3, salt = $4, privilege = $5, account_status
 WHERE id = $1;
 `;
 
+const countNumberOfAdmins = `
+SELECT COUNT(*) FROM users
+WHERE privilege = 'ADMIN';
+`;
+
+const getUserPrivilege = `
+SELECT privilege FROM users
+WHERE username = $1;
+`;
+
 /*
  * User Model - provides interface for inserting and reading users from the database.
  */
@@ -272,6 +282,21 @@ class UserModel {
         });
         updatedUser.id = userID;
         return updatedUser;
+    }
+
+    static async countAdmins() {
+        const queryResponse = await UserModel.dbPoolInstance.query(
+            countNumberOfAdmins,
+        );
+        return queryResponse.rows[0].count;
+    }
+
+    static async getPrivilege(name) {
+        const queryResponse = await UserModel.dbPoolInstance.query(
+            getUserPrivilege,
+            [name],
+        );
+        return queryResponse.rows[0].privilege;
     }
 }
 

@@ -84,8 +84,7 @@ async function validProfileChanges(userID, fields) {
         errors.push('Invalid account status');
     }
     if (
-        'privilegeLevel' in fields &&
-        !validPrivilegeLevel(fields.privilegeLevel)
+        'privilegeLevel' in fields && !await atLeastOneAdmin(fields.privilegeLevel, fields.username)
     ) {
         errors.push('Invalid privilege level');
         // TODO: if privileges of an admin are being revoked, check that
@@ -129,6 +128,17 @@ function validPrivilegeLevel(privilegeLevel) {
         privilegeLevel === 'COORDINATOR' ||
         privilegeLevel === 'CITIZEN'
     );
+}
+
+async function atLeastOneAdmin(privilegeLevel, username) {
+    if(privilegeLevel !== 'ADMIN'){
+        const oldPrivilegeLevel = await UserModel.getPrivilege(username);
+        if (oldPrivilegeLevel === 'ADMIN') {
+            const count = await UserModel.countAdmins();
+            return count > 1;
+        }
+    }
+    return true;
 }
 
 export {

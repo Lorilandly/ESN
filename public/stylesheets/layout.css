@@ -13,6 +13,11 @@ form{
     margin: 0;
 }
 
+button{
+    background: none;
+    border: none;
+}
+
 .bi {
     color: black;
 }

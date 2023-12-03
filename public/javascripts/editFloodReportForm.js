@@ -1,3 +1,5 @@
+/* global modifyHeader */
+
 $('#flood-report-form').submit((event) => {
     event.preventDefault();
 
@@ -20,4 +22,9 @@ $('#flood-report-form').submit((event) => {
             console.error('Failed to update flood report:', error);
         },
     });
+});
+
+$(document).ready(() => {
+    modifyHeader(false, 'Update Flood Report');
+    document.getElementById('flood-reports-button').classList.add('text-primary');
 });

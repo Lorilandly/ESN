@@ -1,7 +1,10 @@
+/* global modifyHeader */
+
 let intervalID = null;
 let testInProgress = false;
 
-document.addEventListener('DOMContentLoaded', (event) => {
+$(document).ready(() => {
+    modifyHeader(false, 'Performance Test');
     document
         .getElementById('startPerformanceTest')
         .addEventListener('click', async () => {

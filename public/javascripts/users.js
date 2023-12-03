@@ -1,4 +1,4 @@
-/* global setSearchType getCurrentUser */
+/* global setSearchType getCurrentUser modifyHeader */
 function createPrivateChatButton(senderId, receiverId) {
     // Create the form element
     const form = document.createElement('form');
@@ -22,6 +22,7 @@ function createPrivateChatButton(senderId, receiverId) {
 }
 
 $(document).ready(() => {
+    modifyHeader(true, 'Active Users');
     // Set Search Bar Title to Search Citizens
     $('#searchModalLabel').html('Search Citizens');
     setSearchType('citizen');
@@ -43,7 +44,6 @@ $(document).ready(() => {
     searchSelect.appendChild(searchOption2);
     document.getElementById('search-input-body').appendChild(searchInput);
     document.getElementById('search-input-body').appendChild(searchSelect);
-    document.getElementsByClassName('header-text')[0].innerHTML = 'Active Users';
     searchSelect.addEventListener('change', (event) => {
         // Remove the search-input element
         document

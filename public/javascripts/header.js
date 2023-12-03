@@ -292,6 +292,13 @@ function showChatSearchStatus(response) {
     }
 }
 
+function modifyHeader(search, title) {
+    if (!search) {
+        document.getElementById('search-bar').remove();
+    }
+    document.getElementsByClassName('header-text')[0].innerHTML = title;
+}
+
 window.addEventListener('beforeunload', (event) => {
     $.ajax('/users/logout', {
         method: 'PUT',

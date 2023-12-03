@@ -1,7 +1,7 @@
-/* global socket getCurrentUser bootstrap */
+/* global socket getCurrentUser bootstrap modifyHeader */
 
 $(document).ready(() => {
-    document.getElementById('search-bar').remove();
+    modifyHeader(false);
     const backButton = document.createElement('form');
     backButton.action = '/lostAndFounds';
     backButton.className = 'back-button';
@@ -14,7 +14,7 @@ $(document).ready(() => {
 
     socket.on('create new reply', ({ postID }) => {
         const thisPostID = parseInt(getPostID());
-        if (postID === thisPostID) {
+        if (parseInt(postID) === thisPostID) {
             refreshPost();
         }
     });

@@ -1,10 +1,10 @@
-/* global socket getCurrentUser bootstrap */
+/* global socket getCurrentUser bootstrap modifyHeader */
 
 let onUnresolvedPage = true;
 
 $(document).ready(async () => {
+    modifyHeader(false, 'Unresolved Posts');
     const userID = (await getCurrentUser()).id;
-    document.getElementById('search-bar').remove();
     const myLostAndFound = document.createElement('div');
     myLostAndFound.className = 'lost-and-found';
     myLostAndFound.id = 'my-lost-and-found';
@@ -12,7 +12,7 @@ $(document).ready(async () => {
         <button class="lost-and-found-text" onclick="openMyPosts(${userID})" >My Posts</button>
     `;
     document.getElementsByClassName('header')[0].appendChild(myLostAndFound);
-    document.getElementsByClassName('header-text')[0].innerHTML = 'Unresolved Posts';
+
     getAllUnresolvedPosts();
 
     socket.on('create new lost and found post', () => {

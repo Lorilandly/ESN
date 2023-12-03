@@ -1,10 +1,9 @@
-/* global socket getCurrentUser */
+/* global socket getCurrentUser modifyHeader */
 
 $(document).ready(() => {
+    modifyHeader(false, 'Location Setting');
+    document.getElementById('share-location').classList.add('text-primary');
     fetchUserLocation();
-
-    document.getElementById('search-bar').remove();
-    document.getElementsByClassName('header-text')[0].innerHTML = 'Edit Locations';
 
     $('#editLocationBtn').click(() => {
         $('#editLocationModal').modal('show');

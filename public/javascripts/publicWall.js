@@ -1,6 +1,7 @@
-/* global socket setSearchType */
+/* global socket setSearchType modifyHeader */
 
 $(document).ready(() => {
+    modifyHeader(true, 'Public Chat');
     document.getElementById('public-chat').classList.add('text-primary');
     // Set Search Bar Title to Search Public Messages
     $('#searchModalLabel').html('Search Public Messages');
@@ -11,7 +12,6 @@ $(document).ready(() => {
     searchInput.setAttribute('class', 'form-control');
     searchInput.setAttribute('placeholder', 'Search Public Messages');
     document.getElementById('search-input-body').appendChild(searchInput);
-    document.getElementsByClassName('header-text')[0].innerHTML = 'Public Chat';
     // Fetch and render all messages
     $.ajax({
         url: '/messages/public',

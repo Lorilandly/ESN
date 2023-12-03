@@ -1,4 +1,4 @@
-/* global socket */
+/* global socket modifyHeader */
 
 function constructBaseFloodReport() {
     const floodReport = document.createElement('div');
@@ -155,6 +155,8 @@ function displayAllFloodReports() {
 }
 
 $(document).ready(() => {
+    modifyHeader(false, 'Flood Reports');
+    document.getElementById('flood-reports-button').classList.add('text-primary');
     displayAllFloodReports();
     socket.on('create-flood-report', (floodReport) => {
         $('#flood-reports-container').append(createFloodReport(floodReport));

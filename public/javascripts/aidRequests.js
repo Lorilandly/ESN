@@ -1,3 +1,5 @@
+/* global modifyHeader */
+
 function getAidRequestPageTypeFromPath() {
     const pathSegments = window.location.pathname.split('/');
     return pathSegments[2];
@@ -286,6 +288,7 @@ function getDropdownItemFromPageType(pageType) {
 }
 
 $(document).ready(() => {
+    modifyHeader(false, 'Aid Requests');
     // show aid requests based on different page type
     const aidRequestPageType = getAidRequestPageTypeFromPath();
     const dropdownItem = getDropdownItemFromPageType(aidRequestPageType);

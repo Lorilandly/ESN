@@ -1,4 +1,4 @@
-/* global socket setSearchType modifyHeader */
+/* global socket setSearchType modifyHeader displayChatMessages */
 
 $(document).ready(() => {
     modifyHeader(true, 'Public Chat');
@@ -19,25 +19,7 @@ $(document).ready(() => {
         dataType: 'json',
         success: (response) => {
             const messages = response.messages;
-            if (messages && messages.length > 0) {
-                let messageHtml = '';
-                messages.forEach((message) => {
-                    messageHtml += `
-                        <div class="message">
-                            <div class="message-title">
-                                <span class="message-sender-name">${message.username}<i class="bi bi-circle-fill user-status-${message.status}"></i></span>
-                                <span class="message-time">${message.time}</span>
-                            </div>
-                            <div class="message-body">
-                                <p>${message.body}</p>
-                            </div>
-                        </div>`;
-                });
-                $('#message-container').append(messageHtml);
-                $('#message-container').scrollTop(
-                    $('#message-container')[0].scrollHeight,
-                );
-            }
+            displayChatMessages(messages);
         },
         error: (error) => {
             console.error('Failed to fetch messages:', error);

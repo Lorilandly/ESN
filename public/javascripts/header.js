@@ -252,44 +252,43 @@ function showCitizenSearchResults(responses) {
 }
 
 function showChatSearchResults(response) {
-    // Remove everything from search-result
-    $('#search-result').empty();
-    const messages = response.messages;
-    if (messages && messages.length > 0) {
-        let messageHtml = '';
-        messages.forEach((message) => {
-            messageHtml += `
-                <div class="search-message">
-                    <div class="search-message-title">
-                        <span class="search-message-sender-name">${message.sender}</span>
-                        <span class="message-time">${message.time}</span>
-                        <span class="message-status">${message.status}</span>
-                    </div>
-                    <div class="message-body">
-                        <p>${message.body}</p>
-                    </div>
-                </div>`;
-        });
-        $('#search-result').append(messageHtml);
-    }
+    displaySearchMessages(response.messages, 'message');
 }
 
 function showChatSearchStatus(response) {
+    displaySearchMessages(response.messages, 'status');
+}
+
+function displaySearchMessages(messages, type) {
     $('#search-result').empty();
-    const messages = response.messages;
     if (messages && messages.length > 0) {
         let messageHtml = '';
         messages.forEach((message) => {
             messageHtml += `
-                <div class="search-message">
-                    <div class="search-message-title">
-                        <span class="search-message-sender-name">${message.time}</span>
-                        <span class="message-status">${message.status}</span>
+            <div class="search-message">
+                <div class="search-message-title">
+                `;
+            if (type === 'status') {
+                messageHtml += `
+                    <span class="search-message-sender-name">${message.time}</span>
+                    <span class="message-status">${message.status}</span>
+                `;
+            } else {
+                messageHtml += `
+                    <span class="search-message-sender-name">${message.sender}</span>
+                    <span class="message-time">${message.time}</span>
+                    <span class="message-status">${message.status}</span>
                     </div>
-                </div>`;
+                    <div class="message-body">
+                            <p>${message.body}</p>
+                    </div>
+                `;
+            }
+            messageHtml += `
+            </div>`;
         });
         $('#search-result').append(messageHtml);
-    }
+    };
 }
 
 function modifyHeader(search, title) {
@@ -306,3 +305,25 @@ window.addEventListener('beforeunload', (event) => {
         data: { type: 'close' },
     });
 });
+
+function displayChatMessages(messages) {
+    if (messages && messages.length > 0) {
+        let messageHtml = '';
+        messages.forEach((message) => {
+            messageHtml += `
+                <div class="message">
+                    <div class="message-title">
+                        <span class="message-sender-name">${message.username}<i class="bi bi-circle-fill user-status-${message.status}"></i></span>
+                        <span class="message-time">${message.time}</span>
+                    </div>
+                    <div class="message-body">
+                        <p>${message.body}</p>
+                    </div>
+                </div>`;
+        });
+        $('#message-container').append(messageHtml);
+        $('#message-container').scrollTop(
+            $('#message-container')[0].scrollHeight,
+        );
+    }
+}

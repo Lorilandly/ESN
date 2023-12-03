@@ -94,7 +94,7 @@ test('test getAllPublicMessages', async () => {
             sender_id: 1,
             status: null,
             time: new Date(1).toLocaleString(),
-            username: 'testUser',
+            sender_name: 'testUser',
         },
     ];
     expect(result).toEqual(expectedResult);

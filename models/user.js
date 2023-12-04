@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 /**
  * A few suggestions:
  * TODO: Rename status -> emergency_status
@@ -18,15 +20,14 @@ CREATE TABLE IF NOT EXISTS users (
     salt BYTEA,
     login_status TEXT,
     status TEXT,
-    status_time TIMESTAMP,
     privilege TEXT,
     account_status TEXT
 );
 `;
 
 const insertUser = `
-INSERT INTO users (username, password_hash, salt, login_status, status, status_time, privilege, account_status)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+INSERT INTO users (username, password_hash, salt, login_status, status, privilege, account_status)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING id;
 `;
 
@@ -111,52 +112,106 @@ const getUserPrivilegeByID = `
 SELECT privilege FROM users
 WHERE id = $1;
 `;
-
-/*
+/**
  * User Model - provides interface for inserting and reading users from the database.
+ * @class
  */
 class UserModel {
-    constructor({
-        username,
-        passwordHash,
-        salt,
-        loginStatus,
-        status,
-        statusTime,
-        privilege,
-        accountStatus,
-    }) {
+    #id;
+    #passwordHash;
+    #salt;
+
+    /**
+     * Constructs a new UserModel.
+     * @constructor
+     * @param {object} params - The parameters to initialize the user.
+     * @param {string} params.username - The username of the user.
+     * @param {string} params.loginStatus - The login status of the user.
+     * @param {string} params.status - The status of the user.
+     * @param {string} params.privilege - The privilege level of the user.
+     */
+    constructor({ username, loginStatus, status, privilege, accountStatus }) {
         this.username = username;
-        this.passwordHash = passwordHash;
-        this.salt = salt;
         this.loginStatus = loginStatus;
         this.status = status;
-        this.statusTime = statusTime;
         this.privilege = privilege;
         this.accountStatus = accountStatus;
     }
 
     static dbPoolInstance = null;
 
+    /**
+     * Initializes the UserModel with a database pool.
+     * @static
+     * @async
+     * @param {object} dbPool - The database pool instance.
+     * @returns {Promise<void>}
+     */
     static async initModel(dbPool) {
         UserModel.dbPoolInstance = dbPool;
         await UserModel.dbPoolInstance.query(createUsersTable);
     }
 
+    /**
+     * Sets the password for the user.
+     * @method
+     * @param {string} password - The password to set.
+     * @returns {void}
+     */
+    setPassword(password) {
+        this.#salt = crypto.randomBytes(16);
+        this.#passwordHash = crypto.pbkdf2Sync(
+            password,
+            this.#salt,
+            310000,
+            32,
+            'sha256',
+        );
+    }
+
+    /**
+     * Checks if the provided password matches the user's password.
+     * @method
+     * @param {string} password - The password to check.
+     * @returns {boolean} - True if the passwords match, false otherwise.
+     */
+    checkPassword(password) {
+        const newHashedPasswd = crypto.pbkdf2Sync(
+            password,
+            this.#salt,
+            310000,
+            32,
+            'sha256',
+        );
+        return Buffer.compare(newHashedPasswd, this.#passwordHash) === 0;
+    }
+
+    /**
+     * Persists the user data into the database.
+     * @method
+     * @async
+     * @returns {Promise<number>} - The ID of the inserted user.
+     */
     async persist() {
         const res = await UserModel.dbPoolInstance.query(insertUser, [
             this.username,
-            this.passwordHash,
-            this.salt,
+            this.#passwordHash,
+            this.#salt,
             this.loginStatus,
             this.status,
-            this.statusTime,
             this.privilege,
             this.accountStatus,
         ]);
         return res.rows[0].id;
     }
 
+    /**
+     * Updates the user's status in the database.
+     * @method
+     * @async
+     * @param {string} status - The new status.
+     * @returns {Promise<void>}
+     */
     async updateStatus(status) {
         await UserModel.dbPoolInstance.query(changeUserStatus, [
             status,
@@ -177,9 +232,7 @@ class UserModel {
                 } else {
                     const row = queryResponse.rows[0];
                     const user = UserModel.queryToModel(row);
-                    user.passwordHash = row.password_hash;
-                    user.salt = row.salt;
-                    user.id = row.id;
+                    user.id = user.#id;
                     return user;
                 }
             });
@@ -194,9 +247,9 @@ class UserModel {
                 } else {
                     const row = queryResponse.rows[0];
                     const user = UserModel.queryToModel(row);
-                    user.passwordHash = row.password_hash;
-                    user.salt = row.salt;
-                    user.id = row.id;
+                    user.passwordHash = user.#passwordHash;
+                    user.salt = user.#salt;
+                    user.id = user.#id;
                     return user;
                 }
             });
@@ -218,21 +271,12 @@ class UserModel {
             );
     }
 
-    static queryToModel(queryRow) {
-        const params = {
-            username: queryRow.username,
-            passwordHash: null,
-            salt: null,
-            loginStatus: queryRow.login_status,
-            status: queryRow.status,
-            statusTime: queryRow.status_time,
-            privilege: queryRow.privilege,
-            accountStatus: queryRow.account_status,
-        };
-
-        return new UserModel(params);
-    }
-
+    /**
+     * Retrieves all user statuses from the database.
+     * @static
+     * @async
+     * @returns {Promise<null|Array<object>>} - The array of user statuses or null if none.
+     */
     static async getAllStatuses() {
         return UserModel.dbPoolInstance
             .query(getAllActiveUserStatusesOrdered)
@@ -243,6 +287,28 @@ class UserModel {
                     return queryResponse.rows;
                 }
             });
+    }
+
+    /**
+     * Converts a database query result row to a UserModel instance.
+     * @static
+     * @param {object} queryRow - The query result row.
+     * @returns {UserModel} - The UserModel instance.
+     */
+    static queryToModel(queryRow) {
+        const user = new UserModel({
+            username: queryRow.username,
+            loginStatus: queryRow.login_status,
+            status: queryRow.status,
+            privilege: queryRow.privilege,
+            accountStatus: queryRow.account_status,
+        });
+
+        user.#id = queryRow.id;
+        user.#passwordHash = queryRow.password_hash;
+        user.#salt = queryRow.salt;
+
+        return user;
     }
 
     static async getAllUsers() {
@@ -257,6 +323,17 @@ class UserModel {
             });
     }
 
+    async update() {
+        return UserModel.dbPoolInstance.query(updateUserByID, [
+            this.#id,
+            this.username,
+            this.#passwordHash,
+            this.#salt,
+            this.privilege,
+            this.accountStatus,
+        ]);
+    }
+
     /**
      * Updates provided fields for user with ID.
      * @param {string} userID
@@ -268,38 +345,21 @@ class UserModel {
         if (user === null) {
             return null;
         }
-        let { username, passwordHash, salt, privilegeLevel, accountStatus } =
-            fields;
+        const { username, password, privilegeLevel, accountStatus } = fields;
 
-        username = username ?? user.username;
-        passwordHash = passwordHash ?? user.passwordHash;
-        salt = salt ?? user.salt;
-        privilegeLevel = privilegeLevel ?? user.privilege;
-        accountStatus = accountStatus ?? user.accountStatus;
+        if (password) {
+            user.setPassword(password);
+        }
+        user.username = username ?? user.username;
+        user.privilege = privilegeLevel ?? user.privilege;
+        user.accountStatus = accountStatus ?? user.accountStatus;
 
-        const queryResponse = await UserModel.dbPoolInstance.query(
-            updateUserByID,
-            [
-                userID,
-                username,
-                passwordHash,
-                salt,
-                privilegeLevel,
-                accountStatus,
-            ],
-        );
+        const queryResponse = await user.update();
         if (queryResponse.rowCount === 0) {
             return null;
         }
-        const updatedUser = new UserModel({
-            username,
-            passwordHash,
-            salt,
-            privilegeLevel,
-            accountStatus,
-        });
-        updatedUser.id = userID;
-        return updatedUser;
+        user.id = userID;
+        return user;
     }
 
     static async countAdmins() {

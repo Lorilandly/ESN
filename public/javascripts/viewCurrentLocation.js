@@ -22,11 +22,16 @@ $(document).ready(() => {
 
     // Listen for location share stopped
     socket.on('location sharing stopped', () => {
-        const locationElement = document.getElementById('location-' + data.userId);
+        const locationElement = document.getElementById(
+            'location-' + data.userId,
+        );
         if (locationElement) {
             locationElement.parentNode.removeChild(locationElement);
         } else {
-            console.error('Could not find the location element for user:', data.userId);
+            console.error(
+                'Could not find the location element for user:',
+                data.userId,
+            );
         }
     });
 });

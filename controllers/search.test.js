@@ -33,11 +33,8 @@ beforeAll(async () => {
 
     const user = new UserModel({
         username: 'testUser',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     await user.persist();
@@ -110,11 +107,8 @@ describe('Test search rules for CitizenNameSearchContext', () => {
             users: [
                 new UserModel({
                     username: 'testUser',
-                    passwordHash: null,
-                    salt: null,
                     loginStatus: 'ONLINE',
                     status: 'OK',
-                    statusTime: null,
                     privilege: null,
                     accountStatus: null,
                 }),
@@ -137,11 +131,8 @@ describe('Test search rules for CitizenStatusSearchContext', () => {
             users: [
                 new UserModel({
                     username: 'testUser',
-                    passwordHash: null,
-                    salt: null,
                     loginStatus: 'ONLINE',
                     status: 'OK',
-                    statusTime: null,
                     privilege: null,
                     accountStatus: null,
                 }),

@@ -26,33 +26,24 @@ beforeAll(async () => {
     }
     const user = new UserModel({
         username: 'testUser',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     user.id = 1;
     await user.persist();
     const user2 = new UserModel({
         username: 'testUser2',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     user2.id = 2;
     await user2.persist();
     await new UserModel({
         username: 'otherUser0',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'OFFLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     }).persist();
     await new LocationModel({
@@ -69,25 +60,21 @@ beforeAll(async () => {
 
 describe('Share Current Location usecase tests', () => {
     test('get all current locations', async () => {
-        const res = await request(app)
-            .get('/locations/all');
+        const res = await request(app).get('/locations/all');
         expect(res.statusCode).toBe(200);
     });
 
     test('share a current location', async () => {
-        const res = await request(app)
-            .post('/locations')
-            .send({
-                address: '300 River Oaks Pkwy',
-                city: 'San Jose',
-                state: 'CA',
-            });
+        const res = await request(app).post('/locations').send({
+            address: '300 River Oaks Pkwy',
+            city: 'San Jose',
+            state: 'CA',
+        });
         expect(res.statusCode).toBe(409);
     });
 
     test('Get current location', async () => {
-        const res = await request(app)
-            .get('/locations/1');
+        const res = await request(app).get('/locations/1');
         expect(res.statusCode).toBe(200);
     });
 });

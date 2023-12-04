@@ -4,12 +4,7 @@ import config from 'config';
 import DatabaseManager from '../db.js';
 import UserModel from '../models/user.js';
 import LocationModel from '../models/location.js';
-import {
-    shareCurrentLocation,
-    updateCurrentLocation,
-    getAllLocations,
-    getUserLocation,
-} from './location.js';
+import { getAllLocations, getUserLocation } from './location.js';
 
 beforeAll(async () => {
     // do db setups
@@ -31,11 +26,8 @@ beforeAll(async () => {
 
     const user1 = new UserModel({
         username: 'testUser',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'OFFLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
         accountStatus: null,
     });
@@ -44,11 +36,8 @@ beforeAll(async () => {
 
     const user2 = new UserModel({
         username: 'testUser2',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     await user2.persist();

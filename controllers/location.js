@@ -13,11 +13,12 @@ async function shareCurrentLocation(req, res, next) {
     const existingLocations = await LocationModel.getUserLocation(userId);
     if (existingLocations.length > 0) {
         return res.status(409).json({
-            message: 'Current location already submitted. Please update your current location in the settings.',
+            message:
+                'Current location already submitted. Please update your current location in the settings.',
         });
     }
 
-    const sender_name = req.user.username;
+    const senderName = req.user.username;
     const { address, city, state } = req.body;
 
     try {
@@ -45,7 +46,7 @@ async function shareCurrentLocation(req, res, next) {
             latitude,
             longitude,
             time,
-            sender_name,
+            sender_name: senderName,
         });
     } catch (error) {
         if (error.message === 'Address not found') {
@@ -91,7 +92,8 @@ async function updateCurrentLocation(req, res, next) {
     } catch (error) {
         if (error.message === 'Address not found') {
             return res.status(400).json({
-                message: 'Invalid address. Please enter a valid address that can be plotted on a map.',
+                message:
+                    'Invalid address. Please enter a valid address that can be plotted on a map.',
             });
         } else {
             console.error('Error updating location:', error);
@@ -118,8 +120,8 @@ async function getAllLocations() {
     return await LocationModel.getAllLocations();
 }
 
-async function getUserLocation(sender_id) {
-    return await LocationModel.getUserLocation(sender_id);
+async function getUserLocation(senderId) {
+    return await LocationModel.getUserLocation(senderId);
 }
 
 export {

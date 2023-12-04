@@ -10,7 +10,9 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 function addMarkersToMap(locations) {
     locations.forEach((loc) => {
         const marker = L.marker([loc.latitude, loc.longitude]).addTo(map);
-        marker.bindPopup(`<b>${loc.sender_name}</b><br>${loc.address}, ${loc.city}, ${loc.state}`);
+        marker.bindPopup(
+            `<b>${loc.sender_name}</b><br>${loc.address}, ${loc.city}, ${loc.state}`,
+        );
 
         marker.on('click', function () {
             marker.openPopup();

@@ -64,13 +64,17 @@ router.delete(
     },
 );
 
-router.post('/:locationId/respond',
+router.post(
+    '/:locationId/respond',
     passport.authenticate('jwt', { session: false }),
-    await respondCurrentLocation, async (req, res) => {
+    await respondCurrentLocation,
+    async (req, res) => {
         return res.status(201).json({});
-    });
+    },
+);
 
-router.get('/:locationId/responses',
+router.get(
+    '/:locationId/responses',
     passport.authenticate('jwt', { session: false }),
     getLocationResponse,
     (req, res) => {

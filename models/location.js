@@ -44,8 +44,16 @@ WHERE sender_id = $1;
 `;
 
 class LocationModel {
-    constructor({ sender_id, address, city, state, latitude, longitude, time }) {
-        this.sender_id = sender_id;
+    constructor({
+        sender_id: senderId,
+        address,
+        city,
+        state,
+        latitude,
+        longitude,
+        time,
+    }) {
+        this.sender_id = senderId;
         this.address = address;
         this.city = city;
         this.state = state;
@@ -85,9 +93,9 @@ class LocationModel {
             });
     }
 
-    static async getUserLocation(sender_id) {
+    static async getUserLocation(senderId) {
         return LocationModel.dbPoolInstance
-            .query(getUserLocation, [sender_id])
+            .query(getUserLocation, [senderId])
             .then((queryResponse) =>
                 queryResponse.rows.map((row) => {
                     row.time = row.time.toLocaleString();
@@ -96,10 +104,18 @@ class LocationModel {
             );
     }
 
-    static async updateUserLocation(sender_id, address, city, state, latitude, longitude, time) {
+    static async updateUserLocation(
+        senderId,
+        address,
+        city,
+        state,
+        latitude,
+        longitude,
+        time,
+    ) {
         try {
             return LocationModel.dbPoolInstance.query(updateUserLocation, [
-                sender_id,
+                senderId,
                 address,
                 city,
                 state,
@@ -113,10 +129,10 @@ class LocationModel {
         }
     }
 
-    static async deleteUserLocation(sender_id) {
+    static async deleteUserLocation(senderId) {
         const result = await LocationModel.dbPoolInstance.query(
             deleteUserLocation,
-            [sender_id],
+            [senderId],
         );
         return result.rowCount;
     }

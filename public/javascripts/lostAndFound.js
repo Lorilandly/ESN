@@ -12,6 +12,8 @@ $(document).ready(async () => {
         <button class="lost-and-found-text" onclick="openMyPosts(${userID})" >My Posts</button>
     `;
     document.getElementsByClassName('header')[0].appendChild(myLostAndFound);
+    document.getElementsByClassName('header-text')[0].innerHTML =
+        'Unresolved Posts';
 
     getAllUnresolvedPosts();
 
@@ -37,7 +39,7 @@ function getAllUnresolvedPosts() {
         dataType: 'json',
         success: (response) => {
             const posts = response.posts;
-            posts.forEach(post => {
+            posts.forEach((post) => {
                 const postDiv = document.createElement('div');
                 postDiv.className = 'post';
                 // postDiv.onclick = () => openPost(post.id);
@@ -132,7 +134,8 @@ async function refreshMyPostList() {
 async function backToUnresolved() {
     onUnresolvedPage = true;
     const userID = (await getCurrentUser()).id;
-    document.getElementsByClassName('header-text')[0].innerHTML = 'Unresolved Posts';
+    document.getElementsByClassName('header-text')[0].innerHTML =
+        'Unresolved Posts';
     // remove my-lost-and-found button
     document.getElementById('lost-and-found').remove();
     const myLostAndFound = document.createElement('div');
@@ -148,7 +151,8 @@ async function backToUnresolved() {
 function openMyPosts(userID) {
     if (onUnresolvedPage) {
         document.getElementById('my-lost-and-found').remove();
-        document.getElementsByClassName('header-text')[0].innerHTML = 'My Posts';
+        document.getElementsByClassName('header-text')[0].innerHTML =
+            'My Posts';
     }
     onUnresolvedPage = false;
     if (!document.getElementById('lost-and-found')) {
@@ -159,7 +163,7 @@ function openMyPosts(userID) {
             <button class="bi bi-arrow-left" style="color:white" onclick="backToUnresolved()"></button>
         `;
         document.getElementsByClassName('header')[0].appendChild(unresolved);
-    };
+    }
 
     $.ajax({
         url: '/lostAndFounds/myPosts',
@@ -171,7 +175,7 @@ function openMyPosts(userID) {
         success(response) {
             document.getElementById('post-container').innerHTML = '';
             const posts = response.posts;
-            posts.forEach(post => {
+            posts.forEach((post) => {
                 const postDiv = document.createElement('div');
                 postDiv.className = 'post';
                 if (post.resolved) {

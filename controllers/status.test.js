@@ -26,11 +26,8 @@ beforeAll(async () => {
 
     const user1 = new UserModel({
         username: 'testUser',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'OFFLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
         accountStatus: null,
     });
@@ -39,22 +36,13 @@ beforeAll(async () => {
 });
 
 test('test updateUserStatus', async () => {
-    await updateUserStatus(
-        {
-            body: { status: 'emergency' },
-            user: new UserModel({
-                username: 'testUser',
-                passwordHash: null,
-                salt: null,
-                loginStatus: 'OFFLINE',
-                status: 'OK',
-                statusTime: null,
-                privilege: null,
-            }),
-        },
-        null,
-        () => {},
-    );
+    const user = new UserModel({
+        username: 'testUser',
+        loginStatus: 'OFFLINE',
+        status: 'OK',
+        privilege: null,
+    });
+    await updateUserStatus(user, 'emergency');
     const result = await getUserByName('testUser');
     expect(result.status).toEqual('emergency');
 });

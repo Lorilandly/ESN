@@ -14,11 +14,11 @@ async function createMessage(req, res, next) {
     const time = new Date(Date.now()).toLocaleString();
     const user = req.user;
     const status = user.status;
-    const userId = req.user.id;
+    const senderId = req.user.id;
     const receiverId = req.body.receiverId ? parseInt(req.body.receiverId) : 0;
     const readStatus = 'UNREAD';
     const message = new MessageModel({
-        senderId: userId,
+        senderId,
         receiverId,
         body,
         time,
@@ -41,7 +41,7 @@ async function createMessage(req, res, next) {
                 time,
                 status,
                 body,
-                userId,
+                senderId,
                 receiverId,
             });
         }

@@ -26,22 +26,16 @@ beforeAll(async () => {
     }
     const user = new UserModel({
         username: 'testUser',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     user.id = 1;
     await user.persist();
     await new UserModel({
         username: 'otherUser0',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'OFFLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     }).persist();
     await new MessageModel({

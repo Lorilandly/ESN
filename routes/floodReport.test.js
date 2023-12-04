@@ -34,11 +34,8 @@ beforeAll(async () => {
     }
     const testUser = new UserModel({
         username: 'testUser',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     testUser.id = await testUser.persist();

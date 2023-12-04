@@ -31,11 +31,8 @@ beforeAll(async () => {
 
     const user1 = new UserModel({
         username: 'testUser',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'OFFLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
         accountStatus: null,
     });

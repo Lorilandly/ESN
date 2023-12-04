@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import { Strategy } from 'passport-jwt';
@@ -43,7 +42,7 @@ passport.use(
         }
         return UserModel.findByName(username.toLowerCase())
             .then((user) => {
-                if (checkPasswordForUser(user, password)) {
+                if (user.checkPassword(password)) {
                     return done(null, user);
                 }
                 return done(null, false);
@@ -75,18 +74,14 @@ function initAuthController(config) {
 }
 
 async function createDefaultAdministrator() {
-    const salt = crypto.randomBytes(16);
-    const passwordHash = crypto.pbkdf2Sync('admin', salt, 310000, 32, 'sha256');
     const user = new UserModel({
         username: 'esnadmin',
-        passwordHash,
-        salt,
         loginStatus: 'OFFLINE',
         status: 'OK',
-        statusTime: new Date(Date.now()).toLocaleString(),
         privilege: 'ADMIN',
         accountStatus: 'ACTIVE',
     });
+    user.setPassword('admin');
     return user.persist();
 }
 
@@ -135,20 +130,6 @@ function validPassword(password) {
     return password.length < 4 ? false : password;
 }
 
-function checkPasswordForUser(user, rawPassword) {
-    if (!user) {
-        return false;
-    }
-    const newHashedPasswd = crypto.pbkdf2Sync(
-        rawPassword,
-        user.salt,
-        310000,
-        32,
-        'sha256',
-    );
-    return Buffer.compare(newHashedPasswd, user.passwordHash) === 0;
-}
-
 function checkUserAccountStatus(user) {
     if (!user) {
         return false;
@@ -192,22 +173,6 @@ async function setJwtCookie(userID, username, privilege, res) {
     });
 }
 
-async function checkUserAuthenticated(req, res, next) {
-    const token = req.cookies.jwtToken;
-    if (!token) {
-        res.locals.isAuthenticated = false;
-        return next();
-    }
-    try {
-        const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
-        req.user = decodedUser;
-        res.locals.isAuthenticated = true;
-    } catch (error) {
-        res.locals.isAuthenticated = false;
-    }
-    return next();
-}
-
 async function validateNewCredentials(req, res, next) {
     const { username, password, dryRun } = req.body;
     const checkedUsername = validUsername(username);
@@ -223,7 +188,7 @@ async function validateNewCredentials(req, res, next) {
         if (!checkUserAccountStatus(user)) {
             return res.status(403).json({ error: 'Account is inactive' });
         }
-        if (!checkPasswordForUser(user, password)) {
+        if (!user.checkPassword(password)) {
             return res.status(403).json({ error: 'Username is already taken' });
         } else {
             // This case is handled on the client side
@@ -261,7 +226,6 @@ export {
     setJwtCookie,
     handleSocketConnections,
     deauthenticateUser,
-    checkUserAuthenticated,
     validateNewCredentials,
     reservedUsernames,
     validPassword,

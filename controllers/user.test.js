@@ -25,11 +25,8 @@ beforeAll(async () => {
 
     const user1 = new UserModel({
         username: 'testUser',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'OFFLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
         accountStatus: 'ACTIVE',
     });
@@ -39,11 +36,8 @@ beforeAll(async () => {
 
     const user2 = new UserModel({
         username: 'testUser2',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
         accountStatus: 'ACTIVE',
     });
@@ -70,11 +64,8 @@ test('test getUserByName', async () => {
         id: 1,
         accountStatus: 'ACTIVE',
         loginStatus: 'OFFLINE',
-        passwordHash: null,
         privilege: null,
-        salt: null,
         status: 'OK',
-        statusTime: null,
         username: 'testUser',
     };
     expect(result).toEqual(expectedResult);

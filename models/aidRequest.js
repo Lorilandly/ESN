@@ -156,7 +156,9 @@ class AidRequestModel {
         return AidRequestModel.dbPoolInstance
             .query(getSubmittedAidRequests, [creatorId])
             .then((queryResponse) =>
-                queryResponse.rows.map((row) => AidRequestModel.queryToModel(row)),
+                queryResponse.rows.map((row) =>
+                    AidRequestModel.queryToModel(row),
+                ),
             );
     }
 

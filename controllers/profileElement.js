@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import UserModel from '../models/user.js';
 import { validUsername, validPassword } from './auth.js';
 
@@ -29,18 +28,6 @@ async function updateUserProfileElements(userID, fields) {
 
     if ('username' in fields) {
         fields.username = validUsername(fields.username);
-    }
-
-    // create new passwordHash and salt, if updated
-    if ('password' in fields) {
-        fields.salt = crypto.randomBytes(16);
-        fields.passwordHash = crypto.pbkdf2Sync(
-            fields.password,
-            fields.salt,
-            310000,
-            32,
-            'sha256',
-        );
     }
 
     const userProfile = await UserModel.updateByID(userID, fields);

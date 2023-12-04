@@ -169,7 +169,14 @@ function fetchResponsesForLocation(locationId) {
             });
         },
         error: (error) => {
+<<<<<<< HEAD
+            console.error(
+                `Failed to fetch responses for location ${locationId}:`,
+                error,
+            );
+=======
             console.error(`Failed to fetch responses for location ${locationId}:`, error);
+>>>>>>> main
         },
     });
 }

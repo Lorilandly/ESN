@@ -21,7 +21,7 @@ const opts = {
 
 passport.use(
     new Strategy(opts, async (jwtPayload, done) => {
-        return UserModel.findByName(jwtPayload.username)
+        return UserModel.findByID(jwtPayload.id)
             .then((user) => {
                 if (user) {
                     return done(null, user);
@@ -101,7 +101,7 @@ function handleSocketConnections(io) {
             console.error(`failed to decode user from jwt, ${exception}`);
             return;
         }
-        const user = await UserModel.findByName(decodedUser.username);
+        const user = await UserModel.findByID(parseInt(decodedUser.id));
         const status = user.status;
         io.emit('userStatus', {
             username: decodedUser.username,
@@ -164,10 +164,14 @@ async function deauthenticateUser(req, res, next) {
     return next();
 }
 
-async function setJwtCookie(username, res) {
-    const token = jwt.sign({ username }, process.env.SECRET_KEY, {
-        expiresIn: '1h',
-    });
+async function setJwtCookie(userID, username, res) {
+    const token = jwt.sign(
+        { id: userID, username },
+        process.env.SECRET_KEY,
+        {
+            expiresIn: '1h',
+        },
+    );
     return UserModel.updateLoginStatus(username, 'ONLINE').then(() => {
         res.cookie('jwtToken', token, {
             httpOnly: true,

@@ -288,7 +288,7 @@ function displaySearchMessages(messages, type) {
             </div>`;
         });
         $('#search-result').append(messageHtml);
-    };
+    }
 }
 
 function modifyHeader(search, title) {
@@ -313,7 +313,7 @@ function displayChatMessages(messages) {
             messageHtml += `
                 <div class="message">
                     <div class="message-title">
-                        <span class="message-sender-name">${message.username}<i class="bi bi-circle-fill user-status-${message.status}"></i></span>
+                        <span class="message-sender-name">${message.sender_name}<i class="bi bi-circle-fill user-status-${message.status}"></i></span>
                         <span class="message-time">${message.time}</span>
                     </div>
                     <div class="message-body">

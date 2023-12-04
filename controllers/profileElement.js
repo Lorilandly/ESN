@@ -84,12 +84,18 @@ async function validProfileChanges(userID, fields) {
         errors.push('Invalid account status');
     }
     if (
-        'privilegeLevel' in fields && !await atLeastOneAdmin(fields.privilegeLevel, fields.username)
+        'privilegeLevel' in fields &&
+        !validPrivilegeLevel(fields.privilegeLevel)
     ) {
         errors.push('Invalid privilege level');
-        // TODO: if privileges of an admin are being revoked, check that
-        // there is at least one more admin in the system (See At-least-one-administrator rule)
+    } else {
+        // if the privileges of an admin are being revoked, check that there
+        // is at least one more admin in the system (at least one admin rule)
+        if (!(await atLeastOneAdmin(fields.privilegeLevel, userID))) {
+            errors.push('There must always be one admin must in the system');
+        }
     }
+
     if ('username' in fields) {
         const username = validUsername(fields.username);
         if (username) {
@@ -130,9 +136,9 @@ function validPrivilegeLevel(privilegeLevel) {
     );
 }
 
-async function atLeastOneAdmin(privilegeLevel, username) {
-    if(privilegeLevel !== 'ADMIN'){
-        const oldPrivilegeLevel = await UserModel.getPrivilege(username);
+async function atLeastOneAdmin(privilegeLevel, userID) {
+    if (privilegeLevel !== 'ADMIN') {
+        const oldPrivilegeLevel = await UserModel.getPrivilegeByID(userID);
         if (oldPrivilegeLevel === 'ADMIN') {
             const count = await UserModel.countAdmins();
             return count > 1;

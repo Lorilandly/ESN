@@ -44,7 +44,7 @@ router.post('/', await validateNewCredentials, (req, res) => {
     let { username, password } = req.body;
     username = username.toLowerCase();
     return create(username, password)
-        .then(() => setJwtCookie(username, res))
+        .then((userID) => setJwtCookie(userID, username, res))
         .then((res) => res.status(201).json({}))
         .catch((err) => {
             console.error(err);
@@ -74,7 +74,7 @@ router.put(
     '/login',
     passport.authenticate('local', { session: false }),
     (req, res) => {
-        return setJwtCookie(req.user.username, res)
+        return setJwtCookie(req.user.id, req.user.username, res)
             .then((res) => res.status(200).json({}))
             .catch((err) => {
                 console.error(err);

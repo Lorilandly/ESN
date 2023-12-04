@@ -101,9 +101,9 @@ SELECT COUNT(*) FROM users
 WHERE privilege = 'ADMIN';
 `;
 
-const getUserPrivilege = `
+const getUserPrivilegeByID = `
 SELECT privilege FROM users
-WHERE username = $1;
+WHERE id = $1;
 `;
 
 /*
@@ -285,16 +285,15 @@ class UserModel {
     }
 
     static async countAdmins() {
-        const queryResponse = await UserModel.dbPoolInstance.query(
-            countNumberOfAdmins,
-        );
+        const queryResponse =
+            await UserModel.dbPoolInstance.query(countNumberOfAdmins);
         return queryResponse.rows[0].count;
     }
 
-    static async getPrivilege(name) {
+    static async getPrivilegeByID(userID) {
         const queryResponse = await UserModel.dbPoolInstance.query(
-            getUserPrivilege,
-            [name],
+            getUserPrivilegeByID,
+            [userID],
         );
         return queryResponse.rows[0].privilege;
     }

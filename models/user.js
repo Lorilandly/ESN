@@ -305,7 +305,7 @@ class UserModel {
     static async countAdmins() {
         const queryResponse =
             await UserModel.dbPoolInstance.query(countNumberOfAdmins);
-        return queryResponse.rows[0].count;
+        return parseInt(queryResponse.rows[0].count);
     }
 
     static async getPrivilegeByID(userID) {

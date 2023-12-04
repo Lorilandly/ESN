@@ -164,6 +164,8 @@ export {
     updateUserProfileElements,
     initIOInstanceForAdmin,
     profileChangeValidation,
+    validProfileChanges,
+    atLeastOneAdmin,
     invalidProfileChanges,
     userNotFound,
 };

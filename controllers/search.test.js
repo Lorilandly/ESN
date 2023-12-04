@@ -110,6 +110,7 @@ describe('Test search rules for CitizenNameSearchContext', () => {
                     loginStatus: 'ONLINE',
                     status: 'OK',
                     privilege: null,
+                    accountStatus: null,
                 }),
             ],
         };
@@ -133,6 +134,7 @@ describe('Test search rules for CitizenStatusSearchContext', () => {
                     loginStatus: 'ONLINE',
                     status: 'OK',
                     privilege: null,
+                    accountStatus: null,
                 }),
             ],
         };

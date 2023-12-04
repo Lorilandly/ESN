@@ -19,6 +19,7 @@ import { initIOInstanceForLocation } from '../controllers/location.js';
 import { initIOInstanceForResponse } from '../controllers/response.js';
 import { initIOInstanceForPost } from '../controllers/post.js';
 import { initIOInstanceForReply } from '../controllers/reply.js';
+import { initIOInstanceForAdmin } from '../controllers/profileElement.js';
 import { Server } from 'socket.io';
 
 /**
@@ -29,11 +30,6 @@ const serverPort = normalizePort(config.get('server.port'));
 app.set('port', serverPort);
 
 /**
- * Configure controllers
- */
-initAuthController(config.get('auth'));
-
-/**
  * Get database configs and connect to database.
  */
 const dbManager = DatabaseManager.getInstance();
@@ -42,7 +38,7 @@ const dbHost = config.get('db.host');
 const dbPort = normalizePort(config.get('db.port'));
 const dbName = config.get('db.name');
 dbManager.configureDB(dbHost, dbPort, dbName);
-dbManager.activateDB();
+await dbManager.activateDB();
 
 const testDBHost = config.get('performance-test-db.host');
 const testDBPort = normalizePort(config.get('performance-test-db.port'));
@@ -58,11 +54,13 @@ const io = new Server(server);
 /**
  * Get test database configs for performance test controller configuration.
  */
+initAuthController(config.get('auth'));
 initIOInstanceForChat(io);
 initIOInstanceForLocation(io);
 initIOInstanceForResponse(io);
 initIOInstanceForPost(io);
 initIOInstanceForReply(io);
+initIOInstanceForAdmin(io);
 handleSocketConnections(io);
 initFloodReportController(io, config.get('flood-report'));
 

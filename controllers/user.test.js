@@ -3,7 +3,7 @@ import MockStrategy from 'passport-mock-strategy';
 import config from 'config';
 import DatabaseManager from '../db.js';
 import UserModel from '../models/user.js';
-import { create, getAllUsers, getUserByName } from './user.js';
+import { create, getAllActiveUsers, getUserByName } from './user.js';
 
 beforeAll(async () => {
     // do db setups
@@ -28,6 +28,7 @@ beforeAll(async () => {
         loginStatus: 'OFFLINE',
         status: 'OK',
         privilege: null,
+        accountStatus: 'ACTIVE',
     });
     await user1.persist();
 
@@ -38,12 +39,13 @@ beforeAll(async () => {
         loginStatus: 'ONLINE',
         status: 'OK',
         privilege: null,
+        accountStatus: 'ACTIVE',
     });
     await user2.persist();
 });
 
-test('test getAllUsers', async () => {
-    const result = await getAllUsers();
+test('test getAllActiveUsers', async () => {
+    const result = await getAllActiveUsers();
     const expectedResult = [
         {
             id: 2,
@@ -60,6 +62,7 @@ test('test getUserByName', async () => {
     const result = await getUserByName('testUser');
     const expectedResult = {
         id: 1,
+        accountStatus: 'ACTIVE',
         loginStatus: 'OFFLINE',
         privilege: null,
         status: 'OK',
@@ -69,11 +72,11 @@ test('test getUserByName', async () => {
 });
 
 test('test create', async () => {
-    await create('adminUser', '1234');
-    const result = await getUserByName('adminuser');
-    expect(result.username).toEqual('adminuser');
+    await create('normalUser', '1234');
+    const result = await getUserByName('normaluser');
+    expect(result.username).toEqual('normaluser');
     expect(result.loginStatus).toEqual('OFFLINE');
-    expect(result.privilege).toEqual('SUPERDUPERADMIN');
+    expect(result.privilege).toEqual('CITIZEN');
 });
 
 afterAll(async () => {

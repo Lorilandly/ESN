@@ -19,7 +19,7 @@ RETURNING id;
 `;
 
 const getAllPublicMessages = `
-SELECT users.username, sender_id, receiver_id, body, time, messages.status, read_status
+SELECT users.username AS sender_name, sender_id, receiver_id, body, time, messages.status, read_status
 FROM messages
 JOIN users ON messages.sender_id = users.id
 WHERE receiver_id = 0

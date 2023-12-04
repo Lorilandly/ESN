@@ -1,7 +1,10 @@
+/* global modifyHeader */
+
 let intervalID = null;
 let testInProgress = false;
 
-document.addEventListener('DOMContentLoaded', (event) => {
+$(document).ready(() => {
+    modifyHeader(false, 'Performance Test');
     document
         .getElementById('startPerformanceTest')
         .addEventListener('click', async () => {
@@ -66,8 +69,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     document.getElementById('stopTest').addEventListener('click', async () => {
         stopPerformanceTest();
     });
-
-    document.getElementById('search-bar').remove();
 });
 
 async function startPerformanceTest(duration, interval) {

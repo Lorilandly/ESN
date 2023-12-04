@@ -1,7 +1,7 @@
-/* global socket */
+/* global socket getCurrentUser bootstrap modifyHeader */
 
 $(document).ready(() => {
-    document.getElementById('search-bar').remove();
+    modifyHeader(false);
     const backButton = document.createElement('form');
     backButton.action = '/lostAndFounds';
     backButton.className = 'back-button';
@@ -14,7 +14,7 @@ $(document).ready(() => {
 
     socket.on('create new reply', ({ postID }) => {
         const thisPostID = parseInt(getPostID());
-        if (postID === thisPostID) {
+        if (parseInt(postID) === thisPostID) {
             refreshPost();
         }
     });
@@ -139,7 +139,6 @@ async function createPostReply() {
 }
 
 function changeReplyInfo(replyInfo) {
-    console.log(replyInfo);
     const replyReplyModal = document.getElementById('replyReplyModal');
     replyReplyModal.getElementsByClassName('modal-title')[0].innerHTML =
         'Reply to ' + replyInfo.senderName;

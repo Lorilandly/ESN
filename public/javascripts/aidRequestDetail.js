@@ -1,3 +1,5 @@
+/* global modifyHeader getCurrentUser */
+
 function getAidRequestIdFromPath() {
     const pathSegments = window.location.pathname.split('/');
     return parseInt(pathSegments[3]);
@@ -25,6 +27,7 @@ function createAcceptButton(aidRequestId) {
 }
 
 $(document).ready(() => {
+    modifyHeader(false, 'Aid Request');
     const aidRequestId = getAidRequestIdFromPath();
 
     $.ajax('/aidRequests/all/' + aidRequestId, {

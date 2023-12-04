@@ -1,4 +1,4 @@
-/* global socket setSearchType getCurrentUser */
+/* global socket setSearchType getCurrentUser displayChatMessages */
 
 function getReceiverIdFromPath() {
     const pathSegments = window.location.pathname.split('/');
@@ -17,7 +17,7 @@ $(document).ready(async () => {
     searchInput.setAttribute('class', 'form-control');
     searchInput.setAttribute('placeholder', 'Search Private Messages');
     document.getElementById('search-input-body').appendChild(searchInput);
-
+    document.getElementsByClassName('header-text')[0].innerHTML = 'Private Chat';
     // Fetch and render all messages
     $.ajax({
         url: '/messages/private',
@@ -25,27 +25,7 @@ $(document).ready(async () => {
         dataType: 'json',
         data: { receiverId: otherId },
         success: (response) => {
-            const messages = response.messages;
-            if (messages && messages.length > 0) {
-                let messageHtml = '';
-                messages.forEach((message) => {
-                    messageHtml += `
-                        <div class="message">
-                            <div class="message-title">
-                                <span class="message-sender-name">${message.sender_name}</span>
-                                <span class="message-time">${message.time}</span>
-                                <span class="message-status">${message.status}</span>
-                            </div>
-                            <div class="message-body">
-                                <p>${message.body}</p>
-                            </div>
-                        </div>`;
-                });
-                $('#message-container').append(messageHtml);
-                $('#message-container').scrollTop(
-                    $('#message-container')[0].scrollHeight,
-                );
-            }
+            displayChatMessages(response.messages);
         },
         error: (error) => {
             console.error('Failed to fetch messages:', error);

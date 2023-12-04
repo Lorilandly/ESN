@@ -8,18 +8,23 @@ async function create(username, password) {
         username: username.toLowerCase(),
         loginStatus: 'OFFLINE',
         status: 'UNDEFINED',
-        privilege: 'SUPERDUPERADMIN',
+        privilege: 'CITIZEN',
+        accountStatus: 'ACTIVE',
     });
     user.setPassword(password);
     return user.persist();
 }
 
-async function getAllUsers() {
+async function getAllActiveUsers() {
     return UserModel.getAllStatuses();
+}
+
+async function getAllUsers() {
+    return UserModel.getAllUsers();
 }
 
 async function getUserByName(username) {
     return await UserModel.findByName(username);
 }
 
-export { create, getAllUsers, getUserByName };
+export { create, getAllActiveUsers, getAllUsers, getUserByName };

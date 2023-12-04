@@ -1,5 +1,17 @@
 import crypto from 'crypto';
 
+/**
+ * A few suggestions:
+ * TODO: Rename status -> emergency_status
+ * TODO: Rename status_time -> emergency_status_last_updated
+ *
+ * Description of different status fields:
+ * login_status -> 'ONLINE' or 'OFFLINE'
+ * status -> 'UNDEFINED', 'HELP', 'OK'
+ * status_time -> 'TIMESTAMP' (last time emergency_status was updated)
+ * account_status -> 'ACTIVE' or 'INACTIVE' -> default is 'ACTIVE'
+ * privilege -> 'ADMIN', 'COORDINATOR', 'CITIZEN' -> default is citizen
+ */
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -8,13 +20,14 @@ CREATE TABLE IF NOT EXISTS users (
     salt BYTEA,
     login_status TEXT,
     status TEXT,
-    privilege TEXT
+    privilege TEXT,
+    account_status TEXT
 );
 `;
 
 const insertUser = `
-INSERT INTO users (username, password_hash, salt, login_status, status, privilege)
-VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO users (username, password_hash, salt, login_status, status, privilege, account_status)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING id;
 `;
 
@@ -23,9 +36,15 @@ SELECT * FROM users
 WHERE username = $1;
 `;
 
-const getAllUserStatusesOrdered = `
+const selectUserByID = `
+SELECT * FROM users
+WHERE id = $1;
+`;
+
+const getAllActiveUserStatusesOrdered = `
 SELECT id, username, login_status, status
 FROM users
+WHERE account_status = 'ACTIVE'
 ORDER BY 
     CASE 
         WHEN login_status = 'ONLINE' THEN 1
@@ -33,6 +52,11 @@ ORDER BY
         ELSE 3
     END,
     username;
+`;
+
+const getAllUsers = `
+SELECT id, username, login_status, status
+FROM users;
 `;
 
 const changeUserLoginStatus = `
@@ -73,6 +97,21 @@ ORDER BY
   username;
 `;
 
+const updateUserByID = `
+UPDATE users
+SET username = $2, password_hash = $3, salt = $4, privilege = $5, account_status = $6
+WHERE id = $1;
+`;
+
+const countNumberOfAdmins = `
+SELECT COUNT(*) FROM users
+WHERE privilege = 'ADMIN' AND account_status = 'ACTIVE';
+`;
+
+const getUserPrivilegeByID = `
+SELECT privilege FROM users
+WHERE id = $1;
+`;
 /**
  * User Model - provides interface for inserting and reading users from the database.
  * @class
@@ -91,11 +130,12 @@ class UserModel {
      * @param {string} params.status - The status of the user.
      * @param {string} params.privilege - The privilege level of the user.
      */
-    constructor({ username, loginStatus, status, privilege }) {
+    constructor({ username, loginStatus, status, privilege, accountStatus }) {
         this.username = username;
         this.loginStatus = loginStatus;
         this.status = status;
         this.privilege = privilege;
+        this.accountStatus = accountStatus;
     }
 
     static dbPoolInstance = null;
@@ -160,6 +200,7 @@ class UserModel {
             this.loginStatus,
             this.status,
             this.privilege,
+            this.accountStatus,
         ]);
         return res.rows[0].id;
     }
@@ -197,6 +238,23 @@ class UserModel {
             });
     }
 
+    static async findByID(id) {
+        return UserModel.dbPoolInstance
+            .query(selectUserByID, [id])
+            .then((queryResponse) => {
+                if (queryResponse.rowCount === 0) {
+                    return null;
+                } else {
+                    const row = queryResponse.rows[0];
+                    const user = UserModel.queryToModel(row);
+                    user.passwordHash = user.#passwordHash;
+                    user.salt = user.#salt;
+                    user.id = user.#id;
+                    return user;
+                }
+            });
+    }
+
     static async searchByName(query) {
         return UserModel.dbPoolInstance
             .query(searchByNameSQL, [query])
@@ -221,7 +279,7 @@ class UserModel {
      */
     static async getAllStatuses() {
         return UserModel.dbPoolInstance
-            .query(getAllUserStatusesOrdered)
+            .query(getAllActiveUserStatusesOrdered)
             .then((queryResponse) => {
                 if (queryResponse.rowCount === 0) {
                     return null;
@@ -243,6 +301,7 @@ class UserModel {
             loginStatus: queryRow.login_status,
             status: queryRow.status,
             privilege: queryRow.privilege,
+            accountStatus: queryRow.account_status,
         });
 
         user.#id = queryRow.id;
@@ -250,6 +309,80 @@ class UserModel {
         user.#salt = queryRow.salt;
 
         return user;
+    }
+
+    static async getAllUsers() {
+        return UserModel.dbPoolInstance
+            .query(getAllUsers)
+            .then((queryResponse) => {
+                if (queryResponse.rowCount === 0) {
+                    return null;
+                } else {
+                    return queryResponse.rows;
+                }
+            });
+    }
+
+    async update() {
+        return UserModel.dbPoolInstance.query(
+            updateUserByID,
+            [
+                this.#id,
+                this.username,
+                this.#passwordHash,
+                this.#salt,
+                this.privilege,
+                this.accountStatus,
+            ],
+        );
+    }
+
+    /**
+     * Updates provided fields for user with ID.
+     * @param {string} userID
+     * @param {*} fields
+     * @returns User Data if successful, else null
+     */
+    static async updateByID(userID, fields) {
+        const user = await UserModel.findByID(userID);
+        if (user === null) {
+            return null;
+        }
+        const { username, password, privilegeLevel, accountStatus } =
+            fields;
+
+        if (password) {
+            user.setPassword(password);
+        }
+        user.username = username ?? user.username;
+        user.privilege = privilegeLevel ?? user.privilege;
+        user.accountStatus = accountStatus ?? user.accountStatus;
+
+        const queryResponse = await user.update();
+        if (queryResponse.rowCount === 0) {
+            return null;
+        }
+        const updatedUser = new UserModel({
+            username,
+            privilegeLevel,
+            accountStatus,
+        });
+        updatedUser.id = userID;
+        return updatedUser;
+    }
+
+    static async countAdmins() {
+        const queryResponse =
+            await UserModel.dbPoolInstance.query(countNumberOfAdmins);
+        return parseInt(queryResponse.rows[0].count, 10);
+    }
+
+    static async getPrivilegeByID(userID) {
+        const queryResponse = await UserModel.dbPoolInstance.query(
+            getUserPrivilegeByID,
+            [userID],
+        );
+        return queryResponse.rows[0].privilege;
     }
 }
 

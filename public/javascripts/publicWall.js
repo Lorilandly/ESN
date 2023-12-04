@@ -1,6 +1,7 @@
-/* global socket setSearchType */
+/* global socket setSearchType modifyHeader displayChatMessages */
 
 $(document).ready(() => {
+    modifyHeader(true, 'Public Chat');
     document.getElementById('public-chat').classList.add('text-primary');
     // Set Search Bar Title to Search Public Messages
     $('#searchModalLabel').html('Search Public Messages');
@@ -11,7 +12,6 @@ $(document).ready(() => {
     searchInput.setAttribute('class', 'form-control');
     searchInput.setAttribute('placeholder', 'Search Public Messages');
     document.getElementById('search-input-body').appendChild(searchInput);
-
     // Fetch and render all messages
     $.ajax({
         url: '/messages/public',
@@ -19,25 +19,7 @@ $(document).ready(() => {
         dataType: 'json',
         success: (response) => {
             const messages = response.messages;
-            if (messages && messages.length > 0) {
-                let messageHtml = '';
-                messages.forEach((message) => {
-                    messageHtml += `
-                        <div class="message">
-                            <div class="message-title">
-                                <span class="message-sender-name">${message.username}<i class="bi bi-circle-fill user-status-${message.status}"></i></span>
-                                <span class="message-time">${message.time}</span>
-                            </div>
-                            <div class="message-body">
-                                <p>${message.body}</p>
-                            </div>
-                        </div>`;
-                });
-                $('#message-container').append(messageHtml);
-                $('#message-container').scrollTop(
-                    $('#message-container')[0].scrollHeight,
-                );
-            }
+            displayChatMessages(messages);
         },
         error: (error) => {
             console.error('Failed to fetch messages:', error);

@@ -86,7 +86,7 @@ describe('Test Privilege rule', () => {
         const req = {
             user: {
                 username: 'abcd',
-                activePrivilegeLevel: 'ADMIN'
+                activePrivilegeLevel: 'ADMIN',
             },
         };
         requireAdminPrivileges(req, res, next);
@@ -97,7 +97,7 @@ describe('Test Privilege rule', () => {
         const req = {
             user: {
                 username: 'abcd',
-                activePrivilegeLevel: 'COORDINATOR'
+                activePrivilegeLevel: 'COORDINATOR',
             },
         };
         requireAdminPrivileges(req, res, next);
@@ -108,7 +108,7 @@ describe('Test Privilege rule', () => {
         const req = {
             user: {
                 username: 'abcd',
-                activePrivilegeLevel: 'CITIZEN'
+                activePrivilegeLevel: 'CITIZEN',
             },
         };
         requireAdminPrivileges(req, res, next);
@@ -119,7 +119,7 @@ describe('Test Privilege rule', () => {
         const req = {
             user: {
                 username: 'abcd',
-                activePrivilegeLevel: 'ADMIN'
+                activePrivilegeLevel: 'ADMIN',
             },
         };
         requireCoordinatorPrivileges(req, res, next);
@@ -130,7 +130,7 @@ describe('Test Privilege rule', () => {
         const req = {
             user: {
                 username: 'abcd',
-                activePrivilegeLevel: 'COORDINATOR'
+                activePrivilegeLevel: 'COORDINATOR',
             },
         };
         requireCoordinatorPrivileges(req, res, next);
@@ -141,7 +141,7 @@ describe('Test Privilege rule', () => {
         const req = {
             user: {
                 username: 'abcd',
-                activePrivilegeLevel: 'CITIZEN'
+                activePrivilegeLevel: 'CITIZEN',
             },
         };
         requireCoordinatorPrivileges(req, res, next);
@@ -153,38 +153,38 @@ describe('Test Privilege rule', () => {
 describe('Test Administrator Action of User Profile rule', () => {
     test('admin changes valid username', async () => {
         const fields = {
-            username: 'testChange'
-        }
+            username: 'testChange',
+        };
         const res = async () => {
             await validProfileChanges(2, fields);
-        }
+        };
         expect(res()).resolves.not.toThrow();
     });
     test('admin changes invalid username', async () => {
         const fields = {
-            username: 'te'
-        }
+            username: 'te',
+        };
         const res = async () => {
             await validProfileChanges(2, fields);
-        }
+        };
         expect(res()).rejects.toThrow('Invalid password');
     });
     test('admin changes valid password', async () => {
         const fields = {
-            password: 'testChange'
-        }
+            password: 'testChange',
+        };
         const res = async () => {
             await validProfileChanges(2, fields);
-        }
+        };
         expect(res()).resolves.not.toThrow();
     });
     test('admin changes invalid password', async () => {
         const fields = {
-            password: 'te'
-        }
+            password: 'te',
+        };
         const res = async () => {
             await validProfileChanges(2, fields);
-        }
+        };
         expect(res()).rejects.toThrow('Invalid password');
     });
 });
@@ -205,8 +205,8 @@ describe('Test Active-Inactive rule', () => {
     });
     test('inactive user is logged out', async () => {
         const fields = {
-            accountStatus: 'INACTIVE'
-        }
+            accountStatus: 'INACTIVE',
+        };
         await updateUserProfileElements(2, fields);
         const user = await getUserByName('testuser');
         expect(user.loginStatus).toBe('OFFLINE');
@@ -217,8 +217,8 @@ describe('Test Active-Inactive rule', () => {
                 username: 'testuser',
                 password: '1234',
                 dryrun: false,
-            }
-        }
+            },
+        };
         await validateNewCredentials(req, res, next);
         expect(res.status).toHaveBeenCalledWith(403);
         expect(res.json).toHaveBeenCalledWith({ error: 'Account is inactive' });
@@ -254,7 +254,7 @@ describe('Test Active-Inactive rule', () => {
                 id: 2,
                 login_status: 'OFFLINE',
                 status: 'OK',
-                username: 'testuser'
+                username: 'testuser',
             },
             {
                 id: 3,
@@ -266,7 +266,6 @@ describe('Test Active-Inactive rule', () => {
         expect(res).toEqual(expectedResult);
     });
 });
-
 
 afterEach(async () => {
     // dismantle db

@@ -144,9 +144,21 @@ function validPrivilegeLevel(privilegeLevel) {
     );
 }
 
+/**
+ * This function simply checks whether the provided fields could result in
+ * an update that causes the last admin in the system to become inactive or
+ * demoted. If this is not the case for any reason, returns true.
+ * @param {*} privilegeLevel
+ * @param {*} accountStatus
+ * @param {*} userID
+ * @returns False if changes could possibly affect last admin.
+ */
 async function atLeastOneAdmin(privilegeLevel, accountStatus, userID) {
     // check privilegeLevel and accountStatus not null
     const user = await UserModel.findByID(userID);
+    if (user === null) {
+        return true;
+    }
     if (user.privilege === 'ADMIN' && user.accountStatus === 'ACTIVE') {
         if (privilegeLevel !== 'ADMIN' || accountStatus !== 'ACTIVE') {
             return (await UserModel.countAdmins()) > 1;

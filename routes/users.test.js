@@ -120,36 +120,29 @@ describe('Send help usecase tests', () => {
 
 describe('Admin User Profile usecase tests', () => {
     it('should update username in user profile', async () => {
-        const res = await request(app)
-            .put('/users/1')
-            .send({
-                username: 'testName'
-            });
+        const res = await request(app).put('/users/1').send({
+            username: 'testName',
+        });
         expect(res.statusCode).toBe(200);
     });
     it('should fail to update user profile with invalid id', async () => {
-        const res = await request(app)
-            .put('/users/5')
-            .send({
-                username: 'test'
-            });
+        const res = await request(app).put('/users/5').send({
+            username: 'test',
+            privilegeLevel: 'CITIZEN',
+        });
         expect(res.statusCode).toBe(400);
         expect(res.body.error).toBe('User not found');
     });
     it('should update password in user profile', async () => {
-        const res = await request(app)
-            .put('/users/1')
-            .send({
-                password: 'testPassword'
-            });
+        const res = await request(app).put('/users/1').send({
+            password: 'testPassword',
+        });
         expect(res.statusCode).toBe(200);
     });
     it('should update account status in user profile', async () => {
-        const res = await request(app)
-            .put('/users/1')
-            .send({
-                privilegeLevel: 'CITIZEN'
-            });
+        const res = await request(app).put('/users/1').send({
+            privilegeLevel: 'CITIZEN',
+        });
         expect(res.statusCode).toBe(200);
     });
 });

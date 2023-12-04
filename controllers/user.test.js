@@ -29,7 +29,6 @@ beforeAll(async () => {
         salt: null,
         loginStatus: 'OFFLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     await user1.persist();
@@ -42,7 +41,6 @@ beforeAll(async () => {
         salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     await user2.persist();
@@ -67,11 +65,8 @@ test('test getUserByName', async () => {
     const expectedResult = {
         id: 1,
         loginStatus: 'OFFLINE',
-        passwordHash: null,
         privilege: null,
-        salt: null,
         status: 'OK',
-        statusTime: null,
         username: 'testUser',
     };
     expect(result).toEqual(expectedResult);

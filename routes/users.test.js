@@ -30,7 +30,6 @@ beforeAll(async () => {
         salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     user.id = 1;

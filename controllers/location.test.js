@@ -30,7 +30,6 @@ beforeAll(async () => {
         salt: null,
         loginStatus: 'OFFLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     await user1.persist();
@@ -42,7 +41,6 @@ beforeAll(async () => {
         salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     await user2.persist();

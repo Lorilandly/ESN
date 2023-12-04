@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import { Strategy } from 'passport-jwt';
@@ -40,7 +39,7 @@ passport.use(
         }
         return UserModel.findByName(username.toLowerCase())
             .then((user) => {
-                if (checkPasswordForUser(user, password)) {
+                if (user.checkPassword(password)) {
                     return done(null, user);
                 }
                 return done(null, false);
@@ -110,20 +109,6 @@ function validPassword(password) {
     return password.length < 4 ? false : password;
 }
 
-function checkPasswordForUser(user, rawPassword) {
-    if (!user) {
-        return false;
-    }
-    const newHashedPasswd = crypto.pbkdf2Sync(
-        rawPassword,
-        user.salt,
-        310000,
-        32,
-        'sha256',
-    );
-    return Buffer.compare(newHashedPasswd, user.passwordHash) === 0;
-}
-
 async function deauthenticateUser(req, res, next) {
     const token = req.cookies.jwtToken;
     const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
@@ -184,7 +169,7 @@ async function validateNewCredentials(req, res, next) {
     }
     const user = await UserModel.findByName(checkedUsername);
     if (user) {
-        if (!checkPasswordForUser(user, password)) {
+        if (!user.checkPassword(password)) {
             return res.status(403).json({ error: 'Username is already taken' });
         } else {
             // This case is handled on the client side

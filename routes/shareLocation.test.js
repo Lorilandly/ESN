@@ -30,7 +30,6 @@ beforeAll(async () => {
         salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     user.id = 1;
@@ -41,7 +40,6 @@ beforeAll(async () => {
         salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     user2.id = 2;
@@ -52,7 +50,6 @@ beforeAll(async () => {
         salt: null,
         loginStatus: 'OFFLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     }).persist();
     await new LocationModel({

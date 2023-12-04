@@ -37,7 +37,6 @@ beforeAll(async () => {
         salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     await user.persist();
@@ -114,7 +113,6 @@ describe('Test search rules for CitizenNameSearchContext', () => {
                     salt: null,
                     loginStatus: 'ONLINE',
                     status: 'OK',
-                    statusTime: null,
                     privilege: null,
                 }),
             ],
@@ -140,7 +138,6 @@ describe('Test search rules for CitizenStatusSearchContext', () => {
                     salt: null,
                     loginStatus: 'ONLINE',
                     status: 'OK',
-                    statusTime: null,
                     privilege: null,
                 }),
             ],

@@ -35,7 +35,6 @@ beforeAll(async () => {
         salt: null,
         loginStatus: 'OFFLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
     });
     await user1.persist();

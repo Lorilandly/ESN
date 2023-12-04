@@ -20,11 +20,12 @@ function fetchAllUsers() {
                 userNameDiv.className = 'user-list-body-element-name';
 
                 const button = document.createElement('div');
-                button.type = 'button';
-                button.setAttribute('data-bs-toggle', 'modal');
-                button.setAttribute('data-bs-target', '#editUserProfileModal');
                 button.className = 'user-list-body-element-chat';
                 const editButton = document.createElement('i');
+                editButton.style.cursor = 'pointer';
+                editButton.type = 'button';
+                editButton.setAttribute('data-bs-toggle', 'modal');
+                editButton.setAttribute('data-bs-target', '#editUserProfileModal');
                 editButton.className = 'bi bi-pencil-square';
                 editButton.onclick = () => editUser(res[i]);
                 button.appendChild(editButton);
@@ -51,6 +52,9 @@ function editUser(user) {
             document.getElementById('edit-user-privilege').value = '';
             document.getElementById('edit-user-acc-status').value = '';
             document.getElementById('edit-user-password').value = '';
+            document.getElementById('submit-change').classList.remove('btn-success');
+            document.getElementById('submit-change').classList.add('btn-danger');
+            document.getElementById('submit-change').classList.add('disabled');
             populateEditUserModal(res, user.id);
         },
         error: (res) => {
@@ -66,8 +70,37 @@ function populateEditUserModal(user, userID) {
     document.getElementById('edit-user-acc-status').value = user.accountStatus;
 
     // find the button in the modal and set its onclick function to editUser
-    const editUserButton = document.getElementById('edit-user-button');
-    editUserButton.onclick = () => updateUserProfile(userID);
+    const validateUserButton = document.getElementById('validate-change');
+    validateUserButton.onclick = () => validateChange(userID);
+
+    const submitChangeButton = document.getElementById('submit-change');
+    submitChangeButton.onclick = () => updateUserProfile(userID);
+}
+
+function validateChange(userID) {
+    const profileData = {
+        username: document.getElementById('edit-user-name').value,
+        accountStatus: document.getElementById('edit-user-acc-status').value,
+        privilegeLevel: document.getElementById('edit-user-privilege').value,
+    };
+    const password = document.getElementById('edit-user-password').value;
+    if (password) {
+        profileData.password = password;
+    }
+
+    $.ajax('/users/' + userID + '/validation', {
+        method: 'GET',
+        datatype: 'json',
+        data: profileData,
+        success: () => {
+            document.getElementById('submit-change').classList.remove('disabled');
+            document.getElementById('submit-change').classList.remove('btn-danger');
+            document.getElementById('submit-change').classList.add('btn-success');
+        },
+        error: () => {
+            document.getElementById('submit-change').classList.add('disabled');
+        },
+    });
 }
 
 function updateUserProfile(userID) {

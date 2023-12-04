@@ -11,6 +11,7 @@ import {
 
 import {
     getUserProfileElements,
+    profileChangeValidation,
     updateUserProfileElements,
     userNotFound,
 } from '../controllers/profileElement.js';
@@ -225,6 +226,19 @@ router.put(
             .catch((err) => {
                 console.error(err);
                 return res.sendStatus(500);
+            }),
+);
+
+router.get(
+    '/:id/validation',
+    passport.authenticate('jwt', { session: false }),
+    requireAdminPrivileges,
+    (req, res) =>
+        profileChangeValidation(req.params.id, req.query)
+            .then(() => res.status(200).json({ message: 'Valid' }))
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(400);
             }),
 );
 

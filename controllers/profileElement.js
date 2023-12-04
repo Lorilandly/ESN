@@ -26,15 +26,6 @@ function getUserProfileElements(userID) {
  * }
  */
 async function updateUserProfileElements(userID, fields) {
-    const change = await validProfileChanges(userID, fields);
-    if (!change.valid) {
-        return {
-            updated: false,
-            reason: invalidProfileChanges,
-            errors: change.errors,
-        };
-    }
-
     // create new passwordHash and salt, if updated
     if ('password' in fields) {
         fields.salt = crypto.randomBytes(16);
@@ -131,8 +122,18 @@ async function validProfileChanges(userID, fields) {
     }
     return {
         valid: true,
-        errors: null,
     };
+}
+
+async function profileChangeValidation(userID, fields) {
+    const change = await validProfileChanges(userID, fields);
+    if (!change.valid) {
+        return {
+            updated: false,
+            reason: invalidProfileChanges,
+            errors: change.errors,
+        };
+    }
 }
 
 function validAccountStatus(accountStatus) {
@@ -162,6 +163,7 @@ export {
     getUserProfileElements,
     updateUserProfileElements,
     initIOInstanceForAdmin,
+    profileChangeValidation,
     invalidProfileChanges,
     userNotFound,
 };

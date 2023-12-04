@@ -6,7 +6,7 @@ $(document).ready(async () => {
 });
 
 function fetchAllUsers() {
-    $.ajax('/users/', {
+    $.ajax('/users/accounts/all', {
         method: 'GET',
         datatype: 'json',
         success: async (res) => {

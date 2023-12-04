@@ -19,6 +19,7 @@ import { initIOInstanceForLocation } from '../controllers/location.js';
 import { initIOInstanceForResponse } from '../controllers/response.js';
 import { initIOInstanceForPost } from '../controllers/post.js';
 import { initIOInstanceForReply } from '../controllers/reply.js';
+import { initIOInstanceForAdmin } from '../controllers/profileElement.js';
 import { Server } from 'socket.io';
 
 /**
@@ -59,6 +60,7 @@ initIOInstanceForLocation(io);
 initIOInstanceForResponse(io);
 initIOInstanceForPost(io);
 initIOInstanceForReply(io);
+initIOInstanceForAdmin(io);
 handleSocketConnections(io);
 initFloodReportController(io, config.get('flood-report'));
 

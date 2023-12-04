@@ -22,7 +22,7 @@ import {
     checkUserAuthenticated,
     requireAdminPrivileges,
 } from '../controllers/auth.js';
-import { create, getAllUsers, getUserByName } from '../controllers/user.js';
+import { create, getAllActiveUsers, getAllUsers, getUserByName } from '../controllers/user.js';
 const router = express.Router();
 
 /* GET all users */
@@ -30,7 +30,7 @@ router.get(
     '/',
     passport.authenticate('jwt', { session: false }),
     async (req, res) => {
-        return getAllUsers()
+        return getAllActiveUsers()
             .then((users) => res.status(200).json(users))
             .catch((err) => {
                 console.error(err);
@@ -222,6 +222,19 @@ router.put(
                     return res.status(400).json(action.errors);
                 }
             })
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(500);
+            }),
+);
+
+router.get(
+    '/accounts/all',
+    passport.authenticate('jwt', { session: false }),
+    requireAdminPrivileges,
+    (req, res) =>
+        getAllUsers()
+            .then((users) => res.status(200).json(users))
             .catch((err) => {
                 console.error(err);
                 return res.sendStatus(500);

@@ -5,6 +5,12 @@ import { validUsername, validPassword } from './auth.js';
 const invalidProfileChanges = 'Invalid profile changes';
 const userNotFound = 'User not found';
 
+let ioInstance = null;
+
+function initIOInstanceForAdmin(io) {
+    ioInstance = io;
+}
+
 function getUserProfileElements(userID) {
     return UserModel.findByID(userID).then((user) => buildUserProfile(user));
 }
@@ -48,6 +54,11 @@ async function updateUserProfileElements(userID, fields) {
             reason: userNotFound,
         };
     }
+
+    if (fields.accountStatus === 'INACTIVE') {
+        ioInstance.emit('user inactive', { userID });
+    }
+
     return { updated: true };
 }
 
@@ -150,6 +161,7 @@ async function atLeastOneAdmin(privilegeLevel, userID) {
 export {
     getUserProfileElements,
     updateUserProfileElements,
+    initIOInstanceForAdmin,
     invalidProfileChanges,
     userNotFound,
 };

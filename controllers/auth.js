@@ -149,6 +149,13 @@ function checkPasswordForUser(user, rawPassword) {
     return Buffer.compare(newHashedPasswd, user.passwordHash) === 0;
 }
 
+function checkUserAccountStatus(user) {
+    if (!user) {
+        return false;
+    }
+    return user.accountStatus === 'ACTIVE';
+}
+
 async function deauthenticateUser(req, res, next) {
     const token = req.cookies.jwtToken;
     const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
@@ -213,6 +220,9 @@ async function validateNewCredentials(req, res, next) {
     }
     const user = await UserModel.findByName(checkedUsername);
     if (user) {
+        if (!checkUserAccountStatus(user)) {
+            return res.status(403).json({ error: 'Account is inactive' });
+        }
         if (!checkPasswordForUser(user, password)) {
             return res.status(403).json({ error: 'Username is already taken' });
         } else {

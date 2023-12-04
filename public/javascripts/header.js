@@ -93,6 +93,25 @@ $(document).ready(() => {
         changeReadStatus();
         showNewMessageWarning(false);
     });
+
+    socket.on('user inactive', async ({ userID }) => {
+        console.log('user inactive', userID);
+        const currentUser = await getCurrentUser();
+        if (parseInt(currentUser.id, 10) === parseInt(userID, 10)) {
+            alert('Your account has been deactivated');
+            $.ajax('/users/logout', {
+                method: 'PUT',
+                datatype: 'json',
+                data: { type: 'logout' },
+                success: () => {
+                    location.href = '/';
+                },
+                error: (res) => {
+                    console.error('Login error:', res);
+                },
+            });
+        }
+    });
 });
 
 function shakeIndicator() {

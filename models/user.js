@@ -40,9 +40,10 @@ SELECT * FROM users
 WHERE id = $1;
 `;
 
-const getAllUserStatusesOrdered = `
+const getAllActiveUserStatusesOrdered = `
 SELECT id, username, login_status, status
 FROM users
+WHERE account_status = 'ACTIVE'
 ORDER BY 
     CASE 
         WHEN login_status = 'ONLINE' THEN 1
@@ -50,6 +51,11 @@ ORDER BY
         ELSE 3
     END,
     username;
+`;
+
+const getAllUsers = `
+SELECT id, username, login_status, status
+FROM users;
 `;
 
 const changeUserLoginStatus = `
@@ -229,7 +235,19 @@ class UserModel {
 
     static async getAllStatuses() {
         return UserModel.dbPoolInstance
-            .query(getAllUserStatusesOrdered)
+            .query(getAllActiveUserStatusesOrdered)
+            .then((queryResponse) => {
+                if (queryResponse.rowCount === 0) {
+                    return null;
+                } else {
+                    return queryResponse.rows;
+                }
+            });
+    }
+
+    static async getAllUsers() {
+        return UserModel.dbPoolInstance
+            .query(getAllUsers)
             .then((queryResponse) => {
                 if (queryResponse.rowCount === 0) {
                     return null;

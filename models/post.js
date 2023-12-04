@@ -78,7 +78,8 @@ class PostModel {
                     row.time = row.time.toLocaleString();
                     return row;
                 }),
-            ).catch((err) => {
+            )
+            .catch((err) => {
                 // Handle or log the error
                 console.error('Error executing query:', err);
                 throw err; // or handle it as needed
@@ -108,8 +109,7 @@ class PostModel {
     }
 
     static async resolvePost(postId) {
-        return PostModel.dbPoolInstance
-            .query(resolvePost, [postId]);
+        return PostModel.dbPoolInstance.query(resolvePost, [postId]);
     }
 }
 

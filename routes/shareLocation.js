@@ -5,11 +5,11 @@ import {
     updateCurrentLocation,
     stopSharingCurrentLocation,
     getAllLocations,
-    getUserLocation
+    getUserLocation,
 } from '../controllers/location.js';
 import {
     respondCurrentLocation,
-    getLocationResponse
+    getLocationResponse,
 } from '../controllers/response.js';
 
 const router = express.Router();
@@ -33,14 +33,14 @@ router.get('/all', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     return getUserLocation(req.params.id)
-    .then((curLocation) => {
-        res.status(200).json({ curLocation })
-    })
-    .catch((err) => {
-        console.error(err);
-        return res.sendStatus(500);
-    });
-})
+        .then((curLocation) => {
+            res.status(200).json({ curLocation });
+        })
+        .catch((err) => {
+            console.error(err);
+            return res.sendStatus(500);
+        });
+});
 
 router.post('/', await shareCurrentLocation, async (req, res) => {
     return res.status(201).json({});
@@ -64,19 +64,22 @@ router.delete(
     },
 );
 
-router.post('/:locationId/respond', 
-    passport.authenticate('jwt', { session: false }), 
-    await respondCurrentLocation, async (req, res) => {
+router.post(
+    '/:locationId/respond',
+    passport.authenticate('jwt', { session: false }),
+    await respondCurrentLocation,
+    async (req, res) => {
         return res.status(201).json({});
-});
+    },
+);
 
-router.get('/:locationId/responses', 
+router.get(
+    '/:locationId/responses',
     passport.authenticate('jwt', { session: false }),
     getLocationResponse,
     (req, res) => {
         return res.status(200).json({});
     },
 );
-
 
 export default router;

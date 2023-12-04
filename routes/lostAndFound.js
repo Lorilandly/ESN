@@ -7,10 +7,7 @@ import {
     getMyPosts,
     resolvePost,
 } from '../controllers/post.js';
-import {
-    createReply,
-    getAllReplyFromPost,
-} from '../controllers/reply.js';
+import { createReply, getAllReplyFromPost } from '../controllers/reply.js';
 
 const router = express.Router();
 
@@ -59,17 +56,16 @@ router.get('/posts/:id/info', async (req, res) => {
         return res.sendStatus(500);
     }
     // get post information and all replies
-    return getPostInfo(postId)
-        .then((post) => {
-            getAllReplyFromPost(postId)
-                .then((replies) => {
-                    return res.status(200).json({ post, replies });
-                })
-                .catch((err) => {
-                    console.error(err);
-                    return res.sendStatus(500);
-                });
-        });
+    return getPostInfo(postId).then((post) => {
+        getAllReplyFromPost(postId)
+            .then((replies) => {
+                return res.status(200).json({ post, replies });
+            })
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(500);
+            });
+    });
 });
 
 router.post('/posts/:id/response', createReply, async (req, res) => {

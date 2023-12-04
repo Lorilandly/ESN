@@ -14,7 +14,7 @@ $(document).ready(() => {
 
     socket.on('create new reply', ({ postID }) => {
         const thisPostID = parseInt(getPostID());
-        if (postID == thisPostID) {
+        if (postID === thisPostID) {
             refreshPost();
         }
     });
@@ -45,7 +45,8 @@ function getPostInformation() {
 }
 
 function updatePostInfo(postInfo) {
-    document.getElementsByClassName('header-text')[0].innerHTML = postInfo.title;
+    document.getElementsByClassName('header-text')[0].innerHTML =
+        postInfo.title;
 
     const postDiv = document.getElementsByClassName('post')[0];
     postDiv.id = postInfo.id;
@@ -70,11 +71,14 @@ function updatePostInfo(postInfo) {
 }
 
 function updateReplies(replies) {
-    replies.forEach(reply => {
+    replies.forEach((reply) => {
         const replyDiv = document.createElement('div');
         let replySender = '';
         replyDiv.className = 'reply';
-        const replyInfo = JSON.stringify({ replyID: reply.id, senderName: reply.sender_name });
+        const replyInfo = JSON.stringify({
+            replyID: reply.id,
+            senderName: reply.sender_name,
+        });
         if (reply.replyee_name === 'No replyee') {
             replySender = reply.sender_name;
         } else {
@@ -137,8 +141,10 @@ async function createPostReply() {
 function changeReplyInfo(replyInfo) {
     console.log(replyInfo);
     const replyReplyModal = document.getElementById('replyReplyModal');
-    replyReplyModal.getElementsByClassName('modal-title')[0].innerHTML = 'Reply to ' + replyInfo.senderName;
-    const replyReplyModalButton = replyReplyModal.getElementsByClassName('btn btn-dark')[0];
+    replyReplyModal.getElementsByClassName('modal-title')[0].innerHTML =
+        'Reply to ' + replyInfo.senderName;
+    const replyReplyModalButton =
+        replyReplyModal.getElementsByClassName('btn btn-dark')[0];
     replyReplyModalButton.id = replyInfo.replyID;
 }
 

@@ -69,26 +69,21 @@ beforeAll(async () => {
 
 describe('Share Current Location usecase tests', () => {
     test('get all current locations', async () => {
-        const res = await request(app)
-            .get('/locations/all')
+        const res = await request(app).get('/locations/all');
         expect(res.statusCode).toBe(200);
-
     });
 
     test('share a current location', async () => {
-        const res = await request(app)
-            .post('/locations')
-            .send({
-                address: '300 River Oaks Pkwy',
-                city: 'San Jose',
-                state: 'CA'
-            });
+        const res = await request(app).post('/locations').send({
+            address: '300 River Oaks Pkwy',
+            city: 'San Jose',
+            state: 'CA',
+        });
         expect(res.statusCode).toBe(409);
     });
 
     test('Get current location', async () => {
-        const res = await request(app)
-            .get('/locations/1')
+        const res = await request(app).get('/locations/1');
         expect(res.statusCode).toBe(200);
     });
 });

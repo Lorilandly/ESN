@@ -1,13 +1,16 @@
+/* global socket */
+
 $(document).ready(() => {
     document.getElementById('search-bar').remove();
-    document.getElementsByClassName('header-text')[0].innerHTML = 'View Locations';
-    
+    document.getElementsByClassName('header-text')[0].innerHTML =
+        'View Locations';
+
     $('#locationForm').on('submit', function (e) {
         e.preventDefault();
         submitLocationData();
     });
 
-    $('#respondForm').submit(function(e) {
+    $('#respondForm').submit(function (e) {
         e.preventDefault();
         submitResponseData();
     });
@@ -55,15 +58,13 @@ function submitLocationData() {
             if (xhr.status === 409) {
                 alert(xhr.responseJSON.message);
                 window.location.href = '/location-settings';
-            } 
-            else if (xhr.status === 400) {
+            } else if (xhr.status === 400) {
                 alert(xhr.responseJSON.message);
-            }
-            else {
+            } else {
                 console.error('Error submitting location data:', error);
                 alert('Failed to submit location data.');
             }
-        }
+        },
     });
 }
 
@@ -76,7 +77,7 @@ function submitResponseData() {
         method: 'POST',
         data: {
             message: responseMessage,
-            location_id: locationId
+            location_id: locationId,
         },
         success: () => {
             $('#respondModal').modal('hide');
@@ -85,7 +86,7 @@ function submitResponseData() {
         error: (error) => {
             console.error('Error submitting response:', error);
             alert('Failed to submit response.');
-        }
+        },
     });
 }
 
@@ -138,7 +139,7 @@ function addLocationToList(location) {
     respondBtn.className = 'btn btn-secondary respondBtn';
     respondBtn.textContent = 'Respond';
     respondBtn.setAttribute('data-id', location.id);
-    respondBtn.addEventListener('click', function() {
+    respondBtn.addEventListener('click', function () {
         openRespondModal(location.id);
     });
     locationDiv.appendChild(respondBtn);
@@ -169,7 +170,10 @@ function fetchResponsesForLocation(locationId) {
             });
         },
         error: (error) => {
-            console.error(`Failed to fetch responses for location ${locationId}:`, error);
-        }
+            console.error(
+                `Failed to fetch responses for location ${locationId}:`,
+                error,
+            );
+        },
     });
 }

@@ -13,7 +13,7 @@ async function createReply(req, res, next) {
     const body = req.body.body;
     if (body.length === 0) {
         return new Error('Reply body cannot be empty');
-    };
+    }
 
     const replyID = req.body.replyID;
     const reply = new ReplyModel({
@@ -27,8 +27,7 @@ async function createReply(req, res, next) {
     await reply.persist();
     try {
         ioInstance.emit('create new reply', { postID });
-    } catch (err) {
-    }
+    } catch (err) {}
     return next();
 }
 
@@ -36,8 +35,4 @@ async function getAllReplyFromPost(postID) {
     return ReplyModel.getAllReplyFromPost(postID);
 }
 
-export {
-    initIOInstanceForReply,
-    createReply,
-    getAllReplyFromPost,
-};
+export { initIOInstanceForReply, createReply, getAllReplyFromPost };

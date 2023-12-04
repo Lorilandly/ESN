@@ -19,7 +19,7 @@ async function getUserProfile(id, withEmergencyContact) {
 async function updateUserProfile(id, updates) {
     const pairs = new Map(Object.entries(updates));
     return pairs.forEach(async (val, key, _) => {
-        await new ProfileModel(id, key, val).updateProfileEntry();
+        return await new ProfileModel(id, key, val).updateProfileEntry();
     });
 }
 

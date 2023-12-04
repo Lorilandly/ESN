@@ -14,7 +14,7 @@ async function createPost(req, res, next) {
 
     if (title.length === 0 || message.length === 0) {
         return new Error('Post title or message cannot be empty');
-    };
+    }
 
     const post = new PostModel({
         senderId: userId,
@@ -27,8 +27,7 @@ async function createPost(req, res, next) {
     await post.persist();
     try {
         ioInstance.emit('create new lost and found post');
-    } catch (err) {
-    }
+    } catch (err) {}
     return next();
 }
 
@@ -50,8 +49,7 @@ async function resolvePost(req, res, next) {
     await PostModel.resolvePost(postId);
     try {
         ioInstance.emit('resolve lost and found post', { userId });
-    } catch (err) {
-    }
+    } catch (err) {}
 
     return next();
 }

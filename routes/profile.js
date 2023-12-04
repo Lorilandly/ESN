@@ -11,7 +11,9 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-    return res.render('profile-mini', { profile: await getUserProfile(req.params.id, false) });
+    return res.render('profile-mini', {
+        profile: await getUserProfile(req.params.id, false),
+    });
 });
 
 export default router;

@@ -134,7 +134,7 @@ class AidRequestModel {
             acceptorId: queryRow.acceptor_id,
             status: queryRow.status,
         };
-        let model = new AidRequestModel(params);
+        const model = new AidRequestModel(params);
         model.id = queryRow.id;
 
         return model;
@@ -156,7 +156,9 @@ class AidRequestModel {
         return AidRequestModel.dbPoolInstance
             .query(getSubmittedAidRequests, [creatorId])
             .then((queryResponse) =>
-                queryResponse.rows.map((row) => AidRequestModel.queryToModel(row)),
+                queryResponse.rows.map((row) =>
+                    AidRequestModel.queryToModel(row),
+                ),
             );
     }
 

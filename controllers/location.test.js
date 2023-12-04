@@ -4,12 +4,7 @@ import config from 'config';
 import DatabaseManager from '../db.js';
 import UserModel from '../models/user.js';
 import LocationModel from '../models/location.js';
-import {
-    shareCurrentLocation,
-    updateCurrentLocation,
-    getAllLocations,
-    getUserLocation
-} from './location.js';
+import { getAllLocations, getUserLocation } from './location.js';
 
 beforeAll(async () => {
     // do db setups
@@ -69,8 +64,8 @@ beforeAll(async () => {
         address: '500 S Lasalle St',
         city: 'Durham',
         state: 'NC',
-        latitude: 37.40330330,
-        longitude: -121.92754740,
+        latitude: 37.4033033,
+        longitude: -121.9275474,
         time: new Date(1),
     });
     await location2.persist();
@@ -98,7 +93,7 @@ test('test getAllLocations', async () => {
             latitude: '37.40330330',
             longitude: '-121.92754740',
             time: new Date(1).toLocaleString(),
-        }
+        },
     ];
     expect(result).toEqual(expectedResult);
 });
@@ -115,7 +110,7 @@ test('test getUserLocation', async () => {
             latitude: '36.01225685',
             longitude: '-78.95004593',
             time: new Date(1).toLocaleString(),
-        }
+        },
     ];
     expect(result).toEqual(expectedResult);
 });

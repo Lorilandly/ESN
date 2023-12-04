@@ -104,7 +104,7 @@ WHERE id = $1;
 
 const countNumberOfAdmins = `
 SELECT COUNT(*) FROM users
-WHERE privilege = 'ADMIN';
+WHERE privilege = 'ADMIN' AND account_status = 'ACTIVE';
 `;
 
 const getUserPrivilegeByID = `
@@ -265,7 +265,7 @@ class UserModel {
      */
     static async updateByID(userID, fields) {
         const user = await UserModel.findByID(userID);
-        if (userID === null) {
+        if (user === null) {
             return null;
         }
         let { username, passwordHash, salt, privilegeLevel, accountStatus } =
@@ -305,7 +305,7 @@ class UserModel {
     static async countAdmins() {
         const queryResponse =
             await UserModel.dbPoolInstance.query(countNumberOfAdmins);
-        return queryResponse.rows[0].count;
+        return parseInt(queryResponse.rows[0].count, 10);
     }
 
     static async getPrivilegeByID(userID) {

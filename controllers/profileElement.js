@@ -6,7 +6,6 @@ const invalidProfileChanges = 'Invalid profile changes';
 const userNotFound = 'User not found';
 
 let ioInstance = null;
-
 function initIOInstanceForAdmin(io) {
     ioInstance = io;
 }
@@ -26,6 +25,10 @@ function getUserProfileElements(userID) {
  * }
  */
 async function updateUserProfileElements(userID, fields) {
+    if ('username' in fields) {
+        fields.username = validUsername(fields.username);
+    }
+
     // create new passwordHash and salt, if updated
     if ('password' in fields) {
         fields.salt = crypto.randomBytes(16);
@@ -40,17 +43,12 @@ async function updateUserProfileElements(userID, fields) {
 
     const userProfile = await UserModel.updateByID(userID, fields);
     if (userProfile === null) {
-        return {
-            updated: false,
-            reason: userNotFound,
-        };
+        throw new Error(userNotFound);
     }
 
     if (fields.accountStatus === 'INACTIVE') {
         ioInstance.emit('user inactive', { userID });
     }
-
-    return { updated: true };
 }
 
 /**
@@ -78,23 +76,28 @@ function buildUserProfile(user) {
  * }
  */
 async function validProfileChanges(userID, fields) {
-    const errors = [];
     if (
         'accountStatus' in fields &&
         !validAccountStatus(fields.accountStatus)
     ) {
-        errors.push('Invalid account status');
+        throw new Error('Invalid account status');
     }
     if (
         'privilegeLevel' in fields &&
         !validPrivilegeLevel(fields.privilegeLevel)
     ) {
-        errors.push('Invalid privilege level');
+        throw new Error('Invalid privilege level');
     } else {
         // if the privileges of an admin are being revoked, check that there
         // is at least one more admin in the system (at least one admin rule)
-        if (!(await atLeastOneAdmin(fields.privilegeLevel, userID))) {
-            errors.push('There must always be one admin must in the system');
+        if (
+            !(await atLeastOneAdmin(
+                fields.privilegeLevel,
+                fields.accountStatus,
+                userID,
+            ))
+        ) {
+            throw new Error('At least one administrator must exist');
         }
     }
 
@@ -103,37 +106,25 @@ async function validProfileChanges(userID, fields) {
         if (username) {
             const user = await UserModel.findByName(fields.username);
             if (user !== null && user.id !== parseInt(userID)) {
-                errors.push('Username already taken');
+                throw new Error('Username already taken');
             }
-            // enforce case sensitivity, as with other usenames
-            fields.username = username;
         } else {
-            errors.push('Invalid username');
+            throw new Error('Invalid username');
         }
     }
     if ('password' in fields && !validPassword(fields.password)) {
-        errors.push('Invalid password');
+        throw new Error('Invalid password');
     }
-    if (errors.length !== 0) {
-        return {
-            valid: false,
-            errors,
-        };
-    }
-    return {
-        valid: true,
-    };
 }
 
+/**
+ * Throws Error if one of the fields is invalid, otherwise does nothing.
+ * @param {*} userID
+ * @param {*} fields
+ * @throws Error with description of invalid field
+ */
 async function profileChangeValidation(userID, fields) {
-    const change = await validProfileChanges(userID, fields);
-    if (!change.valid) {
-        return {
-            updated: false,
-            reason: invalidProfileChanges,
-            errors: change.errors,
-        };
-    }
+    await validProfileChanges(userID, fields);
 }
 
 function validAccountStatus(accountStatus) {
@@ -148,12 +139,12 @@ function validPrivilegeLevel(privilegeLevel) {
     );
 }
 
-async function atLeastOneAdmin(privilegeLevel, userID) {
-    if (privilegeLevel !== 'ADMIN') {
-        const oldPrivilegeLevel = await UserModel.getPrivilegeByID(userID);
-        if (oldPrivilegeLevel === 'ADMIN') {
-            const count = await UserModel.countAdmins();
-            return count > 1;
+async function atLeastOneAdmin(privilegeLevel, accountStatus, userID) {
+    // check privilegeLevel and accountStatus not null
+    const user = await UserModel.findByID(userID);
+    if (user.privilege === 'ADMIN' && user.accountStatus === 'ACTIVE') {
+        if (privilegeLevel !== 'ADMIN' || accountStatus !== 'ACTIVE') {
+            return (await UserModel.countAdmins()) > 1;
         }
     }
     return true;

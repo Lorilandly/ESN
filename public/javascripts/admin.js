@@ -25,7 +25,10 @@ function fetchAllUsers() {
                 editButton.style.cursor = 'pointer';
                 editButton.type = 'button';
                 editButton.setAttribute('data-bs-toggle', 'modal');
-                editButton.setAttribute('data-bs-target', '#editUserProfileModal');
+                editButton.setAttribute(
+                    'data-bs-target',
+                    '#editUserProfileModal',
+                );
                 editButton.className = 'bi bi-pencil-square';
                 editButton.onclick = () => editUser(res[i]);
                 button.appendChild(editButton);
@@ -52,8 +55,12 @@ function editUser(user) {
             document.getElementById('edit-user-privilege').value = '';
             document.getElementById('edit-user-acc-status').value = '';
             document.getElementById('edit-user-password').value = '';
-            document.getElementById('submit-change').classList.remove('btn-success');
-            document.getElementById('submit-change').classList.add('btn-danger');
+            document
+                .getElementById('submit-change')
+                .classList.remove('btn-success');
+            document
+                .getElementById('submit-change')
+                .classList.add('btn-danger');
             document.getElementById('submit-change').classList.add('disabled');
             populateEditUserModal(res, user.id);
         },
@@ -93,12 +100,19 @@ function validateChange(userID) {
         datatype: 'json',
         data: profileData,
         success: () => {
-            document.getElementById('submit-change').classList.remove('disabled');
-            document.getElementById('submit-change').classList.remove('btn-danger');
-            document.getElementById('submit-change').classList.add('btn-success');
+            document
+                .getElementById('submit-change')
+                .classList.remove('disabled');
+            document
+                .getElementById('submit-change')
+                .classList.remove('btn-danger');
+            document
+                .getElementById('submit-change')
+                .classList.add('btn-success');
         },
-        error: () => {
+        error: (res) => {
             document.getElementById('submit-change').classList.add('disabled');
+            alert(res.responseJSON.error);
         },
     });
 }
@@ -125,8 +139,7 @@ function updateUserProfile(userID) {
             fetchAllUsers();
         },
         error: (res) => {
-            // display error message
-            alert(res.responseJSON[0]);
+            alert(res.responseJSON.error);
         },
     });
 }

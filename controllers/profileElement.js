@@ -25,6 +25,8 @@ function getUserProfileElements(userID) {
  * }
  */
 async function updateUserProfileElements(userID, fields) {
+    await validProfileChanges(userID, fields);
+
     if ('username' in fields) {
         fields.username = validUsername(fields.username);
     }
@@ -103,6 +105,9 @@ async function validProfileChanges(userID, fields) {
 
     if ('username' in fields) {
         const username = validUsername(fields.username);
+        if (!username) {
+            throw new Error('Invalid username');
+        }
         if (username) {
             const user = await UserModel.findByName(fields.username);
             if (user !== null && user.id !== parseInt(userID)) {

@@ -65,7 +65,7 @@ const mockRes = () => {
 };
 
 test('test At Least One Admin rule', async () => {
-    const res = await atLeastOneAdmin('CITIZEN', 1);
+    const res = await atLeastOneAdmin('CITIZEN', 'ACTIVE', 1);
     expect(res).toBe(false);
 });
 
@@ -155,29 +155,37 @@ describe('Test Administrator Action of User Profile rule', () => {
         const fields = {
             username: 'testChange'
         }
-        const res = await validProfileChanges(2, fields);
-        expect(res.valid).toBe(true);
+        const res = async () => {
+            await validProfileChanges(2, fields);
+        }
+        expect(res()).resolves.not.toThrow();
     });
     test('admin changes invalid username', async () => {
         const fields = {
             username: 'te'
         }
-        const res = await validProfileChanges(2, fields);
-        expect(res.valid).toBe(false);
+        const res = async () => {
+            await validProfileChanges(2, fields);
+        }
+        expect(res()).rejects.toThrow('Invalid password');
     });
     test('admin changes valid password', async () => {
         const fields = {
             password: 'testChange'
         }
-        const res = await validProfileChanges(2, fields);
-        expect(res.valid).toBe(true);
+        const res = async () => {
+            await validProfileChanges(2, fields);
+        }
+        expect(res()).resolves.not.toThrow();
     });
     test('admin changes invalid password', async () => {
         const fields = {
             password: 'te'
         }
-        const res = await validProfileChanges(2, fields);
-        expect(res.valid).toBe(false);
+        const res = async () => {
+            await validProfileChanges(2, fields);
+        }
+        expect(res()).rejects.toThrow('Invalid password');
     });
 });
 

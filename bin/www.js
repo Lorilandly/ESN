@@ -38,7 +38,7 @@ const dbHost = config.get('db.host');
 const dbPort = normalizePort(config.get('db.port'));
 const dbName = config.get('db.name');
 dbManager.configureDB(dbHost, dbPort, dbName);
-dbManager.activateDB();
+await dbManager.activateDB();
 
 const testDBHost = config.get('performance-test-db.host');
 const testDBPort = normalizePort(config.get('performance-test-db.port'));

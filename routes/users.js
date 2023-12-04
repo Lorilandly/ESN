@@ -13,7 +13,6 @@ import {
     getUserProfileElements,
     profileChangeValidation,
     updateUserProfileElements,
-    userNotFound,
 } from '../controllers/profileElement.js';
 
 import {
@@ -23,7 +22,12 @@ import {
     checkUserAuthenticated,
     requireAdminPrivileges,
 } from '../controllers/auth.js';
-import { create, getAllActiveUsers, getAllUsers, getUserByName } from '../controllers/user.js';
+import {
+    create,
+    getAllActiveUsers,
+    getAllUsers,
+    getUserByName,
+} from '../controllers/user.js';
 const router = express.Router();
 
 /* GET all users */
@@ -213,19 +217,12 @@ router.put(
     requireAdminPrivileges,
     (req, res) =>
         updateUserProfileElements(req.params.id, req.body)
-            .then((action) => {
-                if (action.updated) {
-                    return res.status(200).json({});
-                } else {
-                    if (action.reason === userNotFound) {
-                        return res.sendStatus(404);
-                    }
-                    return res.status(400).json(action.errors);
-                }
+            .then(() => {
+                return res.sendStatus(200);
             })
             .catch((err) => {
                 console.error(err);
-                return res.sendStatus(500);
+                return res.status(400).json({ error: err.message });
             }),
 );
 
@@ -238,7 +235,7 @@ router.get(
             .then(() => res.status(200).json({ message: 'Valid' }))
             .catch((err) => {
                 console.error(err);
-                return res.sendStatus(400);
+                return res.status(400).json({ error: err.message });
             }),
 );
 

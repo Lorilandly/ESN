@@ -324,17 +324,14 @@ class UserModel {
     }
 
     async update() {
-        return UserModel.dbPoolInstance.query(
-            updateUserByID,
-            [
-                this.#id,
-                this.username,
-                this.#passwordHash,
-                this.#salt,
-                this.privilege,
-                this.accountStatus,
-            ],
-        );
+        return UserModel.dbPoolInstance.query(updateUserByID, [
+            this.#id,
+            this.username,
+            this.#passwordHash,
+            this.#salt,
+            this.privilege,
+            this.accountStatus,
+        ]);
     }
 
     /**
@@ -348,8 +345,7 @@ class UserModel {
         if (user === null) {
             return null;
         }
-        const { username, password, privilegeLevel, accountStatus } =
-            fields;
+        const { username, password, privilegeLevel, accountStatus } = fields;
 
         if (password) {
             user.setPassword(password);
@@ -362,13 +358,8 @@ class UserModel {
         if (queryResponse.rowCount === 0) {
             return null;
         }
-        const updatedUser = new UserModel({
-            username,
-            privilegeLevel,
-            accountStatus,
-        });
-        updatedUser.id = userID;
-        return updatedUser;
+        user.id = userID;
+        return user;
     }
 
     static async countAdmins() {

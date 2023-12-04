@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import UserModel from '../models/user.js';
 import { validUsername, validPassword } from './auth.js';
 

@@ -1,8 +1,15 @@
+import crypto from 'crypto';
 import UserModel from '../models/user.js';
 import { validUsername, validPassword } from './auth.js';
 
 const invalidProfileChanges = 'Invalid profile changes';
 const userNotFound = 'User not found';
+
+let ioInstance = null;
+
+function initIOInstanceForAdmin(io) {
+    ioInstance = io;
+}
 
 function getUserProfileElements(userID) {
     return UserModel.findByID(userID).then((user) => buildUserProfile(user));
@@ -19,17 +26,8 @@ function getUserProfileElements(userID) {
  * }
  */
 async function updateUserProfileElements(userID, fields) {
-    const change = await validProfileChanges(fields);
-    if (!change.valid) {
-        return {
-            updated: false,
-            reason: invalidProfileChanges,
-            errors: change.errors,
-        };
-    }
-
     // create new passwordHash and salt, if updated
-    if (fields.password) {
+    if ('password' in fields) {
         fields.salt = crypto.randomBytes(16);
         fields.passwordHash = crypto.pbkdf2Sync(
             fields.password,
@@ -47,6 +45,11 @@ async function updateUserProfileElements(userID, fields) {
             reason: userNotFound,
         };
     }
+
+    if (fields.accountStatus === 'INACTIVE') {
+        ioInstance.emit('user inactive', { userID });
+    }
+
     return { updated: true };
 }
 
@@ -74,25 +77,41 @@ function buildUserProfile(user) {
  *      errors: array,   // indicates which errors occurred during validation
  * }
  */
-async function validProfileChanges(fields) {
+async function validProfileChanges(userID, fields) {
     const errors = [];
-    if (fields.accountStatus && !validAccountStatus(fields.accountStatus)) {
+    if (
+        'accountStatus' in fields &&
+        !validAccountStatus(fields.accountStatus)
+    ) {
         errors.push('Invalid account status');
     }
-    if (fields.privilegeLevel && !validPrivilegeLevel(fields.privilegeLevel)) {
+    if (
+        'privilegeLevel' in fields &&
+        !validPrivilegeLevel(fields.privilegeLevel)
+    ) {
         errors.push('Invalid privilege level');
-        // TODO: if privileges of an admin are being revoked, check that
-        // there is at least one more admin in the system (See At-least-one-administrator rule)
-    }
-    if (fields.username && !validUsername(fields.username)) {
-        errors.push('Invalid username');
     } else {
-        const user = await UserModel.findByName(fields.username);
-        if (user !== null) {
-            errors.push('Username already taken');
+        // if the privileges of an admin are being revoked, check that there
+        // is at least one more admin in the system (at least one admin rule)
+        if (!(await atLeastOneAdmin(fields.privilegeLevel, userID))) {
+            errors.push('There must always be one admin must in the system');
         }
     }
-    if (fields.password && !validPassword(fields.password)) {
+
+    if ('username' in fields) {
+        const username = validUsername(fields.username);
+        if (username) {
+            const user = await UserModel.findByName(fields.username);
+            if (user !== null && user.id !== parseInt(userID)) {
+                errors.push('Username already taken');
+            }
+            // enforce case sensitivity, as with other usenames
+            fields.username = username;
+        } else {
+            errors.push('Invalid username');
+        }
+    }
+    if ('password' in fields && !validPassword(fields.password)) {
         errors.push('Invalid password');
     }
     if (errors.length !== 0) {
@@ -103,8 +122,18 @@ async function validProfileChanges(fields) {
     }
     return {
         valid: true,
-        errors: null,
     };
+}
+
+async function profileChangeValidation(userID, fields) {
+    const change = await validProfileChanges(userID, fields);
+    if (!change.valid) {
+        return {
+            updated: false,
+            reason: invalidProfileChanges,
+            errors: change.errors,
+        };
+    }
 }
 
 function validAccountStatus(accountStatus) {
@@ -119,9 +148,22 @@ function validPrivilegeLevel(privilegeLevel) {
     );
 }
 
+async function atLeastOneAdmin(privilegeLevel, userID) {
+    if (privilegeLevel !== 'ADMIN') {
+        const oldPrivilegeLevel = await UserModel.getPrivilegeByID(userID);
+        if (oldPrivilegeLevel === 'ADMIN') {
+            const count = await UserModel.countAdmins();
+            return count > 1;
+        }
+    }
+    return true;
+}
+
 export {
     getUserProfileElements,
     updateUserProfileElements,
+    initIOInstanceForAdmin,
+    profileChangeValidation,
     invalidProfileChanges,
     userNotFound,
 };

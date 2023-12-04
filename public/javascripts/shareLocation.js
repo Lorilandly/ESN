@@ -1,6 +1,8 @@
+/* global socket modifyHeader */
+
 $(document).ready(() => {
-    document.getElementById('search-bar').remove();
-    document.getElementsByClassName('header-text')[0].innerHTML = 'View Locations';
+    modifyHeader(false, 'View Locations');
+    document.getElementById('share-location').classList.add('text-primary');
 
     $('#locationForm').on('submit', function (e) {
         e.preventDefault();

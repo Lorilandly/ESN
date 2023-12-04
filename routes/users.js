@@ -11,6 +11,7 @@ import {
 
 import {
     getUserProfileElements,
+    profileChangeValidation,
     updateUserProfileElements,
     userNotFound,
 } from '../controllers/profileElement.js';
@@ -22,7 +23,7 @@ import {
     checkUserAuthenticated,
     requireAdminPrivileges,
 } from '../controllers/auth.js';
-import { create, getAllUsers, getUserByName } from '../controllers/user.js';
+import { create, getAllActiveUsers, getAllUsers, getUserByName } from '../controllers/user.js';
 const router = express.Router();
 
 /* GET all users */
@@ -30,7 +31,7 @@ router.get(
     '/',
     passport.authenticate('jwt', { session: false }),
     async (req, res) => {
-        return getAllUsers()
+        return getAllActiveUsers()
             .then((users) => res.status(200).json(users))
             .catch((err) => {
                 console.error(err);
@@ -44,7 +45,7 @@ router.post('/', await validateNewCredentials, (req, res) => {
     let { username, password } = req.body;
     username = username.toLowerCase();
     return create(username, password)
-        .then(() => setJwtCookie(username, res))
+        .then((userID) => setJwtCookie(userID, username, 'CITIZEN', res))
         .then((res) => res.status(201).json({}))
         .catch((err) => {
             console.error(err);
@@ -74,7 +75,12 @@ router.put(
     '/login',
     passport.authenticate('local', { session: false }),
     (req, res) => {
-        return setJwtCookie(req.user.username, res)
+        return setJwtCookie(
+            req.user.id,
+            req.user.username,
+            req.user.privilege,
+            res,
+        )
             .then((res) => res.status(200).json({}))
             .catch((err) => {
                 console.error(err);
@@ -100,6 +106,15 @@ router.get('/current', checkUserAuthenticated, async (req, res) => {
             return res.sendStatus(400);
         });
 });
+
+router.get(
+    '/profile/all',
+    passport.authenticate('jwt', { session: false }),
+    requireAdminPrivileges,
+    (req, res) => {
+        return res.render('adminUsers');
+    },
+);
 
 /** Get profile of another user
  * @argument UserId
@@ -208,6 +223,32 @@ router.put(
                     return res.status(400).json(action.errors);
                 }
             })
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(500);
+            }),
+);
+
+router.get(
+    '/:id/validation',
+    passport.authenticate('jwt', { session: false }),
+    requireAdminPrivileges,
+    (req, res) =>
+        profileChangeValidation(req.params.id, req.query)
+            .then(() => res.status(200).json({ message: 'Valid' }))
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(400);
+            }),
+);
+
+router.get(
+    '/accounts/all',
+    passport.authenticate('jwt', { session: false }),
+    requireAdminPrivileges,
+    (req, res) =>
+        getAllUsers()
+            .then((users) => res.status(200).json(users))
             .catch((err) => {
                 console.error(err);
                 return res.sendStatus(500);

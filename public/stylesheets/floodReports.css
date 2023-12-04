@@ -5,6 +5,8 @@
     overflow-y: auto;
     overflow-x: hidden;
     align-items: center;
+    justify-content: start;
+    height: calc(100% - 120px);
 }
 
 .time-reported-header {

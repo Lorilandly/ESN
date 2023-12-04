@@ -40,9 +40,10 @@ SELECT * FROM users
 WHERE id = $1;
 `;
 
-const getAllUserStatusesOrdered = `
+const getAllActiveUserStatusesOrdered = `
 SELECT id, username, login_status, status
 FROM users
+WHERE account_status = 'ACTIVE'
 ORDER BY 
     CASE 
         WHEN login_status = 'ONLINE' THEN 1
@@ -50,6 +51,11 @@ ORDER BY
         ELSE 3
     END,
     username;
+`;
+
+const getAllUsers = `
+SELECT id, username, login_status, status
+FROM users;
 `;
 
 const changeUserLoginStatus = `
@@ -93,6 +99,16 @@ ORDER BY
 const updateUserByID = `
 UPDATE users
 SET username = $2, password_hash = $3, salt = $4, privilege = $5, account_status = $6
+WHERE id = $1;
+`;
+
+const countNumberOfAdmins = `
+SELECT COUNT(*) FROM users
+WHERE privilege = 'ADMIN';
+`;
+
+const getUserPrivilegeByID = `
+SELECT privilege FROM users
 WHERE id = $1;
 `;
 
@@ -178,6 +194,9 @@ class UserModel {
                 } else {
                     const row = queryResponse.rows[0];
                     const user = UserModel.queryToModel(row);
+                    user.passwordHash = row.password_hash;
+                    user.salt = row.salt;
+                    user.id = row.id;
                     return user;
                 }
             });
@@ -216,7 +235,19 @@ class UserModel {
 
     static async getAllStatuses() {
         return UserModel.dbPoolInstance
-            .query(getAllUserStatusesOrdered)
+            .query(getAllActiveUserStatusesOrdered)
+            .then((queryResponse) => {
+                if (queryResponse.rowCount === 0) {
+                    return null;
+                } else {
+                    return queryResponse.rows;
+                }
+            });
+    }
+
+    static async getAllUsers() {
+        return UserModel.dbPoolInstance
+            .query(getAllUsers)
             .then((queryResponse) => {
                 if (queryResponse.rowCount === 0) {
                     return null;
@@ -269,6 +300,20 @@ class UserModel {
         });
         updatedUser.id = userID;
         return updatedUser;
+    }
+
+    static async countAdmins() {
+        const queryResponse =
+            await UserModel.dbPoolInstance.query(countNumberOfAdmins);
+        return queryResponse.rows[0].count;
+    }
+
+    static async getPrivilegeByID(userID) {
+        const queryResponse = await UserModel.dbPoolInstance.query(
+            getUserPrivilegeByID,
+            [userID],
+        );
+        return queryResponse.rows[0].privilege;
     }
 }
 

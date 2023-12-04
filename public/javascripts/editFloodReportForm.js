@@ -26,5 +26,7 @@ $('#flood-report-form').submit((event) => {
 
 $(document).ready(() => {
     modifyHeader(false, 'Update Flood Report');
-    document.getElementById('flood-reports-button').classList.add('text-primary');
+    document
+        .getElementById('flood-reports-button')
+        .classList.add('text-primary');
 });

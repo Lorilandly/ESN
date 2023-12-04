@@ -3,9 +3,24 @@ import MockStrategy from 'passport-mock-strategy';
 import config from 'config';
 import DatabaseManager from '../db.js';
 import UserModel from '../models/user.js';
-import { atLeastOneAdmin, validProfileChanges, updateUserProfileElements, initIOInstanceForAdmin } from './profileElement.js';
-import { initAuthController, requireAdminPrivileges, requireCoordinatorPrivileges, validateNewCredentials } from './auth.js';
-import { create, getUserByName, getAllActiveUsers, getAllUsers } from './user.js';
+import {
+    atLeastOneAdmin,
+    validProfileChanges,
+    updateUserProfileElements,
+    initIOInstanceForAdmin,
+} from './profileElement.js';
+import {
+    initAuthController,
+    requireAdminPrivileges,
+    requireCoordinatorPrivileges,
+    validateNewCredentials,
+} from './auth.js';
+import {
+    create,
+    getUserByName,
+    getAllActiveUsers,
+    getAllUsers,
+} from './user.js';
 import { jest } from '@jest/globals';
 import MockedSocket from 'socket.io-mock';
 
@@ -31,11 +46,8 @@ beforeEach(async () => {
 
     const user1 = new UserModel({
         username: 'testuser',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'OFFLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
         accountStatus: 'INACTIVE',
     });
@@ -43,11 +55,8 @@ beforeEach(async () => {
 
     const user2 = new UserModel({
         username: 'testuser2',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
-        statusTime: null,
         privilege: null,
         accountStatus: 'ACTIVE',
     });

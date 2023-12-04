@@ -31,18 +31,6 @@ async function updateUserProfileElements(userID, fields) {
         fields.username = validUsername(fields.username);
     }
 
-    // create new passwordHash and salt, if updated
-    if ('password' in fields) {
-        fields.salt = crypto.randomBytes(16);
-        fields.passwordHash = crypto.pbkdf2Sync(
-            fields.password,
-            fields.salt,
-            310000,
-            32,
-            'sha256',
-        );
-    }
-
     const userProfile = await UserModel.updateByID(userID, fields);
     if (userProfile === null) {
         throw new Error(userNotFound);

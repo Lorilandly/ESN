@@ -32,8 +32,6 @@ beforeEach(async () => {
 
     const user = new UserModel({
         username: 'testUser',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
         privilege: null,

@@ -26,8 +26,6 @@ beforeAll(async () => {
 
     const user1 = new UserModel({
         username: 'testUser',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'OFFLINE',
         status: 'OK',
         privilege: null,
@@ -37,8 +35,6 @@ beforeAll(async () => {
 
     const user2 = new UserModel({
         username: 'testUser2',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
         privilege: null,

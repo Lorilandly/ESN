@@ -33,8 +33,6 @@ beforeAll(async () => {
 
     const user = new UserModel({
         username: 'testUser',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
         privilege: null,
@@ -109,8 +107,6 @@ describe('Test search rules for CitizenNameSearchContext', () => {
             users: [
                 new UserModel({
                     username: 'testUser',
-                    passwordHash: null,
-                    salt: null,
                     loginStatus: 'ONLINE',
                     status: 'OK',
                     privilege: null,
@@ -134,8 +130,6 @@ describe('Test search rules for CitizenStatusSearchContext', () => {
             users: [
                 new UserModel({
                     username: 'testUser',
-                    passwordHash: null,
-                    salt: null,
                     loginStatus: 'ONLINE',
                     status: 'OK',
                     privilege: null,

@@ -173,6 +173,7 @@ export {
     handleSocketConnections,
     deauthenticateUser,
     validateNewCredentials,
+    reservedUsernames,
     validPassword,
     validUsername,
 };

@@ -47,8 +47,13 @@ router.post('/', await validateNewCredentials, (req, res) => {
 router.put(
     '/status',
     await passport.authenticate('jwt', { session: false }),
-    updateUserStatus,
-    (req, res) => res.status(200).json({}),
+    (req, res) =>
+        updateUserStatus(req.user, req.body.status)
+            .then(() => res.status(200).json({}))
+            .catch((err) => {
+                console.error(err);
+                return res.sendStatus(400);
+            }),
 );
 
 // return current user status

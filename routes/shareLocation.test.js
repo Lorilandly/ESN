@@ -26,8 +26,6 @@ beforeAll(async () => {
     }
     const user = new UserModel({
         username: 'testUser',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
         privilege: null,
@@ -36,8 +34,6 @@ beforeAll(async () => {
     await user.persist();
     const user2 = new UserModel({
         username: 'testUser2',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'ONLINE',
         status: 'OK',
         privilege: null,
@@ -46,8 +42,6 @@ beforeAll(async () => {
     await user2.persist();
     await new UserModel({
         username: 'otherUser0',
-        passwordHash: null,
-        salt: null,
         loginStatus: 'OFFLINE',
         status: 'OK',
         privilege: null,

@@ -8,7 +8,7 @@ import {
     shareCurrentLocation,
     updateCurrentLocation,
     getAllLocations,
-    getUserLocation
+    getUserLocation,
 } from './location.js';
 
 beforeAll(async () => {
@@ -37,6 +37,7 @@ beforeAll(async () => {
         status: 'OK',
         statusTime: null,
         privilege: null,
+        accountStatus: null,
     });
     await user1.persist();
     passport.use('jwt', new MockStrategy({ user1 }));
@@ -69,8 +70,8 @@ beforeAll(async () => {
         address: '500 S Lasalle St',
         city: 'Durham',
         state: 'NC',
-        latitude: 37.40330330,
-        longitude: -121.92754740,
+        latitude: 37.4033033,
+        longitude: -121.9275474,
         time: new Date(1),
     });
     await location2.persist();
@@ -98,7 +99,7 @@ test('test getAllLocations', async () => {
             latitude: '37.40330330',
             longitude: '-121.92754740',
             time: new Date(1).toLocaleString(),
-        }
+        },
     ];
     expect(result).toEqual(expectedResult);
 });
@@ -115,7 +116,7 @@ test('test getUserLocation', async () => {
             latitude: '36.01225685',
             longitude: '-78.95004593',
             time: new Date(1).toLocaleString(),
-        }
+        },
     ];
     expect(result).toEqual(expectedResult);
 });

@@ -93,6 +93,25 @@ $(document).ready(() => {
         changeReadStatus();
         showNewMessageWarning(false);
     });
+
+    socket.on('user inactive', async ({ userID }) => {
+        console.log('user inactive', userID);
+        const currentUser = await getCurrentUser();
+        if (parseInt(currentUser.id, 10) === parseInt(userID, 10)) {
+            alert('Your account has been deactivated');
+            $.ajax('/users/logout', {
+                method: 'PUT',
+                datatype: 'json',
+                data: { type: 'logout' },
+                success: () => {
+                    location.href = '/';
+                },
+                error: (res) => {
+                    console.error('Login error:', res);
+                },
+            });
+        }
+    });
 });
 
 function shakeIndicator() {
@@ -252,44 +271,50 @@ function showCitizenSearchResults(responses) {
 }
 
 function showChatSearchResults(response) {
-    // Remove everything from search-result
+    displaySearchMessages(response.messages, 'message');
+}
+
+function showChatSearchStatus(response) {
+    displaySearchMessages(response.messages, 'status');
+}
+
+function displaySearchMessages(messages, type) {
     $('#search-result').empty();
-    const messages = response.messages;
     if (messages && messages.length > 0) {
         let messageHtml = '';
         messages.forEach((message) => {
             messageHtml += `
-                <div class="search-message">
-                    <div class="search-message-title">
-                        <span class="search-message-sender-name">${message.sender}</span>
-                        <span class="message-time">${message.time}</span>
-                        <span class="message-status">${message.status}</span>
+            <div class="search-message">
+                <div class="search-message-title">
+                `;
+            if (type === 'status') {
+                messageHtml += `
+                    <span class="search-message-sender-name">${message.time}</span>
+                    <span class="message-status">${message.status}</span>
+                `;
+            } else {
+                messageHtml += `
+                    <span class="search-message-sender-name">${message.sender}</span>
+                    <span class="message-time">${message.time}</span>
+                    <span class="message-status">${message.status}</span>
                     </div>
                     <div class="message-body">
-                        <p>${message.body}</p>
+                            <p>${message.body}</p>
                     </div>
-                </div>`;
+                `;
+            }
+            messageHtml += `
+            </div>`;
         });
         $('#search-result').append(messageHtml);
     }
 }
 
-function showChatSearchStatus(response) {
-    $('#search-result').empty();
-    const messages = response.messages;
-    if (messages && messages.length > 0) {
-        let messageHtml = '';
-        messages.forEach((message) => {
-            messageHtml += `
-                <div class="search-message">
-                    <div class="search-message-title">
-                        <span class="search-message-sender-name">${message.time}</span>
-                        <span class="message-status">${message.status}</span>
-                    </div>
-                </div>`;
-        });
-        $('#search-result').append(messageHtml);
+function modifyHeader(search, title) {
+    if (!search) {
+        document.getElementById('search-bar').remove();
     }
+    document.getElementsByClassName('header-text')[0].innerHTML = title;
 }
 
 window.addEventListener('beforeunload', (event) => {
@@ -299,3 +324,25 @@ window.addEventListener('beforeunload', (event) => {
         data: { type: 'close' },
     });
 });
+
+function displayChatMessages(messages) {
+    if (messages && messages.length > 0) {
+        let messageHtml = '';
+        messages.forEach((message) => {
+            messageHtml += `
+                <div class="message">
+                    <div class="message-title">
+                        <span class="message-sender-name">${message.sender_name}<i class="bi bi-circle-fill user-status-${message.status}"></i></span>
+                        <span class="message-time">${message.time}</span>
+                    </div>
+                    <div class="message-body">
+                        <p>${message.body}</p>
+                    </div>
+                </div>`;
+        });
+        $('#message-container').append(messageHtml);
+        $('#message-container').scrollTop(
+            $('#message-container')[0].scrollHeight,
+        );
+    }
+}

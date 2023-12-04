@@ -5,10 +5,7 @@ import DatabaseManager from '../db.js';
 import UserModel from '../models/user.js';
 import PostModel from '../models/post';
 import ReplyModel from '../models/reply.js';
-import {
-    getAllReplyFromPost,
-    createReply,
-} from './reply.js';
+import { getAllReplyFromPost, createReply } from './reply.js';
 
 beforeAll(async () => {
     const { host, port, name } = config.get('db');
@@ -45,6 +42,7 @@ beforeAll(async () => {
         status: 'OK',
         statusTime: null,
         privilege: null,
+        accountStatus: null,
     });
 
     await user1.persist();

@@ -6,7 +6,7 @@ async function geocodeAddress(street, city, state) {
     const queryParams = new URLSearchParams({
         q: address,
         format: 'json',
-        addressdetails: 1
+        addressdetails: 1,
     });
 
     const response = await fetch(`${baseUrl}?${queryParams}`);
@@ -21,6 +21,5 @@ async function geocodeAddress(street, city, state) {
         longitude: data[0].lon,
     };
 }
-
 
 export { geocodeAddress };

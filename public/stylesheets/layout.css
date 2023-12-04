@@ -8,6 +8,16 @@ body {
     height: 100%;
 }
 
+form{
+    padding: 0;
+    margin: 0;
+}
+
+button{
+    background: none;
+    border: none;
+}
+
 .bi {
     color: black;
 }

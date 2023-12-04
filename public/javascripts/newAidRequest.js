@@ -1,3 +1,5 @@
+/* global modifyHeader */
+
 function createSubmitButton() {
     const form = document.getElementById('create-aid-request-form');
     form.method = 'post';
@@ -14,6 +16,7 @@ function createSubmitButton() {
 }
 
 $(document).ready(() => {
+    modifyHeader(false, 'Aid Request');
     createSubmitButton();
     // create aid request
     $('#create-aid-request-form').submit(async (event) => {

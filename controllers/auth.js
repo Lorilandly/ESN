@@ -21,8 +21,11 @@ const opts = {
 
 passport.use(
     new Strategy(opts, async (jwtPayload, done) => {
-        return UserModel.findByName(jwtPayload.username)
+        return UserModel.findByID(jwtPayload.id)
             .then((user) => {
+                // the active privilege level persists until the JWT is cleared
+                // even if the privilege level changes per the Privilege Rule
+                user.activePrivilegeLevel = jwtPayload.privilege;
                 if (user) {
                     return done(null, user);
                 } else {
@@ -63,6 +66,28 @@ function initAuthController(config) {
     } catch (error) {
         console.error('Failed to parse reserved usernames:', error);
     }
+    // Initial administrator rule dictates that the admin user should exist "out of the box"
+    createDefaultAdministrator()
+        .then(() => console.log('Default administrator created'))
+        .catch((err) =>
+            console.error(`Default administrator not (re-)created: ${err}`),
+        );
+}
+
+async function createDefaultAdministrator() {
+    const salt = crypto.randomBytes(16);
+    const passwordHash = crypto.pbkdf2Sync('admin', salt, 310000, 32, 'sha256');
+    const user = new UserModel({
+        username: 'esnadmin',
+        passwordHash,
+        salt,
+        loginStatus: 'OFFLINE',
+        status: 'OK',
+        statusTime: new Date(Date.now()).toLocaleString(),
+        privilege: 'ADMIN',
+        accountStatus: 'ACTIVE',
+    });
+    return user.persist();
 }
 
 // Function to handle Socket.IO connections and user status updates
@@ -79,7 +104,7 @@ function handleSocketConnections(io) {
             console.error(`failed to decode user from jwt, ${exception}`);
             return;
         }
-        const user = await UserModel.findByName(decodedUser.username);
+        const user = await UserModel.findByID(parseInt(decodedUser.id));
         const status = user.status;
         io.emit('userStatus', {
             username: decodedUser.username,
@@ -124,6 +149,13 @@ function checkPasswordForUser(user, rawPassword) {
     return Buffer.compare(newHashedPasswd, user.passwordHash) === 0;
 }
 
+function checkUserAccountStatus(user) {
+    if (!user) {
+        return false;
+    }
+    return user.accountStatus === 'ACTIVE';
+}
+
 async function deauthenticateUser(req, res, next) {
     const token = req.cookies.jwtToken;
     const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
@@ -142,10 +174,14 @@ async function deauthenticateUser(req, res, next) {
     return next();
 }
 
-async function setJwtCookie(username, res) {
-    const token = jwt.sign({ username }, process.env.SECRET_KEY, {
-        expiresIn: '1h',
-    });
+async function setJwtCookie(userID, username, privilege, res) {
+    const token = jwt.sign(
+        { id: userID, privilege, username },
+        process.env.SECRET_KEY,
+        {
+            expiresIn: '1h',
+        },
+    );
     return UserModel.updateLoginStatus(username, 'ONLINE').then(() => {
         res.cookie('jwtToken', token, {
             httpOnly: true,
@@ -184,6 +220,9 @@ async function validateNewCredentials(req, res, next) {
     }
     const user = await UserModel.findByName(checkedUsername);
     if (user) {
+        if (!checkUserAccountStatus(user)) {
+            return res.status(403).json({ error: 'Account is inactive' });
+        }
         if (!checkPasswordForUser(user, password)) {
             return res.status(403).json({ error: 'Username is already taken' });
         } else {
@@ -198,6 +237,25 @@ async function validateNewCredentials(req, res, next) {
     return next();
 }
 
+// Should be used after jwt is decoded to enforce admin privileges
+async function requireAdminPrivileges(req, res, next) {
+    if (req.user.activePrivilegeLevel !== 'ADMIN') {
+        return res.sendStatus(401);
+    }
+    return next();
+}
+
+// Should be used after jwt is decoded to enforce coordinator privileges
+async function requireCoordinatorPrivileges(req, res, next) {
+    if (
+        req.user.activePrivilegeLevel !== 'ADMIN' &&
+        req.user.activePrivilegeLevel !== 'COORDINATOR'
+    ) {
+        return res.sendStatus(401);
+    }
+    return next();
+}
+
 export {
     initAuthController,
     setJwtCookie,
@@ -208,4 +266,6 @@ export {
     reservedUsernames,
     validPassword,
     validUsername,
+    requireAdminPrivileges,
+    requireCoordinatorPrivileges,
 };

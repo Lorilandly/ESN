@@ -134,7 +134,7 @@ class AidRequestModel {
             acceptorId: queryRow.acceptor_id,
             status: queryRow.status,
         };
-        let model = new AidRequestModel(params);
+        const model = new AidRequestModel(params);
         model.id = queryRow.id;
 
         return model;

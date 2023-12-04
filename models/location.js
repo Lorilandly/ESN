@@ -30,7 +30,7 @@ FROM locations
 JOIN users ON users.id = locations.sender_id
 WHERE locations.sender_id = $1
 ORDER BY locations.time ASC;
-`
+`;
 
 const updateUserLocation = `
 UPDATE locations
@@ -87,13 +87,13 @@ class LocationModel {
 
     static async getUserLocation(sender_id) {
         return LocationModel.dbPoolInstance
-        .query(getUserLocation, [sender_id])
-        .then((queryResponse) =>
-            queryResponse.rows.map((row) => {
-                row.time = row.time.toLocaleString();
-                return row;
-            }),
-        );
+            .query(getUserLocation, [sender_id])
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => {
+                    row.time = row.time.toLocaleString();
+                    return row;
+                }),
+            );
     }
 
     static async updateUserLocation(sender_id, address, city, state, latitude, longitude, time) {

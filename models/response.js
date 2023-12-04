@@ -21,7 +21,7 @@ JOIN users ON users.id = responses.sender_id
 LEFT JOIN locations ON responses.location_id = locations.id
 WHERE responses.location_id = $1
 ORDER BY responses.time ASC;
-`
+`;
 
 class ResponseModel {
     constructor({ sender_id, location_id, message, time }) {
@@ -49,13 +49,13 @@ class ResponseModel {
 
     static async getLocationResponse(location_id) {
         return ResponseModel.dbPoolInstance
-        .query(getLocationResponse, [location_id])
-        .then((queryResponse) =>
-            queryResponse.rows.map((row) => {
-                row.time = row.time.toLocaleString();
-                return row;
-            }),
-        );
+            .query(getLocationResponse, [location_id])
+            .then((queryResponse) =>
+                queryResponse.rows.map((row) => {
+                    row.time = row.time.toLocaleString();
+                    return row;
+                }),
+            );
     }
 }
 

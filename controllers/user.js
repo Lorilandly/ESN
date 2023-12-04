@@ -20,17 +20,22 @@ async function create(username, password) {
         loginStatus: 'OFFLINE',
         status: 'UNDEFINED',
         statusTime: new Date(Date.now()).toLocaleString(),
-        privilege: 'SUPERDUPERADMIN',
+        privilege: 'CITIZEN',
+        accountStatus: 'ACTIVE',
     });
     return user.persist();
 }
 
-async function getAllUsers() {
+async function getAllActiveUsers() {
     return UserModel.getAllStatuses();
+}
+
+async function getAllUsers() {
+    return UserModel.getAllUsers();
 }
 
 async function getUserByName(username) {
     return await UserModel.findByName(username);
 }
 
-export { create, getAllUsers, getUserByName };
+export { create, getAllActiveUsers, getAllUsers, getUserByName };

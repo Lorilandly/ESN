@@ -17,16 +17,19 @@ async function startPerformanceTestMode(req, res) {
         console.warn(err);
     });
     testModeActive = true;
-    setJwtCookie(testAdminID, testAdminUsername, res).then((res) =>
-        res.status(201).json({ message: 'test mode active' }),
-    );
+    setJwtCookie(
+        testAdminID,
+        testAdminUsername,
+        testAdminUser.privilege,
+        res,
+    ).then((res) => res.status(201).json({ message: 'test mode active' }));
 }
 
 async function endPerformanceTestMode(req, res) {
     const dbManager = DatabaseManager.getInstance();
     await dbManager.deactivateTestDB();
     const user = await UserModel.findByName(testAdminUsername);
-    setJwtCookie(user.id, user.username, res)
+    setJwtCookie(user.id, user.username, user.privilege, res)
         .then((res) => {
             testModeActive = false;
             testAdminUsername = null;
@@ -34,7 +37,7 @@ async function endPerformanceTestMode(req, res) {
             res.status(201).json({ message: 'testing stopped' });
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             testModeActive = false;
             testAdminUsername = null;
             testAdminID = null;

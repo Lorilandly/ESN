@@ -86,7 +86,9 @@ function sendHelp(event) {
 async function displayAdminOption() {
     const user = await window.user;
     if (user.privilege !== 'ADMIN') {
-        // remove the admin button
-        document.getElementById('admin-option').remove();
+        // remove admin options
+        $('*[id*=admin-option]:visible').each(function () {
+            $(this).remove();
+        });
     }
 }

@@ -23,6 +23,9 @@ passport.use(
     new Strategy(opts, async (jwtPayload, done) => {
         return UserModel.findByID(jwtPayload.id)
             .then((user) => {
+                // the active privilege level persists until the JWT is cleared
+                // even if the privilege level changes per the Privilege Rule
+                user.activePrivilegeLevel = jwtPayload.privilege;
                 if (user) {
                     return done(null, user);
                 } else {
@@ -164,9 +167,9 @@ async function deauthenticateUser(req, res, next) {
     return next();
 }
 
-async function setJwtCookie(userID, username, res) {
+async function setJwtCookie(userID, username, privilege, res) {
     const token = jwt.sign(
-        { id: userID, username },
+        { id: userID, privilege, username },
         process.env.SECRET_KEY,
         {
             expiresIn: '1h',
@@ -226,10 +229,8 @@ async function validateNewCredentials(req, res, next) {
 
 // Should be used after jwt is decoded to enforce admin privileges
 async function requireAdminPrivileges(req, res, next) {
-    if (req.user.privilege !== 'ADMIN') {
-        return res.send(401).json({
-            error: 'You do not have the privileges to access this resource.',
-        });
+    if (req.user.activePrivilegeLevel !== 'ADMIN') {
+        return res.sendStatus(401);
     }
     return next();
 }
@@ -237,12 +238,10 @@ async function requireAdminPrivileges(req, res, next) {
 // Should be used after jwt is decoded to enforce coordinator privileges
 async function requireCoordinatorPrivileges(req, res, next) {
     if (
-        req.user.privilege !== 'ADMIN' &&
-        req.user.privilege !== 'COORDINATOR'
+        req.user.activePrivilegeLevel !== 'ADMIN' &&
+        req.user.activePrivilegeLevel !== 'COORDINATOR'
     ) {
-        return res.send(401).json({
-            error: 'You do not have the privileges to access this resource.',
-        });
+        return res.sendStatus(401);
     }
     return next();
 }

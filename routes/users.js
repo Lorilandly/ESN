@@ -44,7 +44,7 @@ router.post('/', await validateNewCredentials, (req, res) => {
     let { username, password } = req.body;
     username = username.toLowerCase();
     return create(username, password)
-        .then((userID) => setJwtCookie(userID, username, res))
+        .then((userID) => setJwtCookie(userID, username, 'CITIZEN', res))
         .then((res) => res.status(201).json({}))
         .catch((err) => {
             console.error(err);
@@ -74,7 +74,12 @@ router.put(
     '/login',
     passport.authenticate('local', { session: false }),
     (req, res) => {
-        return setJwtCookie(req.user.id, req.user.username, res)
+        return setJwtCookie(
+            req.user.id,
+            req.user.username,
+            req.user.privilege,
+            res,
+        )
             .then((res) => res.status(200).json({}))
             .catch((err) => {
                 console.error(err);
@@ -101,9 +106,14 @@ router.get('/current', checkUserAuthenticated, async (req, res) => {
         });
 });
 
-router.get('/profile/all', (req, res) => {
-    return res.render('adminUsers');
-});
+router.get(
+    '/profile/all',
+    passport.authenticate('jwt', { session: false }),
+    requireAdminPrivileges,
+    (req, res) => {
+        return res.render('adminUsers');
+    },
+);
 
 /** Get profile of another user
  * @argument UserId

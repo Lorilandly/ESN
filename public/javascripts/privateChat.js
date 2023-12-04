@@ -70,8 +70,7 @@ $(document).ready(async () => {
 
     socket.on(
         'create private message',
-        async ({ username, time, status, body, userId, receiverId }) => {
-            const senderId = userId;
+        async ({ username, time, status, body, senderId, receiverId }) => {
             const user = await getCurrentUser();
             const currentId = user.id;
             if (!(currentId === receiverId || currentId === senderId)) {

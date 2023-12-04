@@ -13,9 +13,8 @@ import {
     setJwtCookie,
     validateNewCredentials,
     deauthenticateUser,
-    checkUserAuthenticated,
 } from '../controllers/auth.js';
-import { create, getAllUsers, getUserByName } from '../controllers/user.js';
+import { create, getAllUsers } from '../controllers/user.js';
 const router = express.Router();
 
 /* GET all users */
@@ -49,18 +48,14 @@ router.put(
     '/status',
     await passport.authenticate('jwt', { session: false }),
     updateUserStatus,
-    (req, res) => {
-        return res.status(200).json({});
-    },
+    (req, res) => res.status(200).json({}),
 );
 
 // return current user status
 router.get(
     '/status',
     passport.authenticate('jwt', { session: false }),
-    (req, res) => {
-        return res.status(200).json({ status: req.user.status });
-    },
+    (req, res) => res.status(200).json({ status: req.user.status }),
 );
 
 router.put(
@@ -80,19 +75,14 @@ router.put(
     '/logout',
     passport.authenticate('jwt', { session: false }),
     deauthenticateUser,
-    (req, res) => {
-        return res.status(200).json({});
-    },
+    (req, res) => res.status(200).json({}),
 );
 
-router.get('/current', checkUserAuthenticated, async (req, res) => {
-    return getUserByName(req.user.username)
-        .then((user) => res.status(200).json(user))
-        .catch((error) => {
-            console.error(error);
-            return res.sendStatus(400);
-        });
-});
+router.get(
+    '/current',
+    passport.authenticate('jwt', { session: false }),
+    async (req, res) => res.status(200).json(req.user),
+);
 
 /** Get profile of another user
  * @argument UserId

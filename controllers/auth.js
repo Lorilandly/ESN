@@ -141,22 +141,6 @@ async function setJwtCookie(username, res) {
     });
 }
 
-async function checkUserAuthenticated(req, res, next) {
-    const token = req.cookies.jwtToken;
-    if (!token) {
-        res.locals.isAuthenticated = false;
-        return next();
-    }
-    try {
-        const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
-        req.user = decodedUser;
-        res.locals.isAuthenticated = true;
-    } catch (error) {
-        res.locals.isAuthenticated = false;
-    }
-    return next();
-}
-
 async function validateNewCredentials(req, res, next) {
     const { username, password, dryRun } = req.body;
     const checkedUsername = validUsername(username);
@@ -188,9 +172,7 @@ export {
     setJwtCookie,
     handleSocketConnections,
     deauthenticateUser,
-    checkUserAuthenticated,
     validateNewCredentials,
-    reservedUsernames,
     validPassword,
     validUsername,
 };
